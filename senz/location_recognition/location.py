@@ -31,24 +31,28 @@ class LocationAndTime:
 class LocationWithTags:
     """Location from cluster result and tags by analysing timestamps"""
 
-    def __init__(self, _latitude, _longitude):
+    def __init__(self, _latitude, _longitude, _tags):
         self.latitude = _latitude
         self.longitude = _longitude
-        self.tags = []
+        self.tags = _tags
+        self.estimateTime = 0
 
-    def addTag(self, tag):
-        self.tags.append(tag)
+class TagInfo:
+    def __init__(self, _tag, _estimateTime, _ratio):
+        self.tag = _tag
+        self.estimateTime = _estimateTime
+        self.ratio = _ratio
 
 def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
-                       timeRanges=defaultTimeRanges, tagOfTimeRanges=defaultTagOfTimeRanges, tagThreshold = 30):
-
+                       timeRanges=defaultTimeRanges, tagOfTimeRanges=defaultTagOfTimeRanges, timeThreshold = 300000,
+                       ratioThreshold = 0.4):
     # parse json data
 
     rawDataArray = []
     for jsonRecord in jsonArray:
         rawDataArray.append(LocationAndTime(jsonRecord["time"], jsonRecord["lat"], jsonRecord["lon"]))
 
-    print("%d records" % len(rawDataArray))
+    # print("%d records" % len(rawDataArray))
 
     # sampling by time
 
@@ -72,7 +76,7 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
 
         dataArray.append(LocationAndTime(bottom, latitudeSum / count, longitudeSum / count))
 
-    print("%d standardized records" % len(dataArray))
+    # print("%d standardized records" % len(dataArray))
 
     # clustering
 
@@ -87,7 +91,7 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
 
     clusterResult = sch.fcluster(linkageMatrix, maxClusterRadius, 'distance')
 
-    print("%d clusters" % clusterResult.max())
+    # print("%d clusters" % clusterResult.max())
 
     # filter clusters
 
@@ -101,16 +105,33 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
 
     validCluster = []
     for cluster in allCluster:
-        if (len(cluster) >= tagThreshold):
+        if (len(cluster) >= timeThreshold / samplingInteval):
             validCluster.append(cluster)
 
-    print("%d valid clusters" % len(validCluster))
+    # print("%d valid clusters" % len(validCluster))
 
-    # add time tag
+    # add tags
+
+    globalDataInRangeCount = countDataInRange(dataArray, timeRanges)
 
     results = []
     for cluster in validCluster:
-        dataInRangeCount = [0] * len(timeRanges)
+        clusterDataInRangeCount = countDataInRange(cluster, timeRanges)
+
+        tags = []
+        i = 0
+        while i < len(timeRanges):
+            if globalDataInRangeCount[i] == 0:
+                i += 1
+                continue
+            ratio = clusterDataInRangeCount[i] / globalDataInRangeCount[i]
+            if ratio > ratioThreshold:
+                estimateTime = clusterDataInRangeCount[i] * samplingInteval
+                tags.append(TagInfo(tagOfTimeRanges[i], estimateTime, ratio))
+            i += 1
+
+        if len(tags) == 0:  # no tag
+            continue
 
         sumLa = 0
         sumLo = 0
@@ -124,24 +145,21 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
         avgLa = sumLa / count
         avgLo = sumLo / count
 
-        result = LocationWithTags(avgLa, avgLo)
+        result = LocationWithTags(avgLa, avgLo, tags)
+        result.estimateTime = count * samplingInteval
 
-        for data in cluster:
-            timeStamp = time.localtime(data.time / 1000)
-            i = 0
-            while i < len(timeRanges):
-                if timeStamp.tm_hour in timeRanges[i]:
-                    dataInRangeCount[i] += 1
-                i += 1
-
-        i = 0
-        while i < len(dataInRangeCount):
-            if (dataInRangeCount[i] > tagThreshold):
-                result.addTag(tagOfTimeRanges[i])
-            i += 1
-
-        if len(result.tags) > 0:
-            results.append(result)
+        results.append(result)
 
     # output are in results
     return json.dumps(results,default=lambda obj:obj.__dict__)
+
+def countDataInRange(dataArray, timeRanges):
+    dataInRangeCount = [0] * len(timeRanges)
+    for data in dataArray:
+        timeStamp = time.localtime(data.time / 1000)
+        i = 0
+        while i < len(timeRanges):
+            if timeStamp.tm_hour in timeRanges[i]:
+                dataInRangeCount[i] += 1
+            i += 1
+    return dataInRangeCount
