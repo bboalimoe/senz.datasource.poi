@@ -1,3 +1,4 @@
+# -*- encoding=utf-8 -*-
 import json
 import math
 import scipy.cluster.hierarchy as sch
@@ -62,6 +63,7 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
     i = 0
     while i < len(rawDataArray):
         floor = math.floor(rawDataArray[i].time / samplingInteval)
+        floor = int(floor)
         bottom = floor * samplingInteval
         top = (floor + 1) * samplingInteval
 
@@ -76,7 +78,7 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
 
         dataArray.append(LocationAndTime(bottom, latitudeSum / count, longitudeSum / count))
 
-    # print("%d standardized records" % len(dataArray))
+    print("%d standardized records" % len(dataArray))
 
     # clustering
 
@@ -91,7 +93,7 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
 
     clusterResult = sch.fcluster(linkageMatrix, maxClusterRadius, 'distance')
 
-    # print("%d clusters" % clusterResult.max())
+    print("%d clusters" % clusterResult.max())
 
     # filter clusters
 
@@ -108,13 +110,14 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
         if (len(cluster) >= timeThreshold / samplingInteval):
             validCluster.append(cluster)
 
-    # print("%d valid clusters" % len(validCluster))
+    print("%d valid clusters" % len(validCluster))
 
     # add tags
 
     globalDataInRangeCount = countDataInRange(dataArray, timeRanges)
 
     results = []
+    print validCluster
     for cluster in validCluster:
         clusterDataInRangeCount = countDataInRange(cluster, timeRanges)
 
@@ -124,7 +127,8 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
             if globalDataInRangeCount[i] == 0:
                 i += 1
                 continue
-            ratio = clusterDataInRangeCount[i] / globalDataInRangeCount[i]
+            ratio = float(clusterDataInRangeCount[i]) / globalDataInRangeCount[i]
+            print ratio
             if ratio > ratioThreshold:
                 estimateTime = clusterDataInRangeCount[i] * samplingInteval
                 tags.append(TagInfo(tagOfTimeRanges[i], estimateTime, ratio))
@@ -143,17 +147,19 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
             count += 1
 
         avgLa = sumLa / count
+        print "avgLa", avgLa
         avgLo = sumLo / count
 
         result = LocationWithTags(avgLa, avgLo, tags)
         result.estimateTime = count * samplingInteval
-
+        print ("r",results)
         results.append(result)
-
+    print (results)
     # output are in results
     return json.dumps(results,default=lambda obj:obj.__dict__)
 
 def countDataInRange(dataArray, timeRanges):
+
     dataInRangeCount = [0] * len(timeRanges)
     for data in dataArray:
         timeStamp = time.localtime(data.time / 1000)
