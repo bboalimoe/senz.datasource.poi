@@ -14,7 +14,7 @@ from django.conf.urls import patterns, url
 from django.core.management import execute_from_command_line
 from django.http import JsonResponse
 from mixpanel import Mixpanel
-
+import time
 #todo change all the users in the poiTailor View to devs
 
 
@@ -28,7 +28,9 @@ def index(request):
     res = ''
     for param, value in request.GET.items():
         res += "%s = %s, " % (param, value)
-    return HttpResponse("senz Index View: <br>" + res[:-2])
+    print "shuizhaole"
+    time.sleep(1000)
+    return HttpResponse("senz responses" + res[:-2])
 
 
 @csrf_exempt
@@ -123,7 +125,7 @@ def PoiGroup(request):
     """
 
      /poi_group/
-     description: create the poi group type
+     description: create /delete the poi group type
      method:                    Post / Delete
      data format：              json
      devname:                 string
@@ -171,7 +173,7 @@ def PoiGroupMember(request):   #todo : aggregate post, delete, put
     """
 
       /poi_group_member/
-     description: create the poi group member
+     description: create/update/delete the poi group member
      method:                    Post / PUT / DELETE
      data format：              json
      devname:                 string
@@ -200,10 +202,13 @@ def PoiGroupMember(request):   #todo : aggregate post, delete, put
     try:
         if request.method == "POST":
             results = poi.addPoiGroupMemberByName(poiGroupType,devname,lat,lng)
-        if request.method == "DELETE":
+        elif request.method == "DELETE":
             results = poi.deletePoiGroupMemberByName(poiGroupType,devname,lat,lng)
-        if request.method == "PUT":
+        elif request.method == "PUT":
             results = poi.updatePoiGroupMemberByName(poiGroupType,devname,lat,lng)
+        else:
+            return HttpResponse(None)
+
 
     except:
         info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info

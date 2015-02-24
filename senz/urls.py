@@ -45,3 +45,10 @@ urlpatterns += patterns("senz.BaiduPoiView",
     url(r'^get_baidu_poitype/$', 'GetBaiduPoiType'),
 
                         )
+
+
+urlpatterns += patterns("senz.LocationRecoView",
+
+    url(r'^usr_loc_tag/$', 'GetUserLocationTags'),
+
+                        )

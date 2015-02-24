@@ -169,3 +169,35 @@ def countDataInRange(dataArray, timeRanges):
                 dataInRangeCount[i] += 1
             i += 1
     return dataInRangeCount
+
+def startCluster(userid=None):
+
+
+    data = getData(userid)
+
+    results = cluster(data)
+    return results
+
+
+def getData(userid=None):
+
+    if not userid:
+        print "shit"
+        file = open("testLocation.json")
+        jsonArray = json.load(file)["results"]
+
+    else:
+       jsonArray = getUserData(userid)
+
+    return jsonArray
+
+
+def getUserData(userid):
+
+    #todo get the user data from the leancloud with userid
+    pass
+
+
+if __name__ == '__main__':
+
+    print startCluster(None)
