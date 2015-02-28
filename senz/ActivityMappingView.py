@@ -1,4 +1,4 @@
-
+# -*- coding = utf-8 -*-
 import json
 
 from django.http.response import HttpResponse, JsonResponse
@@ -19,41 +19,41 @@ from senz.activity_user_mapping.UserActivityMapping import UserActivityMapping
 @csrf_exempt
 def InitiateMapping(request):
 
-        """
+    """
 
-            /initial_map/
-            description:                initiate mapping actions
+        /initial_map/
+        description:                initiate mapping actions
 
-            method:                    Get
+        method:                    Get
 
-            return：                   {“status”：0(1),"errors":"some errors"(empty)}
-        """
+        return:                   {"status":0(1),"errors":"some errors"(empty)}
+    """
 
-        um = UserActivityMapping()
-        try:
-            um.mapping()
+    um = UserActivityMapping()
+    try:
+        um.mapping()
 
-        except:
-            import sys
-            info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-            print info
-            return JsonResponse({"status":0},{"errors":info})
+    except:
+        import sys
+        info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
+        print info
+        return JsonResponse({"status":0,"errors":info})
 
-        return JsonResponse({"status":1})
+    return JsonResponse({"status":1})
 
 
 @csrf_exempt
 def GetActivitiesById(request):
 
         """
-            /get_activity/
+            /activity/
             description:                get the mapped 10 activities for the user with the userid
 
             method:                    POST
-             data format：              json
+             data format:              json
              userId:                  string
              amount:                  int
-            return：                   {“status”：0(1),"errors":"some errors"(activity list)}
+            return:                   {"status":0(1),"errors":"some errors"(empty)}
         """
 
         try:
@@ -62,11 +62,11 @@ def GetActivitiesById(request):
                 req = json.loads(request.body)
 
             else:
-                return JsonResponse({"status":0},{"errors":"Method illegal"})
+                return JsonResponse( {"status":0,"errors":"Method illegal"})
         except:
             import sys
             info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-            return JsonResponse({"status":0})
+            return JsonResponse({"status":0,"errors":info})
 
         userId, amount = req['userId'], req['amount']
         try:
@@ -75,7 +75,7 @@ def GetActivitiesById(request):
         except:
             import sys
             info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-            return JsonResponse({"status":0})
+            return JsonResponse({"status":0, "errors":info})
 
-        return JsonResponse({"status":1, "results":Results })
+        return JsonResponse({"status":1, "results":Results["results"][0] })
 

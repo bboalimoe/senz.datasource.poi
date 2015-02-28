@@ -33,10 +33,13 @@ def index(request):
     return HttpResponse("senz responses" + res[:-2])
 
 
+
+
+
 @csrf_exempt
 def GetPoiByGeoPointAndDev(request):
     """
-    /get_poi/
+    /poi/
     description: get the user-defined the first five nearest poigroup types near the Geopoint
     method:                    Post
     data format：              json
@@ -77,7 +80,7 @@ def GetPoiByGeoPointAndDev(request):
 def GetDevPoiGroups(request):
     """
 
-    /get_poi_groups/
+    /poi_groups/
     description: get all the poi groups the specific user defined
     method:                    Post
     data format：              json

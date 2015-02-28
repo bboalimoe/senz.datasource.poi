@@ -5,7 +5,7 @@ import sys
 import json
 import sys
 sys.path.append("../utils")
-from avos_manager import *
+from senz.utils.avos_manager import *
 for i in sys.path:
     print i
 #print "sys.path   ",sys.path
@@ -132,9 +132,15 @@ class UserActivityMapping(object):
                         print 'Mapping user: id=  '+userId+' ...'
                         self.mappingList[userId] = []
                         for activity in self.activities:
-                                if self.__isInActivity(user,activity):
-                                        self.mappingList[userId].append(activity['objectId'])
+                            #print "activity", activity['objectId']
+                            if self.__isInActivity(user,activity):
+                                    #print "activity['objectId']",activity['objectId']
+                                    self.mappingList[userId].append(activity['objectId'])
                         print 'Done'
+                        self.avosManager.saveData("MappingResults",{"userid":userId,"activities":self.mappingList[userId]})
+                #todo only map one day's user location&activity data  and save one day's matching data into avos
+
+
                 print 'Mapping finished!'
 
 
@@ -147,16 +153,24 @@ class UserActivityMapping(object):
             :return: the list of last ten activities that the user has attended
             """
 
-
+            """
             self.mapping()
-            activityList = self.mappingList[userId]
+            #print "mappinglist", self.mappingList
+            activityIdList = self.mappingList[userId] #mapping list is usr's activitys' objectid
+            print activityIdList
+
             if amount < 0: #all
-                return activityList
+                return activityIdList
             else:
-                if len(activityList) > amount: # amount
-                    return activityList[:amount]
+                if len(activityIdList) > amount: # amount
+                    return activityIdList[:amount]
                 else: # all
-                    return activityList
+                    return activityIdList
+            """
+            results = self.avosManager.getData("MappingResults",where={"userid":userId})
+            results = json.loads(results)
+            print results["results"][0]
+            return results
 
 
         def dump2file(self,filename='./mapping_results'):
@@ -197,4 +211,6 @@ if __name__=="__main__":
         #mapping.mapping()
         #mapping.dump2file('./mapping_result.txt')
         Map = UserActivityMapping()
-        print Map.mappingActivitiesByUser("2b4e710aab89f6c5")
+        print Map.mappingActivitiesByUser("e19e3c6313556d4c",5)
+
+

@@ -22,7 +22,7 @@ def GetBaiduPoiType(request):
 
     """
 
-    /get_baidu_poitype/
+    /baidu_poitype/
     description: get the poi type of specific lng&lat in baidu's cloud definition
     method:                    Post
     data format:              json
@@ -40,13 +40,13 @@ def GetBaiduPoiType(request):
 
 
         else:
-
-            return JsonResponse({"status":0})
+             info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
+             return JsonResponse({"status":0, "errors":info})
     except:
         import sys
         info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
         print info
-        return JsonResponse({"status":0})
+        return JsonResponse({"status":0,"errors":info})
 
     lat, lng = req['lat'], req['lng']
     try:
@@ -58,7 +58,8 @@ def GetBaiduPoiType(request):
         info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
         print info
 
-        return JsonResponse({"status":0})
+        return JsonResponse({"status":0,"errors":info })
+
 
     if not results or "error" in results.keys():
         if not results:

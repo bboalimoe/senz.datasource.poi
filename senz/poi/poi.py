@@ -8,7 +8,7 @@ import json
 from senz.utils.avos_manager import *
 from senz.utils.util_opt import *
 from senz.utils.geo_coding import GeoCoder
-
+from senz.utils.translate import Trans
 
 class PoiGet(object):
     def __init__(self):
@@ -36,11 +36,13 @@ class PoiGet(object):
 
         poi = self.getPoi(lat, lng)
 
-        return dict(name=poi['name'],poiType=poi['poiType'])
+        trans = Trans()
+        return dict(name=poi['name'], poiType=trans.poitype_trans(poi['poiType']) )
 
 
 if __name__ == '__main__':
     a = PoiGet().parsePoi(40.056885091681, 116.30814954222)
+
     print 'a',a
     for k in a.keys():
 
