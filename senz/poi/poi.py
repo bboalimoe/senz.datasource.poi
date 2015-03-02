@@ -33,7 +33,7 @@ class PoiGet(object):
 
     def parsePoi(self, lat, lng):
 
-
+        "return {'poiType': 'estate', 'name': u'\u767e\u5ea6\u5927\u53a6'} "
         poi = self.getPoi(lat, lng)
 
         trans = Trans()

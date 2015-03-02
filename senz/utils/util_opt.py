@@ -58,7 +58,7 @@ def getUtcDate(beijingTimeStr):
         return utcTimeStr
 
 #By Zhong.zy, Get time info by avos format
-def getAvosTimeInfo(startTime,endTime=''):
+def getAvosTimeInfo(startTime,endTime=''):  #存入后台的为UTC时间
         #convert date
         date_utc = getUtcDate(startTime)
         date_iso = date_utc.replace(" ","T") + ".000Z"
@@ -82,6 +82,7 @@ def gps2GeoPoint(lat,lng):
 
 if __name__=='__main__':
         a,b=getAvosTimeInfo('2014-10-11 11:12:32')
+
         print a,b
         print gps2GeoPoint(11,32)
         

@@ -4,6 +4,7 @@ from math import *
 import sys
 import json
 import sys
+import datetime
 sys.path.append("../utils")
 from senz.utils.avos_manager import *
 for i in sys.path:
@@ -26,9 +27,27 @@ def distance(lon1, lat1, lon2, lat2):
         c = 2 * atan2(sqrt(a), sqrt(1-a))
         return 6371300 * c
 
-def iso2timestamp(iso_time):
+def iso2timestamp(iso_time): #avos date type {u'__type': u'Date', u'iso': u'2015-05-23T11:15:00.000Z'}
         t = time.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.000Z")
-        return long(time.mktime(t)*1000)
+        return long(time.mktime(t))
+
+def ISOString2Time( s ):
+    '''
+    convert a ISO format time to second
+    from:2006-04-12 16:46:40 to:23123123
+    把一个时间转化为秒
+    '''
+    d=datetime.datetime.strptime(s,"%Y-%m-%d %H:%M:%S")
+    return time.mktime(d.timetuple())
+
+def Time2ISOString( s ):
+    '''
+    convert second to a ISO format time
+    from: 23123123 to: 2006-04-12 16:46:40
+    把给定的秒转化为定义的格式
+    '''
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime( float(s) ) )
+
 
 class UserActivityMapping(object):
 
@@ -62,10 +81,10 @@ class UserActivityMapping(object):
                         uLat=oneTime['latitude']
                         if(distance(aLon, aLat, uLon, uLat)<100):
                                 activeTimes.append(oneTime['timestamp'])
-
+                print "start time", activity['start_time']
                 if len(activeTimes) == 0:
                         return 0
-                
+                #print "start time", activity['start_time']
                 startTime = iso2timestamp(activity['start_time']['iso'])               
                 endTime = iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
 
@@ -102,7 +121,34 @@ class UserActivityMapping(object):
                                         self.users[user['userId']].append(user);
                         start = start+L
                 print 'Done'
-                
+
+        def __getUserLastLocations(self,userId):
+
+                print "get user %s activities...".format(userId)
+                L = 200
+                start = 0
+                res_len = L
+                while res_len == L:
+                        res = json.loads(self.avosManager.getData('activities' ,limit=L, skip=start))['results']
+                        res_len = len(res)
+                        self.activities = self.activities+res
+                        start = start+L
+                print 'Done'
+
+        def _getLastPossibleActivities(self): #first return the last 3 days(3*24*60*60 sec)'s activities before the timeNow
+
+                print 'Getting activities ...'
+                L = 200
+                start = 0
+                res_len = L
+                while res_len == L:
+                    res = json.loads(self.avosManager.getData('activities' ,limit=L, skip=start, where={"start_time":{"$gte":{u'__type': u'Date', u'iso': time.strftime('%Y-%m-%d %H:%M:%S')} }}))['results']
+                    res_len = len(res)
+                    self.activities = self.activities+res
+                    start = start+L
+                print 'Done'
+
+
         def __getActivities(self):
                 print 'Getting activities ...'
                 L = 200
@@ -133,6 +179,7 @@ class UserActivityMapping(object):
                         self.mappingList[userId] = []
                         for activity in self.activities:
                             #print "activity", activity['objectId']
+                            print "fuck\n\n\n\n\n\n"
                             if self.__isInActivity(user,activity):
                                     #print "activity['objectId']",activity['objectId']
                                     self.mappingList[userId].append(activity['objectId'])
@@ -195,13 +242,18 @@ class UserActivityMapping(object):
             f.close()
             print 'Dumping finished!'
 
-        def dump2db(self):
+        def dump2db(self,GPSlist,userId):
             """
             dump the info to db
             :return:
             """
-            pass
-            #todo dump the mapping results to the db
+
+            for gps in GPSlist:
+                result = self.avosManager.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"",
+                                                               "timpstamp":gps['timestamp'],"userId":userId})
+                if not result:
+                   print "save error: userid:%s".format(userId)
+
 
 
 
@@ -210,7 +262,26 @@ if __name__=="__main__":
 
         #mapping.mapping()
         #mapping.dump2file('./mapping_result.txt')
+
+
+        print "timenow ", time.strftime('%Y-%m-%d %H:%M:%S')
+        print "timestamp", Time2ISOString(iso2timestamp("2011-08-20T02:06:57.000Z"))
+        print ISOString2Time(time.strftime("%Y-%m-%d %H:%M:%S"))
+        import time
+        print time.time()  #unix epoch time 和 timestamp一致，存入avos后台的utc也是iso和前面是一个转化值。所以呈现出来的string形式，与北京时间不同，差8小时。
         Map = UserActivityMapping()
-        print Map.mappingActivitiesByUser("e19e3c6313556d4c",5)
+        res = json.loads(Map.avosManager.getDateGreatData("activities",time.strftime("%Y-%m-%d %H:%M:%S") ))['results']
+
+        print "length", len(res)
+        for i in res:
+            print "timenow ",i
+        Map.mapping()
 
 
+        where={"start_time":{"$gte":{"__type": "Date", "iso": time.strftime("%Y-%m-%d %H:%M:%S") } }}
+
+        where={"createdAt":{"$gte":{"__type":"Date","iso":"2011-08-21T18:02:52.249Z"}}}
+        print Map.mappingActivitiesByUser("e19e3c6313556d4c",5)["results"][0]
+
+
+        {u'__type': u'Date', u'iso': u'2015-05-23T11:15:00.000Z'}

@@ -64,10 +64,43 @@ class AvosManager(object):
         #By Zhong.zy, Get info by specified opt
         def getData(self,className,**kwargs):
                 print kwargs
+
+                """
                 for k in kwargs.keys():
+                    #if type(kwargs[k]) not in [dict, list]:
+                    if type(kwargs[k]) not in [str, unicode]:
+                        kwargs[k] = json.dumps(kwargs[k])
 
-                    kwargs[k] = json.dumps(kwargs[k])
+                """
+                print "jsonify",type(json.dumps(kwargs))
+                res = requests.get(
+                    AvosClass.base_classes+className,
+                    headers=AvosClass.headers(),
+                    params=kwargs,
+                    verify=False
+                )
+                if 'error' not in json.loads(res.content):
+                        return res.content
+                else:
+                    print res.content
+                    return None
 
+
+
+        def getDateGreatData(self,className, date):
+
+                #where={"start_time":{"$gte":{"__type": "Date", "iso": time.strftime("%Y-%m-%d %H:%M:%S") } }}
+
+                kwargs = {"where":{"start_time":{"$gte":{"__type": "Date", "iso": date} }}}
+                """
+                for k in kwargs.keys():
+                    #if type(kwargs[k]) not in [dict, list]:
+                    if type(kwargs[k]) not in [str, unicode]:
+                        kwargs[k] = json.dumps(kwargs[k])
+
+                """
+                print "kwargs", kwargs
+                #print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
                     AvosClass.base_classes+className,
                     headers=AvosClass.headers(),

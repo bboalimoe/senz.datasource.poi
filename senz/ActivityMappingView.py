@@ -28,7 +28,7 @@ def InitiateMapping(request):
 
         return:                   {"status":0(1),"errors":"some errors"(empty)}
     """
-
+    #todo control logic
     um = UserActivityMapping()
     try:
         um.mapping()
