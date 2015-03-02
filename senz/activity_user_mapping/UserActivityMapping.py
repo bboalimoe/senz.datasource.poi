@@ -61,26 +61,31 @@ class UserActivityMapping(object):
                 self.avosManager = AvosManager()
                 self.mappingList = {}
                 self.users = {}
+                self.locations = []
                 self.activities = []
-
+                self.flaggedLocation = None #record the last location record that triggers the matching
                 #todo
                 self.mapped = False # tell the method if updating the results
                 #todo
                 self.lastMappingTime = None  # retrieve the time from the db or the file
                                              # it's for checking the mapping period in case the info is outdated
+                self.timestampedMappedActivity = {}
 
         #Consider whether user in this activity
         def __isInActivity(self,user,activity):
 
 
-                aLon=activity['location']['longitude']
+                aLon=activity['location']['longitude'] #geopoint
                 aLat=activity['location']['latitude']
                 activeTimes = []
+                activeLocationRecords = []
                 for oneTime in user:
                         uLon=oneTime['longitude']
                         uLat=oneTime['latitude']
                         if(distance(aLon, aLat, uLon, uLat)<100):
                                 activeTimes.append(oneTime['timestamp'])
+                                activeLocationRecords.append(oneTime)
+
                 print "start time", activity['start_time']
                 if len(activeTimes) == 0:
                         return 0
@@ -90,6 +95,9 @@ class UserActivityMapping(object):
 
                 actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
                 if actives >= len(activeTimes)*0.5:
+                        activeLocationRecords.sort(key=lambda x:x["timestamp"])
+                        self.flaggedLocation = activeLocationRecords[-1]
+                        self.timestampedMappedActivity.setdefault(str(self.flaggedLocation["timpstamp"]),activity)
                         return 1
                 else:
                         return 0
@@ -105,6 +113,9 @@ class UserActivityMapping(object):
         def __getUserList(self):
                 """
                 the location_record's userId(deviceid)
+
+                deprecated
+
                 :return:
                 """
                 print 'Getting user list ...'
@@ -122,18 +133,7 @@ class UserActivityMapping(object):
                         start = start+L
                 print 'Done'
 
-        def __getUserLastLocations(self,userId):
 
-                print "get user %s activities...".format(userId)
-                L = 200
-                start = 0
-                res_len = L
-                while res_len == L:
-                        res = json.loads(self.avosManager.getData('activities' ,limit=L, skip=start))['results']
-                        res_len = len(res)
-                        self.activities = self.activities+res
-                        start = start+L
-                print 'Done'
 
         def _getLastPossibleActivities(self): #first return the last 3 days(3*24*60*60 sec)'s activities before the timeNow
 
@@ -142,14 +142,19 @@ class UserActivityMapping(object):
                 start = 0
                 res_len = L
                 while res_len == L:
-                    res = json.loads(self.avosManager.getData('activities' ,limit=L, skip=start, where={"start_time":{"$gte":{u'__type': u'Date', u'iso': time.strftime('%Y-%m-%d %H:%M:%S')} }}))['results']
+                    #get the
+                    res = json.loads(self.avosManager.getDateBetweenData("activities","start_time",DaysBeforeAvosDate(3),nowAvosDate(),limit=L,skip=start) )['results']
                     res_len = len(res)
                     self.activities = self.activities+res
                     start = start+L
                 print 'Done'
 
 
+
         def __getActivities(self):
+                """
+                deprecated
+                """
                 print 'Getting activities ...'
                 L = 200
                 start = 0
@@ -189,6 +194,47 @@ class UserActivityMapping(object):
 
 
                 print 'Mapping finished!'
+
+        def GetRecentTraceByUser(self,userId):
+                print 'Getting user list ...'
+                L = 200
+                start = 0
+                res_len = L
+                while res_len == L:
+                        res = json.loads( self.avosManager.getDateBetweenDataByUser("UserLocationTrace",
+                                                                              "createdAt",
+                                                                              DaysBeforeAvosDate(3),
+                                                                              nowAvosDate(),
+                                                                              userId,
+                                                                              limit=L,
+                                                                              skip=start))['results']
+                        for loc in res:
+                            self.locations.append(loc)
+                        start = start+L
+                print 'Done'
+
+
+
+        def mapActivityByUser(self, userId):
+
+            self._getLastPossibleActivities()
+            self.GetRecentTraceByUser(userId)
+
+            #todo get the user's last location
+
+            for ac in self.activities:
+                if self.__isInActivity(self.locations,ac):
+                    self.avosManager.updateDataById("UserLocationTrace",self.flaggedLocation["objectId"],{"activityId":ac["objectId"]})
+                    #save the mapping results
+
+            return self.timestampedMappedActivity
+
+
+
+
+
+
+
 
 
         def mappingActivitiesByUser(self,userId, amount):
@@ -255,6 +301,22 @@ class UserActivityMapping(object):
                    print "save error: userid:%s".format(userId)
 
 
+def nowAvosDate():
+    #unix epoch time 和 timestamp一致，存入avos后台的utc也是iso和前面是一个转化值。所以呈现出来的string形式，与北京时间不同，差8小时。
+
+    now = time.time()
+    utc_time = datetime.datetime.utcfromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+
+    utc_time = utc_time.replace(" ","T")
+    return utc_time+".000Z"
+
+def DaysBeforeAvosDate(day):
+
+    before_time = time.time() - day*24*60*60
+    utc_time = datetime.datetime.utcfromtimestamp(before_time).strftime('%Y-%m-%d %H:%M:%S')
+
+    utc_time = utc_time.replace(" ","T")
+    return utc_time+".000Z"
 
 
 if __name__=="__main__":
@@ -263,25 +325,23 @@ if __name__=="__main__":
         #mapping.mapping()
         #mapping.dump2file('./mapping_result.txt')
 
+        #date_iso = utc_time.replace(" ","T") + ".000Z"
+        #date_time = dict(__type='Date',iso=date_iso)
+        #utc_time.isoformat()
+        print nowAvosDate()
 
-        print "timenow ", time.strftime('%Y-%m-%d %H:%M:%S')
-        print "timestamp", Time2ISOString(iso2timestamp("2011-08-20T02:06:57.000Z"))
-        print ISOString2Time(time.strftime("%Y-%m-%d %H:%M:%S"))
-        import time
-        print time.time()  #unix epoch time 和 timestamp一致，存入avos后台的utc也是iso和前面是一个转化值。所以呈现出来的string形式，与北京时间不同，差8小时。
+        print DaysBeforeAvosDate(3)
+
         Map = UserActivityMapping()
-        res = json.loads(Map.avosManager.getDateGreatData("activities",time.strftime("%Y-%m-%d %H:%M:%S") ))['results']
-
+        #res = json.loads(Map.avosManager.getDateGreatData("activities","start_time",nowAvosDate(),limit="3" ))['results']
+        res = json.loads(Map.avosManager.getDateBetweenData("activities","start_time",DaysBeforeAvosDate(3),nowAvosDate(),limit="500" ))['results']
         print "length", len(res)
         for i in res:
             print "timenow ",i
         Map.mapping()
 
-
-        where={"start_time":{"$gte":{"__type": "Date", "iso": time.strftime("%Y-%m-%d %H:%M:%S") } }}
-
-        where={"createdAt":{"$gte":{"__type":"Date","iso":"2011-08-21T18:02:52.249Z"}}}
         print Map.mappingActivitiesByUser("e19e3c6313556d4c",5)["results"][0]
 
+        a= "http://httpbin.org/get?where={\"createdAt\"%3A{\"%24gte\"%3A{\"__type\"%3A\"Date\"%2C\"iso\"%3A\"2011-08-21T18%3A02%3A52.249Z\"}}}"
 
         {u'__type': u'Date', u'iso': u'2015-05-23T11:15:00.000Z'}

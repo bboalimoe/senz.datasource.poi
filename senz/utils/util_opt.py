@@ -76,6 +76,7 @@ def getAvosTimeInfo(startTime,endTime=''):  #存入后台的为UTC时间
         
         return date_time, start_time
 
+
 #By Zhong.zy Convert to GeoPoint
 def gps2GeoPoint(lat,lng):
         return dict(__type='GeoPoint',latitude=lat,longitude=lng)

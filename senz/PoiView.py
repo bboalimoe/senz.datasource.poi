@@ -115,6 +115,7 @@ def GetPoi(request):
     Beaconlist = req["locBeacon"]
     Beaconlen = len(Beaconlist)
 
+    rtBeaLoc = {"GPS":" ","ibeacon":" "}
 
 
     #todo 1.每来一次请求就把数据存入后端 2.beacon和gps数据存完后，调用匹配算法算制定userid匹配出的活动
@@ -129,20 +130,29 @@ def GetPoi(request):
         pg = PoiGet()
         usermapping.dump2db(GPSlist,userId)
         beacon.dump2db(Beaconlist,userId)
+        timestamped_dict = usermapping.mapActivityByUser(userId)
 
         #todo
+        #gps poitype
         for gps,i in GPSlist,range(GPSlen):
 
-
-
-            #gps poitype
 
             results = pg.parsePoi(gps["latitude"], gps["longitude"])
             poiType, poiName = results['poiType'], results['name']
             GPSrtList[i].setdefault("poiType",poiType)
             GPSrtList[i].setdefault("locDescription",poiName)  #poiname => locDescription
-            GPSrtList[i].setdefault("timestamp",gps['timestamp'])
+            timestamp_ = gps['timestamp']
+            GPSrtList[i].setdefault("timestamp", timestamp_)
+            if timestamp_ in timestamped_dict.keys():
 
+                GPSrtList[i].setdefault("actiType",timestamped_dict[str(timestamp_)]["category"])
+                GPSrtList[i].setdefault("actiName",timestamped_dict[str(timestamp_)]["name"])
+
+                GPSrtList[i].setdefault("actiDescription",timestamped_dict[str(timestamp_)]["region"])
+                GPSrtList[i].setdefault("actiStartTime",timestamped_dict[str(timestamp_)]["start_time"])
+                GPSrtList[i].setdefault("actiEndTime",timestamped_dict[str(timestamp_)]["end_time"])
+        #beacon poitype
+        BeaconrtList = beacon.BeaconInfo(BeaconrtList)
 
 
 
@@ -151,17 +161,10 @@ def GetPoi(request):
         return errorResponses()
 
 
-    if not results or "error" in results.keys():
-        if not results:
 
-            return errorResponses('')
+    rtBeaLoc.update({"GPS":GPSrtList,"ibeacon":BeaconrtList})
 
-        else:
-            return errorResponses(results['error'])
-
-
-    else:
-        return successResponses(results)
+    return successResponses(results)
 
 
 

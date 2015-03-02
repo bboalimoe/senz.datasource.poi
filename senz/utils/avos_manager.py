@@ -65,13 +65,13 @@ class AvosManager(object):
         def getData(self,className,**kwargs):
                 print kwargs
 
-                """
+
                 for k in kwargs.keys():
                     #if type(kwargs[k]) not in [dict, list]:
                     if type(kwargs[k]) not in [str, unicode]:
                         kwargs[k] = json.dumps(kwargs[k])
 
-                """
+
                 print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
                     AvosClass.base_classes+className,
@@ -87,11 +87,14 @@ class AvosManager(object):
 
 
 
-        def getDateGreatData(self,className, date):
+        def getDateGreatData(self,className, timeName, date, **kwargs):
+                #avos data type constrain the json's value should be a number or string
 
                 #where={"start_time":{"$gte":{"__type": "Date", "iso": time.strftime("%Y-%m-%d %H:%M:%S") } }}
+                a = '{"%s":{"$gte":{"__type": "Date", "iso": "%s"} }}'%(timeName,date)
 
-                kwargs = {"where":{"start_time":{"$gte":{"__type": "Date", "iso": date} }}}
+                where_dict = {"where":a}
+                kwargs.update(where_dict)
                 """
                 for k in kwargs.keys():
                     #if type(kwargs[k]) not in [dict, list]:
@@ -99,20 +102,89 @@ class AvosManager(object):
                         kwargs[k] = json.dumps(kwargs[k])
 
                 """
-                print "kwargs", kwargs
+                print "kwargs", json.dumps(kwargs)
                 #print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
                     AvosClass.base_classes+className,
+                    #"http://httpbin.org/get",
                     headers=AvosClass.headers(),
                     params=kwargs,
                     verify=False
                 )
+                #print "FFFFICCCCC", res.content
+                #time.sleep(11000000)
                 if 'error' not in json.loads(res.content):
                         return res.content
                 else:
                     print res.content
                     return None
-                
+
+        def getDateBetweenData(self,className, timeName, date1, date2, **kwargs):
+                #avos data type constrain the json's value should be a number or string
+
+                #where={"start_time":{"$gte":{"__type": "Date", "iso": time.strftime("%Y-%m-%d %H:%M:%S") } }}
+                a = ' { "%s":{"$gte":{"__type": "Date", "iso": "%s"} ,"$lte":{"__type": "Date", "iso":"%s"}}}'\
+                      %(timeName,date1,date2)
+                #where={"score":{"$gte":1000,"$lte":3000}}
+                where_dict = {"where":a}
+                kwargs.update(where_dict)
+                """
+                for k in kwargs.keys():
+                    #if type(kwargs[k]) not in [dict, list]:
+                    if type(kwargs[k]) not in [str, unicode]:
+                        kwargs[k] = json.dumps(kwargs[k])
+
+                """
+                print "kwargs", json.dumps(kwargs)
+                #print "jsonify",type(json.dumps(kwargs))
+                res = requests.get(
+                    AvosClass.base_classes+className,
+                    #"http://httpbin.org/get",
+                    headers=AvosClass.headers(),
+                    params=kwargs,
+                    verify=False
+                )
+                #print "FFFFICCCCC", res.content
+                #time.sleep(11000000)
+                if 'error' not in json.loads(res.content):
+                        return res.content
+                else:
+                    print res.content
+                    return None
+
+        def getDateBetweenDataByUser(self,className, timeName, date1, date2, userId, **kwargs):
+                #avos data type constrain the json's value should be a number or string
+
+                #where={"start_time":{"$gte":{"__type": "Date", "iso": time.strftime("%Y-%m-%d %H:%M:%S") } }}
+                a = ' { "%s":{"$gte":{"__type": "Date", "iso": "%s"} ,"$lte":{"__type": "Date", "iso":"%s"}},"userId":"%s"}'\
+                      %(timeName,date1,date2,userId)
+                #where={"score":{"$gte":1000,"$lte":3000}}
+                where_dict = {"where":a}
+                kwargs.update(where_dict)
+                """
+                for k in kwargs.keys():
+                    #if type(kwargs[k]) not in [dict, list]:
+                    if type(kwargs[k]) not in [str, unicode]:
+                        kwargs[k] = json.dumps(kwargs[k])
+
+                """
+                print "kwargs", json.dumps(kwargs)
+                #print "jsonify",type(json.dumps(kwargs))
+                res = requests.get(
+                    AvosClass.base_classes+className,
+                    #"http://httpbin.org/get",
+                    headers=AvosClass.headers(),
+                    params=kwargs,
+                    verify=False
+                )
+                #print "FFFFICCCCC", res.content
+                #time.sleep(11000000)
+                if 'error' not in json.loads(res.content):
+                        return res.content
+                else:
+                    print res.content
+                    return None
+
         #By Zhong.zy, Save activity in a same interface
         def saveActivity(self,dataDict):
                 self.saveData('activities',dataDict)
@@ -140,7 +212,20 @@ class AvosManager(object):
         #By Zhong.zy, Get id in order to update data
         def getIdByName(self,className,objName):
                 return self.getIdByCondition(className,name=objName)
-                            
+
+
+        def updateDataById(self,className,objectId,dataDict):
+
+            res = AvosClass._update_avos(className,str(objectId),dataDict)
+            if 'error' not in json.loads(res.content):
+                    return res.content
+            else:
+                    a = 'Update Error:'+json.loads(res.content)['error']
+                    b =  'From: '+className
+                    return {"error":a + b}
+
+
+
         #By Zhong.zy, insert or update
         def updateDataByName(self,className,objName,dataDict):  #this is activities‘s update！
                 objectId =  self.getIdByName(className,objName)
