@@ -38,7 +38,7 @@ class Beacon(object):
     """
     def __init__(self):
 
-        self.beaconRtList = {}
+        self.beaconRtList = []
         self.avosManager = AvosManager()
 
     def dump2db(self,beaconlist,userId):
@@ -48,15 +48,17 @@ class Beacon(object):
         """
 
         for beacon in beaconlist:
-            result = self.avosManager.saveData("UserBeaconTrace",{"major":beacon['major'],"minor":beacon["minor"],"uuid":beacon["uuid"],"activityId":"",
+            result = self.avosManager.saveData("UserBeaconTrace",{"major":beacon['major'],"minor":beacon["minor"],"uuid":beacon["uuid"],"rssi":beacon["rssi"],"activityId":"",
                                                            "timpstamp":beacon['timestamp'],"userId":userId})
             if not result:
                print "save error: userid:%s".format(userId)
 
+
     def BeaconInfo(self,beaconlist):
 
-
-        for beacon,i in beaconlist,range(len(beaconlist)):
+        i = 0
+        self.beaconRtList = [{} for bea in beaconlist]
+        for beacon in beaconlist:
 
 
             self.beaconRtList[i].setdefault("poiType","")
@@ -70,6 +72,6 @@ class Beacon(object):
             self.beaconRtList[i].setdefault("actiDescription","")
             self.beaconRtList[i].setdefault("actiStartTime","")
             self.beaconRtList[i].setdefault("actiEndTime","")
-
+            i += 1
 
         return self.beaconRtList

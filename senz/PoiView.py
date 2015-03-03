@@ -75,7 +75,8 @@ def errorResponses(error=None):
 
 
 def successResponses(results):
-    return {"status": 1, "results": results}
+
+    return JsonResponse({"status": 1, "results": results})
 
 
 
@@ -135,24 +136,29 @@ def GetPoi(request):
 
         #todo
         #gps poitype
-        for gps,i in GPSlist,range(GPSlen):
+        i = 0
+        for gps in GPSlist:
 
 
             results = pg.parsePoi(gps["latitude"], gps["longitude"])
+            print "results", results
             poiType, poiName = results['poiType'], results['name']
             GPSrtList[i].setdefault("poiType",poiType)
             GPSrtList[i].setdefault("locDescription",poiName)  #poiname => locDescription
             timestamp_ = gps['timestamp']
             GPSrtList[i].setdefault("timestamp", timestamp_)
-            if timestamp_ in timestamped_dict.keys():
 
+
+            if timestamp_ in timestamped_dict.keys():
                 GPSrtList[i].setdefault("actiType",timestamped_dict[str(timestamp_)]["category"])
                 GPSrtList[i].setdefault("actiName",timestamped_dict[str(timestamp_)]["name"])
 
                 GPSrtList[i].setdefault("actiDescription",timestamped_dict[str(timestamp_)]["region"])
                 GPSrtList[i].setdefault("actiStartTime",timestamped_dict[str(timestamp_)]["start_time"])
                 GPSrtList[i].setdefault("actiEndTime",timestamped_dict[str(timestamp_)]["end_time"])
+            i += 1
         #beacon poitype
+
         BeaconrtList = beacon.BeaconInfo(BeaconrtList)
 
 
@@ -164,8 +170,8 @@ def GetPoi(request):
 
 
     rtBeaLoc.update({"GPS":GPSrtList,"ibeacon":BeaconrtList})
-
-    return successResponses(results)
+    print "rtBeaLoc", rtBeaLoc
+    return successResponses(rtBeaLoc)
 
 
 

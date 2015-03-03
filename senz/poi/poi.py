@@ -37,6 +37,12 @@ class PoiGet(object):
         poi = self.getPoi(lat, lng)
 
         trans = Trans()
+        # poi {u'distance': u'0', u'direction': u'\u5185', u'poiType': u'\u623f\u5730\u4ea7', u'tel': u'', u'addr': u'\u5317\u4eac\u5e02\u6d77\u6dc0\u533a\u4e0a\u5730\u5341\u885710\u53f7', u'zip': u'', u'point': {u'y': 40.056968205361, u'x': 116.30768368099}, u'uid': u'435d7aea036e54355abbbcc8', u'cp': u'NavInfo', u'name': u'\u767e\u5ea6\u5927\u53a6'}
+
+        print "poi",poi
+        if not poi:
+            return dict(name="", poiType="" )
+
         return dict(name=poi['name'], poiType=trans.poitype_trans(poi['poiType']) )
 
 

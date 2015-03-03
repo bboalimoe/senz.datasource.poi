@@ -87,6 +87,7 @@ class UserActivityMapping(object):
                                 activeLocationRecords.append(oneTime)
 
                 print "start time", activity['start_time']
+
                 if len(activeTimes) == 0:
                         return 0
                 #print "start time", activity['start_time']
@@ -95,6 +96,7 @@ class UserActivityMapping(object):
 
                 actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
                 if actives >= len(activeTimes)*0.5:
+                        print "activeLocationRecords",activeLocationRecords
                         activeLocationRecords.sort(key=lambda x:x["timestamp"])
                         self.flaggedLocation = activeLocationRecords[-1]
                         self.timestampedMappedActivity.setdefault(str(self.flaggedLocation["timpstamp"]),activity)
@@ -208,6 +210,7 @@ class UserActivityMapping(object):
                                                                               userId,
                                                                               limit=L,
                                                                               skip=start))['results']
+                        res_len = len(res)
                         for loc in res:
                             self.locations.append(loc)
                         start = start+L
@@ -224,6 +227,7 @@ class UserActivityMapping(object):
 
             for ac in self.activities:
                 if self.__isInActivity(self.locations,ac):
+
                     self.avosManager.updateDataById("UserLocationTrace",self.flaggedLocation["objectId"],{"activityId":ac["objectId"]})
                     #save the mapping results
 
@@ -297,7 +301,10 @@ class UserActivityMapping(object):
             for gps in GPSlist:
                 result = self.avosManager.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"",
                                                                "timpstamp":gps['timestamp'],"userId":userId})
+                print "GPS write"
+
                 if not result:
+
                    print "save error: userid:%s".format(userId)
 
 
