@@ -112,12 +112,12 @@ def GetPoi(request):
         return errorResponses()
 
     userId = req["userId"]
-    GPSlist = req["locGPS"]
+    GPSlist = req["GPS"]
     GPSlen = len(GPSlist)
-    Beaconlist = req["locBeacon"]
+    Beaconlist = req["iBeacon"]
     Beaconlen = len(Beaconlist)
 
-    rtBeaLoc = {"GPS":" ","ibeacon":" "}
+    rtBeaLoc = {"GPS":" ","iBeacon":" "}
 
 
     #todo 1.每来一次请求就把数据存入后端 2.beacon和gps数据存完后，调用匹配算法算制定userid匹配出的活动
@@ -169,7 +169,7 @@ def GetPoi(request):
 
 
 
-    rtBeaLoc.update({"GPS":GPSrtList,"ibeacon":BeaconrtList})
+    rtBeaLoc.update({"GPS":GPSrtList,"iBeacon":BeaconrtList})
     print "rtBeaLoc", rtBeaLoc
     return successResponses(rtBeaLoc)
 
