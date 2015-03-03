@@ -62,6 +62,7 @@ from mixpanel import Mixpanel
 def errorInfo():
     import sys
     info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1])  # todo log the exception info
+    print info
     return info
 
 def errorResponses(error=None):

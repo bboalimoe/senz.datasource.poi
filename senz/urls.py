@@ -52,3 +52,10 @@ urlpatterns += patterns("senz.LocationRecoView",
     url(r'^usr_loc_tag/$', 'GetUserLocationTags'),
 
                         )
+
+
+urlpatterns += patterns("senz.PoiView",
+
+    url(r'^poi_Gpeacon/$', 'GetPoi'),
+
+                        )
