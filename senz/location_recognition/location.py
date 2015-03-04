@@ -53,7 +53,7 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
     rawDataArray = []
     for jsonRecord in jsonArray:
         #print "jsonRecord",jsonRecord
-        rawDataArray.append(LocationAndTime(jsonRecord["timpstamp"], jsonRecord["latitude"], jsonRecord["longitude"]))
+        rawDataArray.append(LocationAndTime(jsonRecord["timestamp"], jsonRecord["latitude"], jsonRecord["longitude"]))
 
     # print("%d records" % len(rawDataArray))
 
