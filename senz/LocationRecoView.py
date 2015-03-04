@@ -1,3 +1,5 @@
+#-*- encoding=utf-8 -*-
+
 __author__ = 'bboalimoe'
 
 import json
@@ -11,18 +13,26 @@ from django.http import JsonResponse
 from senz.location_recognition.location import startCluster
 
 
+
 def errorInfo():
     import sys
     info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1])  # todo log the exception info
+    print info
     return info
 
-def errorResponses():
-    info = errorInfo()
+def errorResponses(error=None):
+    if not error:
+        info = errorInfo()
+    else:
+        info = error
+
     return JsonResponse({"status": 0}, {"errors": info})
 
 
 def successResponses(results):
-    return {"status": 1, "results": results}
+
+    return JsonResponse({"status": 1, "results": results})
+
 
 
 @csrf_exempt
@@ -46,20 +56,20 @@ def GetUserLocationTags(request):
            req = request.body
         elif request.method == "GET":
             results = startCluster()
-            return JsonResponse(successResponses(results))  #indicate the crawl actions have been done
+            return successResponses(results) #indicate the crawl actions have been done
         else:
-            return JsonResponse({"status":0},{"errors":"request METHOD illegal"})
+            return errorResponses("Method wrong")
 
     except:
         return errorResponses()
 
-    userid = req["userid"]
+    userid = req["userId"]
     try:
         results = startCluster(userid)
     except:
         return errorResponses()
 
-    return JsonResponse(successResponses(results))  #indicate the crawl actions have been done
+    return successResponses(results)  #indicate the crawl actions have been done
 
 
 
@@ -92,3 +102,6 @@ def TriggerActions(request):
         return errorResponses()
 
     return JsonResponse(successResponses('')) #indicate the crawl actions have been done
+
+
+

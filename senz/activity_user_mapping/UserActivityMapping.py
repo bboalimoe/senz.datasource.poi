@@ -300,7 +300,8 @@ class UserActivityMapping(object):
 
             for gps in GPSlist:
                 result = self.avosManager.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"",
-                                                               "timpstamp":gps['timestamp'],"userId":userId})
+                                                               "timestamp":gps['timestamp'],"userId":userId})
+                #todo change the server's version which is typo timpstamp
                 print "GPS write"
 
                 if not result:

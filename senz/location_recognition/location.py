@@ -3,6 +3,7 @@ import json
 import math
 import scipy.cluster.hierarchy as sch
 import time
+from senz.utils.avos_manager import *
 
 # params
 
@@ -51,7 +52,8 @@ def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
 
     rawDataArray = []
     for jsonRecord in jsonArray:
-        rawDataArray.append(LocationAndTime(jsonRecord["time"], jsonRecord["lat"], jsonRecord["lon"]))
+        print "jsonRecord",jsonRecord
+        rawDataArray.append(LocationAndTime(jsonRecord["timpstamp"], jsonRecord["latitude"], jsonRecord["longitude"]))
 
     # print("%d records" % len(rawDataArray))
 
@@ -194,10 +196,27 @@ def getData(userid=None):
 
 def getUserData(userid):
 
-    #todo get the user data from the leancloud with userid
-    pass
+    lean = AvosManager()
+
+
+    L = 200
+    start = 0
+    res_len = L
+    jsonArray = []
+    while res_len == L:
+            res = json.loads(lean.getData('UserLocationTrace',limit=L, skip=start, where='{"userId":"%s"}'%userid ))['results']
+            res_len = len(res)
+            for location_record in res:
+                jsonArray.append(location_record)
+            start = start+L
+    print jsonArray
+    print 'Done'
+
+    return jsonArray
+    #result = lean.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"", "timpstamp":gps['timestamp'],"userId":userId})
+
 
 
 if __name__ == '__main__':
 
-    print startCluster(None)
+    print startCluster("54d82fefe4b0d414801050ee")
