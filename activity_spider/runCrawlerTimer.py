@@ -1,12 +1,14 @@
 # -*- encoding:utf-8 -*-
 
-from damai import DamaiSpider
-from douban import DoubanSpider
-from huodongxing import HuodongxingSpider
 from threading import Thread
 import sys
+
+from activity_spider.damai import DamaiSpider
+from douban import DoubanSpider
+
+
 sys.path.append("../utils")
-from timer import SchedTimer
+from senz.utils.timer import SchedTimer
 
 def multi_thread_crawl():
 

@@ -19,9 +19,9 @@ import json
 import sys
 sys.path.append("../utils")
 import time
-from util_opt import *
-from geo_coding import GeoCoder
-from avos_manager import *
+from senz.utils.util_opt import *
+from senz.utils.geo_coding import GeoCoder
+from senz.utils.avos_manager import *
 
 class DamaiSpider(object):
         def __init__(self):

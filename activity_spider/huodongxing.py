@@ -18,9 +18,9 @@ from selenium.webdriver import ActionChains
 from bidict import bidict
 import json
 import time
-from util_opt import *
-from geo_coding import GeoCoder
-from avos_manager import *
+from senz.utils.util_opt import *
+from senz.utils.geo_coding import GeoCoder
+from senz.utils.avos_manager import *
 import re
 
 class HuodongxingSpider(object):

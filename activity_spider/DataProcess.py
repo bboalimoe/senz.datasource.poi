@@ -3,8 +3,8 @@ __name__ = "bboalimoe"
 #todo collect the data from the tables ..damai, huodongxing, douban
 #todo activity clustered based on the category of douban
 
-from damai import DamaiSpider
-from douban import DoubanSpider
+from activity_spider.damai import DamaiSpider
+from activity_spider.douban import DoubanSpider
 #from huodongxing import HuodongxingSpider
 
 class DataProcess(object):
