@@ -220,3 +220,5 @@ def getUserData(userid):
 if __name__ == '__main__':
 
     print startCluster("54d82fefe4b0d414801050ee")
+    print 'hello'
+    print 'hi'
