@@ -8,7 +8,7 @@ from douban import DoubanSpider
 
 
 sys.path.append("../utils")
-from senz.utils.timer import SchedTimer
+from senz.common.utils.timer import SchedTimer
 
 def multi_thread_crawl():
 

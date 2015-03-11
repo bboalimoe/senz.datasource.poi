@@ -1,10 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import json
-import sys
-import urllib2
-import urllib
-import cookielib
 from bs4 import BeautifulSoup
 '''
 import StringIO
@@ -15,13 +10,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver import ActionChains
 '''
 from bidict import bidict
-import json
 import sys
 sys.path.append("../utils")
-import time
-from senz.utils.util_opt import *
-from senz.utils.geo_coding import GeoCoder
-from senz.utils.avos_manager import *
+from senz.common.utils.geo_coding import GeoCoder
+from senz.common.avos.avos_manager import *
 
 class DamaiSpider(object):
         def __init__(self):

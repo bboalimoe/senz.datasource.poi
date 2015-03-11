@@ -1,12 +1,10 @@
 # -*- encoding=utf-8 -*-
 # __author__ = 'Zhong.zy'
 
-import sys
 #sys.path.append('..')
 
-import json
-from senz.utils.avos_manager import *
-from senz.utils.util_opt import *
+from senz.common.avos.avos_manager import *
+from senz.common.utils.util_opt import *
 
 
 class PoiGenerator(object):

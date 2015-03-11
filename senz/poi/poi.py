@@ -1,14 +1,12 @@
 # -*- encoding=utf-8 -*-
 # __author__ = 'Zhong.zy'
 
-import sys
 #sys.path.append('../utils')
 
-import json
-from senz.utils.avos_manager import *
-from senz.utils.util_opt import *
-from senz.utils.geo_coding import GeoCoder
-from senz.utils.translate import Trans
+from senz.common.avos.avos_manager import *
+from senz.common.utils.util_opt import *
+from senz.common.utils.geo_coding import GeoCoder
+from senz.common.utils.translate import Trans
 
 class PoiGet(object):
     def __init__(self):

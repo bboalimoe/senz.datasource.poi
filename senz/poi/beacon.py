@@ -1,13 +1,10 @@
 # -*- encoding=utf-8 -*-
 __author__ = 'zhanghengyang'
 
-from math import *
 import sys
-import json
-import sys
-import datetime
+
 sys.path.append("../utils")
-from senz.utils.avos_manager import *
+from senz.common.avos.avos_manager import *
 
 
 #todo including the ibeacon poitype

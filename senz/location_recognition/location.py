@@ -1,9 +1,10 @@
 # -*- encoding=utf-8 -*-
-import json
 import math
+
 import scipy.cluster.hierarchy as sch
-import time
-from senz.utils.avos_manager import *
+
+from senz.common.avos.avos_manager import *
+
 
 # params
 
@@ -45,178 +46,211 @@ class TagInfo:
         self.estimateTime = _estimateTime
         self.ratio = _ratio
 
-def cluster(jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
-                       timeRanges=defaultTimeRanges, tagOfTimeRanges=defaultTagOfTimeRanges, timeThreshold = 300000,
-                       ratioThreshold = 0.4):
-    # parse json data
+class LocationRecognition(object):
+    def __init__(self):
+        pass
 
-    rawDataArray = []
-    for jsonRecord in jsonArray:
-        #print "jsonRecord",jsonRecord
-        rawDataArray.append(LocationAndTime(jsonRecord["timestamp"], jsonRecord["latitude"], jsonRecord["longitude"]))
+    def cluster(self, jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
+                           timeRanges=defaultTimeRanges, tagOfTimeRanges=defaultTagOfTimeRanges, timeThreshold = 300000,
+                           ratioThreshold = 0.4):
+        #todo:need handle exceptions and code refactoring
 
-    # print("%d records" % len(rawDataArray))
+        # parse json data
 
-    # sampling by time
+        rawDataArray = []
+        for jsonRecord in jsonArray:
+            #print "jsonRecord",jsonRecord
+            #rawDataArray.append(LocationAndTime(jsonRecord["timestamp"], jsonRecord["latitude"], jsonRecord["longitude"]))\
+            rawDataArray.append(LocationAndTime(jsonRecord["time"], jsonRecord["lat"], jsonRecord["lon"]))
 
-    rawDataArray.sort(key=LocationAndTime.time)
+        # print("%d records" % len(rawDataArray))
 
-    dataArray = []
-    i = 0
-    while i < len(rawDataArray):
-        floor = math.floor(rawDataArray[i].time / samplingInteval)
-        floor = int(floor)
-        bottom = floor * samplingInteval
-        top = (floor + 1) * samplingInteval
+        # sampling by time
 
-        latitudeSum = 0
-        longitudeSum = 0
-        count = 0
-        while i < len(rawDataArray) and rawDataArray[i].time in range(bottom, top):
-            latitudeSum += rawDataArray[i].latitude
-            longitudeSum += rawDataArray[i].longitude
-            count += 1
-            i += 1
+        rawDataArray.sort(key=LocationAndTime.time)
 
-        dataArray.append(LocationAndTime(bottom, latitudeSum / count, longitudeSum / count))
-
-    print("%d standardized records" % len(dataArray))
-
-    # clustering
-
-    positionArray = []
-    for data in dataArray:
-        positionArray.append([data.latitude, data.longitude])
-
-    distanceMatrix = sch.distance.pdist(positionArray)
-
-    linkageMatrix = sch.linkage(positionArray, method='centroid', metric='euclidean')
-    # Z矩阵：第 i 次循环是第 i 行，这一次[0][1]合并了，它们的距离是[2]，这个类簇大小为[3]
-
-    clusterResult = sch.fcluster(linkageMatrix, maxClusterRadius, 'distance')
-
-    print("%d clusters" % clusterResult.max())
-
-    # filter clusters
-
-    allCluster = [[] for row in range(clusterResult.max())]
-
-    i = 0
-    while i < len(clusterResult):
-        index = clusterResult[i] - 1
-        allCluster[index].append(dataArray[i])
-        i += 1
-
-    validCluster = []
-    for cluster in allCluster:
-        if (len(cluster) >= timeThreshold / samplingInteval):
-            validCluster.append(cluster)
-
-    print("%d valid clusters" % len(validCluster))
-
-    # add tags
-
-    globalDataInRangeCount = countDataInRange(dataArray, timeRanges)
-
-    results = []
-    print validCluster
-    for cluster in validCluster:
-        clusterDataInRangeCount = countDataInRange(cluster, timeRanges)
-
-        tags = []
+        dataArray = []
         i = 0
-        while i < len(timeRanges):
-            if globalDataInRangeCount[i] == 0:
+        while i < len(rawDataArray):
+            floor = math.floor(rawDataArray[i].time / samplingInteval)
+            floor = int(floor)
+            bottom = floor * samplingInteval
+            top = (floor + 1) * samplingInteval
+
+            latitudeSum = 0
+            longitudeSum = 0
+            count = 0
+            while i < len(rawDataArray) and rawDataArray[i].time in range(bottom, top):
+                latitudeSum += rawDataArray[i].latitude
+                longitudeSum += rawDataArray[i].longitude
+                count += 1
                 i += 1
-                continue
-            ratio = float(clusterDataInRangeCount[i]) / globalDataInRangeCount[i]
-            print ratio
-            if ratio > ratioThreshold:
-                estimateTime = clusterDataInRangeCount[i] * samplingInteval
-                tags.append(TagInfo(tagOfTimeRanges[i], estimateTime, ratio))
-            i += 1
 
-        if len(tags) == 0:  # no tag
-            continue
+            dataArray.append(LocationAndTime(bottom, latitudeSum / count, longitudeSum / count))
 
-        sumLa = 0
-        sumLo = 0
-        count = 0
+        print("%d standardized records" % len(dataArray))
 
-        for data in cluster:
-            sumLa += data.latitude
-            sumLo += data.longitude
-            count += 1
+        # clustering
 
-        avgLa = sumLa / count
-        print "avgLa", avgLa
-        avgLo = sumLo / count
+        positionArray = []
+        for data in dataArray:
+            positionArray.append([data.latitude, data.longitude])
 
-        result = LocationWithTags(avgLa, avgLo, tags)
-        result.estimateTime = count * samplingInteval
-        print ("r",results)
-        results.append(result)
-    print (results)
-    # output are in results
-    return json.dumps(results,default=lambda obj:obj.__dict__)
+        distanceMatrix = sch.distance.pdist(positionArray)
 
-def countDataInRange(dataArray, timeRanges):
+        #对位置信息做聚类
+        linkageMatrix = sch.linkage(positionArray, method='centroid', metric='euclidean')
+        # Z矩阵：第 i 次循环是第 i 行，这一次[0][1]合并了，它们的距离是[2]，这个类簇大小为[3]
 
-    dataInRangeCount = [0] * len(timeRanges)
-    for data in dataArray:
-        timeStamp = time.localtime(data.time / 1000)
+        clusterResult = sch.fcluster(linkageMatrix, maxClusterRadius, 'distance')
+
+        print("%d clusters" % clusterResult.max())
+
+        # filter clusters
+
+        allCluster = [[] for row in range(clusterResult.max())]
+
         i = 0
-        while i < len(timeRanges):
-            if timeStamp.tm_hour in timeRanges[i]:
-                dataInRangeCount[i] += 1
+        while i < len(clusterResult):
+            index = clusterResult[i] - 1
+            allCluster[index].append(dataArray[i])  # put points to its cluster
             i += 1
-    return dataInRangeCount
 
-def startCluster(userid=None):
+        validCluster = []
+        for cluster in allCluster:
+            if (len(cluster) >= timeThreshold / samplingInteval):
+                validCluster.append(cluster)   # filter cluster
+
+        print("%d valid clusters" % len(validCluster))
+
+        # add tags
+
+        globalDataInRangeCount = self.countDataInRange(dataArray, timeRanges)
+
+        results = []
+        print validCluster
+        for cluster in validCluster:
+            clusterDataInRangeCount = self.countDataInRange(cluster, timeRanges)
+
+            tags = []
+            i = 0
+            while i < len(timeRanges):
+                if globalDataInRangeCount[i] == 0:
+                    i += 1
+                    continue
+                ratio = float(clusterDataInRangeCount[i]) / globalDataInRangeCount[i]
+                print ratio
+                if ratio > ratioThreshold:
+                    estimateTime = clusterDataInRangeCount[i] * samplingInteval    #todo: estimateTime is point count multi interval??????
+                    tags.append(TagInfo(tagOfTimeRanges[i], estimateTime, ratio))
+                i += 1
+
+            if len(tags) == 0:  # no tag
+                continue
+
+            sumLa = 0
+            sumLo = 0
+            count = 0
+
+            for data in cluster:
+                sumLa += data.latitude
+                sumLo += data.longitude
+                count += 1
+
+            avgLa = sumLa / count
+            print "avgLa", avgLa
+            avgLo = sumLo / count
+
+            result = LocationWithTags(avgLa, avgLo, tags)
+            result.estimateTime = count * samplingInteval
+            print ("r",results)
+            results.append(result)
+        print (results)
+        # output are in results
+        return results
+
+    def countDataInRange(self,dataArray, timeRanges):
+
+        dataInRangeCount = [0] * len(timeRanges)
+        for data in dataArray:
+            timeStamp = time.localtime(data.time / 1000)
+            i = 0
+            while i < len(timeRanges):
+                if timeStamp.tm_hour in timeRanges[i]:
+                    dataInRangeCount[i] += 1
+                i += 1
+        return dataInRangeCount
+
+    def startCluster(self, userid=None):
 
 
-    data = getData(userid)
+        data = self.getData(userid)
 
-    results = cluster(data)
-    return results
+        results = self.cluster(data)
 
+        self.saveResults(results, userid)
 
-def getData(userid=None):
+        return json.dumps(results,default=lambda obj:obj.__dict__)
 
-    if not userid:
-        print "shit"
-        file = open("testLocation.json")
-        jsonArray = json.load(file)["results"]
-
-    else:
-       jsonArray = getUserData(userid)
-
-    return jsonArray
-
-
-def getUserData(userid):
-
-    lean = AvosManager()
+    def saveResults(self, results, userId=None):
+        #todo:avos group auto found
+        avosManager = AvosManager(AvosManager.findGroup("LocationRecognition"))
+        for result in results:
+            for tag in result.tags:
+                result = avosManager.saveData("LocationRecognition",{"latitude":result.latitude,
+                                                                    "longitude":result.longitude,
+                                                                    "tag":tag.tag,
+                                                                    "ratio":tag.ratio,
+                                                                    "estimateTime":result.estimateTime,
+                                                                    "userId":userId})
 
 
-    L = 200
-    start = 0
-    res_len = L
-    jsonArray = []
-    while res_len == L:
-            res = json.loads(lean.getData('UserLocationTrace',limit=L, skip=start, where='{"userId":"%s"}'%userid ))['results']
-            res_len = len(res)
-            for location_record in res:
-                jsonArray.append(location_record)
-            start = start+L
-    print jsonArray
-    print 'Done'
 
-    return jsonArray
-    #result = lean.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"", "timpstamp":gps['timestamp'],"userId":userId})
+    def getData(self, userid=None):
+
+        if not userid:
+            print "shit"
+            file = open("testLocation.json")
+            jsonArray = json.load(file)["results"]
+
+        else:
+            jsonArray = self.getUserData(userid)
+
+
+        return jsonArray
+
+
+    def getUserData(self, userid):
+
+        lean = AvosManager()
+
+
+        L = 200
+        start = 0
+        res_len = L
+        jsonArray = []
+        while res_len == L:
+                res = json.loads(lean.getData('UserLocationTrace',limit=L, skip=start, where='{"userId":"%s"}'%userid ))['results']
+                res_len = len(res)
+                for location_record in res:
+                    jsonArray.append(location_record)
+                start = start+L
+        print jsonArray
+        print "get %d date" % len(jsonArray)
+        print 'Done'
+
+        return jsonArray
+        #result = lean.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"", "timpstamp":gps['timestamp'],"userId":userId})
 
 
 
 if __name__ == '__main__':
-
-    print startCluster("54d82fefe4b0d414801050ee")
+    '''
+    lean = AvosManager()
+    res = json.loads(lean.getData('UserLocationTrace', limit=1000, skip=0))['results']
+    print len(res)
+    print res
+    '''
+    obj = LocationRecognition()
+    #print obj.startCluster("54d82fefe4b0d414801050ee")
+    print obj.startCluster("")
