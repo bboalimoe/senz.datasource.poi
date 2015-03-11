@@ -188,13 +188,14 @@ class LocationRecognition(object):
 
         results = self.cluster(data)
 
-        self.saveResults(results, userid)
+        if len(results) > 0:
+            self.saveResults(results, userid)
 
         return json.dumps(results,default=lambda obj:obj.__dict__)
 
     def saveResults(self, results, userId=None):
         #todo:avos group auto found
-        avosManager = AvosManager(AvosManager.findGroup("LocationRecognition"))
+        avosManager = AvosManager(avosClassName = "LocationRecognition")
         for result in results:
             for tag in result.tags:
                 result = avosManager.saveData("LocationRecognition",{"latitude":result.latitude,

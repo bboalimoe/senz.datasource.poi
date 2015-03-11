@@ -11,7 +11,7 @@
 #todo: dispatch modules configurations in system init
 
 groups = {
-    'origin' : {
+    'base' : {
         'avos_id' : 'vigxpgtjk8w6ruxcfaw4kju3ssyttgcqz38y6y6uablqivjd',
         'avos_key': 'dxbawm2hh0338hb37wap59gticgr92dpajd80tzekrgv1ptw',
         'avos_master_key' : 'u0nu3suqria905en9gbq7isetlf5exoqmndv4fxcfck26kdr',

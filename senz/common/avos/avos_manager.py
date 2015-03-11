@@ -8,6 +8,7 @@ import requests
 from senz.common.avos.avos import AVObject
 from senz.common.utils import settings
 from senz.common.utils.util_opt import *
+from senz.common import config
 
 
 warnings.filterwarnings("ignore")
@@ -20,18 +21,9 @@ class AvosClass(AVObject):
         
 class AvosManager(object):
 
-        def __init__(self, group = 'origin'):
+        def __init__(self, avosClassName=None):
+                group = config.findGroup(avosClassName)
                 self._avosConnector = AvosClass(group)
-                
-                #self._avosConnector.app_settings = [settings.avos_app_id, settings.avos_app_key]
-
-        @classmethod
-        def findGroup(cls, avosClassName):
-                for groupName in settings.groups:
-                    if avosClassName in settings.groups[groupName]['avos_classes_list']:
-                        return groupName
-
-                return 'origin'
 
         def saveData(self,className,dataDict):
                 res = self._avosConnector._save_to_avos(className,dataDict)
