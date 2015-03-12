@@ -6,32 +6,26 @@ import warnings
 import requests
 
 from senz.common.avos.avos import AVObject
-from senz.common.utils import settings
 from senz.common.utils.util_opt import *
+from senz.common import config, settings
 
 
 warnings.filterwarnings("ignore")
 
+'''
+todo: this class can be used to adaptor avos cloude communication
+      after pure rest invoke class been seperated from AVObject
 class AvosClass(AVObject):
     def __init__(self, setting_group):
         super(AvosClass, self).__init__()
         self.app_settings = [settings.groups[setting_group]['avos_id'],
                              settings.groups[setting_group]['avos_key']]
+'''
         
 class AvosManager(object):
-
-        def __init__(self, group = 'origin'):
-                self._avosConnector = AvosClass(group)
-                
-                #self._avosConnector.app_settings = [settings.avos_app_id, settings.avos_app_key]
-
-        @classmethod
-        def findGroup(cls, avosClassName):
-                for groupName in settings.groups:
-                    if avosClassName in settings.groups[groupName]['avos_classes_list']:
-                        return groupName
-
-                return 'origin'
+        def __init__(self, avosClassName=None):
+                app_settings = config.getAppSettings(avosClassName)
+                self._avosConnector = AVObject(app_settings)
 
         def saveData(self,className,dataDict):
                 res = self._avosConnector._save_to_avos(className,dataDict)

@@ -5,47 +5,12 @@ import sys
 
 sys.path.append("../utils")
 from senz.common.avos.avos_manager import *
+from senz.common.utils import timeutils
+from senz.common.utils import geoutils
+
 for i in sys.path:
     print i
 #print "sys.path   ",sys.path
-
-def distance(lon1, lat1, lon2, lat2):
-        """
-        calulate distence from GPS
-        :param lon1:
-        :param lat1:
-        :param lon2:
-        :param lat2:
-        :return:
-        """
-        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-        dlon = lon2 - lon1
-        dlat = lat2 - lat1
-        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-        c = 2 * atan2(sqrt(a), sqrt(1-a))
-        return 6371300 * c
-
-def iso2timestamp(iso_time): #avos date type {u'__type': u'Date', u'iso': u'2015-05-23T11:15:00.000Z'}
-        t = time.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.000Z")
-        return long(time.mktime(t))
-
-def ISOString2Time( s ):
-    '''
-    convert a ISO format time to second
-    from:2006-04-12 16:46:40 to:23123123
-    把一个时间转化为秒
-    '''
-    d=datetime.datetime.strptime(s,"%Y-%m-%d %H:%M:%S")
-    return time.mktime(d.timetuple())
-
-def Time2ISOString( s ):
-    '''
-    convert second to a ISO format time
-    from: 23123123 to: 2006-04-12 16:46:40
-    把给定的秒转化为定义的格式
-    '''
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime( float(s) ) )
-
 
 class UserActivityMapping(object):
 
@@ -80,7 +45,7 @@ class UserActivityMapping(object):
                 for oneTime in user:
                         uLon=oneTime['longitude']
                         uLat=oneTime['latitude']
-                        if(distance(aLon, aLat, uLon, uLat)<100):
+                        if(geoutils.distance(aLon, aLat, uLon, uLat)<100):
                                 activeTimes.append(oneTime['timestamp'])
                                 activeLocationRecords.append(oneTime)
 
@@ -89,8 +54,8 @@ class UserActivityMapping(object):
                 if len(activeTimes) == 0:
                         return 0
                 #print "start time", activity['start_time']
-                startTime = iso2timestamp(activity['start_time']['iso'])               
-                endTime = iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
+                startTime = timeutils.iso2timestamp(activity['start_time']['iso'])
+                endTime = timeutils.iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
 
                 actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
                 if actives >= len(activeTimes)*0.5:
@@ -143,7 +108,10 @@ class UserActivityMapping(object):
                 res_len = L
                 while res_len == L:
                     #get the
-                    res = json.loads(self.avosManager.getDateBetweenData("activities","start_time",DaysBeforeAvosDate(3),nowAvosDate(),limit=L,skip=start) )['results']
+                    res = json.loads(self.avosManager.getDateBetweenData("activities","start_time",
+                                                                         timeutils.DaysBeforeAvosDate(3),
+                                                                         timeutils.nowAvosDate(),
+                                                                         limit=L,skip=start) )['results']
                     res_len = len(res)
                     self.activities = self.activities+res
                     start = start+L
@@ -203,8 +171,8 @@ class UserActivityMapping(object):
                 while res_len == L:
                         res = json.loads( self.avosManager.getDateBetweenDataByUser("UserLocationTrace",
                                                                               "createdAt",
-                                                                              DaysBeforeAvosDate(3),
-                                                                              nowAvosDate(),
+                                                                              timeutils.DaysBeforeAvosDate(3),
+                                                                              timeutils.nowAvosDate(),
                                                                               userId,
                                                                               limit=L,
                                                                               skip=start))['results']
@@ -307,23 +275,6 @@ class UserActivityMapping(object):
                    print "save error: userid:%s".format(userId)
 
 
-def nowAvosDate():
-    #unix epoch time 和 timestamp一致，存入avos后台的utc也是iso和前面是一个转化值。所以呈现出来的string形式，与北京时间不同，差8小时。
-
-    now = time.time()
-    utc_time = datetime.datetime.utcfromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
-
-    utc_time = utc_time.replace(" ","T")
-    return utc_time+".000Z"
-
-def DaysBeforeAvosDate(day):
-
-    before_time = time.time() - day*24*60*60
-    utc_time = datetime.datetime.utcfromtimestamp(before_time).strftime('%Y-%m-%d %H:%M:%S')
-
-    utc_time = utc_time.replace(" ","T")
-    return utc_time+".000Z"
-
 
 if __name__=="__main__":
         #mapping = UserActivityMapping()
@@ -334,13 +285,15 @@ if __name__=="__main__":
         #date_iso = utc_time.replace(" ","T") + ".000Z"
         #date_time = dict(__type='Date',iso=date_iso)
         #utc_time.isoformat()
-        print nowAvosDate()
+        print timeutils.nowAvosDate()
 
-        print DaysBeforeAvosDate(3)
+        print timeutils.DaysBeforeAvosDate(3)
 
         Map = UserActivityMapping()
         #res = json.loads(Map.avosManager.getDateGreatData("activities","start_time",nowAvosDate(),limit="3" ))['results']
-        res = json.loads(Map.avosManager.getDateBetweenData("activities","start_time",DaysBeforeAvosDate(3),nowAvosDate(),limit="500" ))['results']
+        res = json.loads(Map.avosManager.getDateBetweenData("activities","start_time",
+                                                            timeutils.DaysBeforeAvosDate(3),timeutils.nowAvosDate(),
+                                                            limit="500" ))['results']
         print "length", len(res)
         for i in res:
             print "timenow ",i

@@ -89,6 +89,9 @@ class LocationRecognition(object):
             dataArray.append(LocationAndTime(bottom, latitudeSum / count, longitudeSum / count))
 
         print("%d standardized records" % len(dataArray))
+        if len(dataArray) <= 1:
+            print("not enough data points!")
+            return []
 
         # clustering
 
@@ -188,13 +191,14 @@ class LocationRecognition(object):
 
         results = self.cluster(data)
 
-        self.saveResults(results, userid)
+        if len(results) > 0:
+            self.saveResults(results, userid)
 
         return json.dumps(results,default=lambda obj:obj.__dict__)
 
     def saveResults(self, results, userId=None):
         #todo:avos group auto found
-        avosManager = AvosManager(AvosManager.findGroup("LocationRecognition"))
+        avosManager = AvosManager(avosClassName = "LocationRecognition")
         for result in results:
             for tag in result.tags:
                 result = avosManager.saveData("LocationRecognition",{"latitude":result.latitude,
@@ -202,7 +206,9 @@ class LocationRecognition(object):
                                                                     "tag":tag.tag,
                                                                     "ratio":tag.ratio,
                                                                     "estimateTime":result.estimateTime,
-                                                                    "userId":userId})
+                                                                    "userId":userId,
+                                                                    "date": "",
+                                                                    "status": ""})
 
 
 

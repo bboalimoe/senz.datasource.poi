@@ -11,17 +11,16 @@ class AVObject(object):
     base_patch = base+r'/1.1/batch'
     Users = base+r'/1.1/users'
 
-    def __init__(self):
-        app_settings = ['', '']
+    def __init__(self, app_settings):
+        self.app_settings = app_settings
 
     #private methods
 
-    
     def headers(self):
         # Since properties only work on instances, need define headers property in meta class
         return {
-            "X-AVOSCloud-Application-Id": self.app_settings[0],
-            "X-AVOSCloud-Application-Key": self.app_settings[1],
+            "X-AVOSCloud-Application-Id": self.app_settings['avos_app_id'],
+            "X-AVOSCloud-Application-Key": self.app_settings['avos_app_key'],
             "Content-Type": "application/json"
         }
 
