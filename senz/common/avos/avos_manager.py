@@ -7,7 +7,9 @@ import requests
 
 from senz.common.avos.avos import AVObject
 from senz.common.utils.util_opt import *
+
 from senz.common import config, settings
+
 
 
 warnings.filterwarnings("ignore")
@@ -23,9 +25,11 @@ class AvosClass(AVObject):
 '''
         
 class AvosManager(object):
+
         def __init__(self, avosClassName=None):
                 app_settings = config.getAppSettings(avosClassName)
                 self._avosConnector = AVObject(app_settings)
+
 
         def saveData(self,className,dataDict):
                 res = self._avosConnector._save_to_avos(className,dataDict)

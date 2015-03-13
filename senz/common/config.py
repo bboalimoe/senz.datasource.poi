@@ -1,5 +1,6 @@
 __author__ = 'wzf'
 
+
 import settings
 
 def findGroup(avosClassName):
