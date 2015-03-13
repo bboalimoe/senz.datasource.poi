@@ -42,7 +42,7 @@ http://server_url/senz/poi_group_member/   #添加/修改/删除poi group的成�
 
 import logging
 
-LOG = logging.getLogger(/__name/__)
+LOG = logging.getLogger(_ _name_ _)
 
 LOG.debug("this is an debug log")
 LOG.info("this is an info log")
