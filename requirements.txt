@@ -2,5 +2,15 @@
 
 bidict
 
-scipy
+#ubuntu scipy install:
+#sudo apt-get install python-numpy python-scipy python-matplotlib ipython ipython-notebook  \
+#                     python-pandas python-sympy python-nose
+scipy==0.15.1
 
+numpy==1.9.2
+
+pytz==2014.10
+
+requests==2.5.3
+
+Django==1.7.5
