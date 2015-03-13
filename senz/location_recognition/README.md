@@ -3,8 +3,8 @@
 ## 用法
 
     import location
-    loc_recg = LocationRecognition()
-    loc_recg.cluster(jsonArray)
+    locRecg = LocationRecognition()
+    locRecg.cluster(jsonArray)
     
 ## 示例
 

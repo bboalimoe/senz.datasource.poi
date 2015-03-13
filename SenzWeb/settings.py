@@ -82,3 +82,62 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Django Logging
+SYSLOG_HANDLER_HOST = 'localhost'
+SYSLOG_UDP_PORT = 514
+
+LOG_FOLDER = os.getcwd() + os.path.sep + 'logs'
+if not os.path.exists(LOG_FOLDER):
+    os.mkdir(LOG_FOLDER)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'test': {
+            'format' : '%(name)s %(message)s'
+        },
+        'simple': {
+            'format': '%(lineno)s %(name)s %(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'console': {
+            # Set the level to "DEBUG" for verbose output logging.
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+        'syslog': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.SysLogHandler',
+            'address': (SYSLOG_HANDLER_HOST,SYSLOG_UDP_PORT), # log to syslog or rsyslog server
+            'formatter': 'test',
+        },
+        'file':{
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_FOLDER + os.path.sep + 'senz.log',
+            'backupCount': 5,
+            'maxBytes': '16777216', # 16megabytes(16M)
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'senz':{
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+    }
+}

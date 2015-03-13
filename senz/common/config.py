@@ -2,6 +2,7 @@ __author__ = 'wzf'
 
 
 import settings
+import os
 
 def findGroup(avosClassName):
     #find leancloud project of avosClassName
@@ -14,4 +15,10 @@ def findGroup(avosClassName):
 
 def getAppSettings(avosClassName):
     group = findGroup(avosClassName)
-    appSettings = settings[group]
+    return settings.groups[group]
+
+
+if __name__ == '__main__':
+    print os.getcwd() + os.path.sep + 'logs'
+    getAppSettings("")
+    getAppSettings("LocationRecognition")

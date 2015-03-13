@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 import math
+import logging
 
 import scipy.cluster.hierarchy as sch
 
@@ -7,6 +8,9 @@ from senz.common.avos.avos_manager import *
 
 
 # params
+LOG = logging.getLogger(__name__)
+
+print LOG
 
 defaultTimeRanges = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 defaultTagOfTimeRanges = ["home", "office"]
@@ -216,7 +220,7 @@ class LocationRecognition(object):
 
         if not userid:
             print "shit"
-            file = open("testLocation.json")
+            file = open("./testLocation.json")
             jsonArray = json.load(file)["results"]
 
         else:

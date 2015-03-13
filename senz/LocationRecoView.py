@@ -10,7 +10,7 @@ from django.http import JsonResponse
 #from mixpanel import Mixpanel
 
 
-from senz.location_recognition.location import startCluster
+from senz.location_recognition.location import LocationRecognition
 
 
 
@@ -55,7 +55,8 @@ def GetUserLocationTags(request):
         if request.method is "POST":  #todo refactor with function or decorators
            req = request.body
         elif request.method == "GET":
-            results = startCluster()
+            locRecg = LocationRecognition()
+            results = locRecg.startCluster()
             return successResponses(results) #indicate the crawl actions have been done
         else:
             return errorResponses("Method wrong")
@@ -65,7 +66,8 @@ def GetUserLocationTags(request):
 
     userid = req["userId"]
     try:
-        results = startCluster(userid)
+        locRecg = LocationRecognition()
+        results = locRecg.startCluster(userid)
     except:
         return errorResponses()
 
