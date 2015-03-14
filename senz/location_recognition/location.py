@@ -10,8 +10,6 @@ from senz.common.avos.avos_manager import *
 # params
 LOG = logging.getLogger(__name__)
 
-print LOG
-
 defaultTimeRanges = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 defaultTagOfTimeRanges = ["home", "office"]
 version = '0.1'
@@ -190,15 +188,21 @@ class LocationRecognition(object):
 
     def startCluster(self, userid=None):
 
+        try:
+            data = self.getData(userid)
 
-        data = self.getData(userid)
+            results = self.cluster(data)
 
-        results = self.cluster(data)
+            if len(results) > 0:
+                self.saveResults(results, userid)
 
-        if len(results) > 0:
-            self.saveResults(results, userid)
+            return json.dumps(results,default=lambda obj:obj.__dict__)
+        except Exception as e:
+            LOG.error("exception in location clustering : %s" % e)
 
-        return json.dumps(results,default=lambda obj:obj.__dict__)
+            return ''
+
+
 
     def saveResults(self, results, userId=None):
         #todo:avos group auto found
@@ -220,7 +224,7 @@ class LocationRecognition(object):
 
         if not userid:
             print "shit"
-            file = open("./testLocation.json")
+            file = open("testLocation.json")
             jsonArray = json.load(file)["results"]
 
         else:

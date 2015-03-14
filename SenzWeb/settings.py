@@ -135,7 +135,7 @@ LOGGING = {
     },
     'loggers': {
         'senz':{
-            'handlers': ['console'],
+            'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': False
         },
