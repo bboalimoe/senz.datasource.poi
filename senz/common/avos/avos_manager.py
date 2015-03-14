@@ -25,7 +25,6 @@ class AvosClass(AVObject):
 '''
         
 class AvosManager(object):
-
         def __init__(self, avosClassName=None):
                 app_settings = config.getAppSettings(avosClassName)
                 self._avosConnector = AVObject(app_settings)
