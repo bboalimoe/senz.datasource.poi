@@ -10,7 +10,7 @@ from django.http import JsonResponse
 #from mixpanel import Mixpanel
 
 
-from senz.location_recognition.location import LocationRecognition
+from senz.location.LocationRecognition import LocationRecognition
 
 
 

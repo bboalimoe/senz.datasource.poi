@@ -3,7 +3,7 @@ __author__ = 'zhanghengyang'
 
 
 from senz.poi.poi import PoiGet
-from senz.activity_user_mapping.UserActivityMapping import UserActivityMapping
+from senz.activity.UserActivityMapping import UserActivityMapping
 from senz.poi.beacon import Beacon
 import json
 

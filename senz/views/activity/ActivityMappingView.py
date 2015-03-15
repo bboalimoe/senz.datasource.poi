@@ -10,7 +10,7 @@ from django.conf.urls import patterns, url
 from django.core.management import execute_from_command_line
 from django.http import JsonResponse
 from mixpanel import Mixpanel
-from senz.activity_user_mapping.UserActivityMapping import UserActivityMapping
+from senz.activity.UserActivityMapping import UserActivityMapping
 
 
 

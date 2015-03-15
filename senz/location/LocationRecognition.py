@@ -5,33 +5,18 @@ import logging
 import scipy.cluster.hierarchy as sch
 
 from senz.common.avos.avos_manager import *
+from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress
+from senz.common.utils.clusterutils import filterClustersBySize
 
 
 # params
 LOG = logging.getLogger(__name__)
 
-defaultTimeRanges = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
-defaultTagOfTimeRanges = ["home", "office"]
+DEFAULT_TIME_RANGES = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
+DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
 version = '0.1'
 
 # data structure
-
-class LocationAndTime:
-    """Data including location and record time"""
-
-    def __init__(self, _time, _latitude, _longitude):
-        self.time = _time
-        self.latitude = _latitude
-        self.longitude = _longitude
-
-    def time(self):
-        return self.time
-
-    def latitude(self):
-        return self.latitude
-
-    def longitude(self):
-        return self.longitude
 
 class LocationWithTags:
     """Location from cluster result and tags by analysing timestamps"""
@@ -53,7 +38,7 @@ class LocationRecognition(object):
         pass
 
     def cluster(self, jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
-                           timeRanges=defaultTimeRanges, tagOfTimeRanges=defaultTagOfTimeRanges, timeThreshold = 300000,
+                           timeRanges=DEFAULT_TIME_RANGES, tagOfTimeRanges=DEFAULT_TAG_OF_TIME_RANGES, timeThreshold = 300000,
                            ratioThreshold = 0.4):
         #todo:need handle exceptions and code refactoring
 
@@ -71,24 +56,7 @@ class LocationRecognition(object):
 
         rawDataArray.sort(key=LocationAndTime.time)
 
-        dataArray = []
-        i = 0
-        while i < len(rawDataArray):
-            floor = math.floor(rawDataArray[i].time / samplingInteval)
-            floor = int(floor)
-            bottom = floor * samplingInteval
-            top = (floor + 1) * samplingInteval
-
-            latitudeSum = 0
-            longitudeSum = 0
-            count = 0
-            while i < len(rawDataArray) and rawDataArray[i].time in range(bottom, top):
-                latitudeSum += rawDataArray[i].latitude
-                longitudeSum += rawDataArray[i].longitude
-                count += 1
-                i += 1
-
-            dataArray.append(LocationAndTime(bottom, latitudeSum / count, longitudeSum / count))
+        dataArray = coordArrayCompress(rawDataArray, samplingInteval)
 
         print("%d standardized records" % len(dataArray))
         if len(dataArray) <= 1:
@@ -112,21 +80,7 @@ class LocationRecognition(object):
         print("%d clusters" % clusterResult.max())
 
         # filter clusters
-
-        allCluster = [[] for row in range(clusterResult.max())]
-
-        i = 0
-        while i < len(clusterResult):
-            index = clusterResult[i] - 1
-            allCluster[index].append(dataArray[i])  # put points to its cluster
-            i += 1
-
-        validCluster = []
-        for cluster in allCluster:
-            if (len(cluster) >= timeThreshold / samplingInteval):
-                validCluster.append(cluster)   # filter cluster
-
-        print("%d valid clusters" % len(validCluster))
+        validCluster = filterClustersBySize(clusterResult, dataArray, timeThreshold / samplingInteval)
 
         # add tags
 
@@ -237,7 +191,6 @@ class LocationRecognition(object):
     def getUserData(self, userid):
 
         lean = AvosManager()
-
 
         L = 200
         start = 0
