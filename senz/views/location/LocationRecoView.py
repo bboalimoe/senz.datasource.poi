@@ -3,11 +3,14 @@
 __author__ = 'bboalimoe'
 
 import json
+import logging
 
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 #from mixpanel import Mixpanel
+
+LOG = logging.getLogger(__name__)
 
 
 from senz.location.LocationRecognition import LocationRecognition
@@ -37,7 +40,6 @@ def successResponses(results):
 
 @csrf_exempt
 def GetUserLocationTags(request):
-
     """
 
     /usr_loc_tag/
@@ -52,27 +54,49 @@ def GetUserLocationTags(request):
 
     #todo retrieve data from leancloud or other db
     try:
-        if request.method is "POST":  #todo refactor with function or decorators
-           req = request.body
+        locRecg = LocationRecognition()
+        if request.method == "POST":  #todo refactor with function or decorators
+            req = request.body
+
+            bodyData = json.loads(req)
+            userId = bodyData["userId"]
+
+            LOG.info("pre location cluster")
+            results = locRecg.startCluster(userId)
         elif request.method == "GET":
-            locRecg = LocationRecognition()
             results = locRecg.startCluster()
-            return successResponses(results) #indicate the crawl actions have been done
         else:
             return errorResponses("Method wrong")
 
-    except:
-        return errorResponses()
-
-    userid = req["userId"]
-    try:
-        locRecg = LocationRecognition()
-        results = locRecg.startCluster(userid)
-    except:
+    except Exception as e:
+        LOG.error("get user location tags error : %s" % e)
         return errorResponses()
 
     return successResponses(results)  #indicate the crawl actions have been done
 
+
+def AddTraceNearTags(request):
+    """
+
+    /add_near_tag/
+    description:               add near tag to UserLocationTrace data
+    method:                    Post
+        userid:                    string
+    method:                    Get
+
+    return：                   {“status”：0(1),"errors"(results):"some errors"(results)}
+    """
+    try:
+        req = request.body
+        userId = req['userId']
+
+        locRecg = LocationRecognition()
+        locRecg.addNearTags(userId)
+
+        return successResponses()
+    except Exception as e:
+        LOG.error("Add user trace near tags error : %s" % e)
+        return errorResponses()
 
 
 def TriggerActions(request):

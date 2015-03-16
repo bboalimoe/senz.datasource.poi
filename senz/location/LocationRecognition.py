@@ -1,11 +1,10 @@
 # -*- encoding=utf-8 -*-
-import math
 import logging
 
 import scipy.cluster.hierarchy as sch
 
 from senz.common.avos.avos_manager import *
-from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress
+from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress, distance
 from senz.common.utils.clusterutils import filterClustersBySize
 
 
@@ -15,6 +14,7 @@ LOG = logging.getLogger(__name__)
 DEFAULT_TIME_RANGES = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
 version = '0.1'
+
 
 # data structure
 
@@ -35,12 +35,13 @@ class TagInfo:
 
 class LocationRecognition(object):
     def __init__(self):
-        pass
+        self.avosManager = AvosManager()
 
     def cluster(self, jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
                            timeRanges=DEFAULT_TIME_RANGES, tagOfTimeRanges=DEFAULT_TAG_OF_TIME_RANGES, timeThreshold = 300000,
                            ratioThreshold = 0.4):
-        #todo:need handle exceptions and code refactoring
+
+        LOG.info("start location cluster.")
 
         # parse json data
 
@@ -60,7 +61,7 @@ class LocationRecognition(object):
 
         print("%d standardized records" % len(dataArray))
         if len(dataArray) <= 1:
-            print("not enough data points!")
+            LOG.warning("Not enough data in clustering location data!")
             return []
 
         # clustering
@@ -160,10 +161,10 @@ class LocationRecognition(object):
 
     def saveResults(self, results, userId=None):
         #todo:avos group auto found
-        avosManager = AvosManager(avosClassName = "LocationRecognition")
+        avosClassName = 'LocationRecognition'
         for result in results:
             for tag in result.tags:
-                result = avosManager.saveData("LocationRecognition",{"latitude":result.latitude,
+                result = self.avosManager.saveData(avosClassName,{"latitude":result.latitude,
                                                                     "longitude":result.longitude,
                                                                     "tag":tag.tag,
                                                                     "ratio":tag.ratio,
@@ -172,6 +173,42 @@ class LocationRecognition(object):
                                                                     "date": "",
                                                                     "status": ""})
 
+
+    def addNearTags(self, userId):
+        #add tags near to user trace data points
+        traceClass = 'UserLocationTrace'
+        locRecgClass = 'LocationRecognition'
+        nearTags = ''
+
+        #todo: consider trace class data is very large????
+
+        L = 200
+        start = 0
+        res_len = L
+        traceData = []
+        while res_len == L:
+            res = json.loads(self.avosManager.getData(traceClass,limit=L, skip=start,
+                                            where='{"userId":"%s", "near":"%s"}'% (userId, nearTags) ))['results']
+            res_len = len(res)
+            for location_record in res:
+                traceData.append(location_record)
+            start = start+L
+
+        locRecgData = json.loads(avosManager.getData(
+                                   locRecgClass,
+                                   where='{"userId":"%s"}'% userId ))['results']
+
+        for trace in traceData:
+            for locRecg in locRecgData:
+                if distance(trace['longitude'], trace['latitude'],
+                             locRecg['longitude'], locRecg['latitude']) < 500:
+                    if not locRecg['near']:
+                        locRecg['near'] = []
+                    if trace['tag'] not in locRecg['near']:
+                        locRecg['near'].append(trace['tag'])
+
+        for trace in traceData:
+            self.avosManager.updateDataById(traceClass,trace['objectId'], {'near' : str(trace['near']) })
 
 
     def getData(self, userid=None):
@@ -213,11 +250,38 @@ class LocationRecognition(object):
 
 if __name__ == '__main__':
     '''
+    #transfer user trace from location_record class to UserLocationTrace
+    avosManager = AvosManager()
+    userId = '2b4e710aab89f6c5'
+
+    L = 200
+    start = 0
+    res_len = L
+    jsonArray = []
+    while res_len == L:
+        res = json.loads(avosManager.getData('location_record',limit=L, skip=start, where='{"userId":"%s"}'% userId ))['results']
+        res_len = len(res)
+        for location_record in res:
+            jsonArray.append(location_record)
+        start = start+L
+    #baseData = json.loads(avosManager.getData('location_record', where='{"userId": "%s"}' % userId))['results']
+
+    for row in jsonArray:
+        result = avosManager.saveData('UserLocationTrace',{
+                                                       "latitude":row['latitude'],"longitude":row["longitude"],
+                                                       "activityId":"", "timestamp":row['timestamp'],
+                                                       "near":"", "userId":userId})
+
+    '''
+
+    '''
     lean = AvosManager()
     res = json.loads(lean.getData('UserLocationTrace', limit=1000, skip=0))['results']
     print len(res)
     print res
     '''
+
     obj = LocationRecognition()
     #print obj.startCluster("54d82fefe4b0d414801050ee")
-    print obj.startCluster("")
+    #print obj.startCluster("")
+    print obj.startCluster("2b4e710aab89f6c5")

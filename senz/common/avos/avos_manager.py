@@ -23,15 +23,21 @@ class AvosClass(AVObject):
         self.app_settings = [settings.groups[setting_group]['avos_id'],
                              settings.groups[setting_group]['avos_key']]
 '''
-        
+
+
 class AvosManager(object):
-        def __init__(self, avosClassName=None):
-                app_settings = config.getAppSettings(avosClassName)
-                self._avosConnector = AVObject(app_settings)
+        def __init__(self):
+                #init avos connectors related to different avos apps
+
+                self._avosConnectors = {'base': AVObject(settings.groups['base'])}
+
+                for group in settings.groups:
+                    if settings.groups[group]['avos_app_classes_list']:
+                        self._avosConnectors[group] = AVObject(settings.groups[group])
 
 
         def saveData(self,className,dataDict):
-                res = self._avosConnector._save_to_avos(className,dataDict)
+                res = self._avosConnectors[config.findGroup(className)]._save_to_avos(className,dataDict)
 
                 if 'createdAt' not in json.loads(res.content):
                         print res.content
@@ -42,8 +48,8 @@ class AvosManager(object):
         #By Zhong.zy, Create users
         def createUser(self,userInfo):
                 res = requests.post(
-                    url = self._avosConnector.Users,
-                    headers = self._avosConnector.headers(),
+                    url = self._avosConnectors['base'].Users,
+                    headers = self._avosConnectors['base'].headers(),
                     data = json.dumps(userInfo),
                     verify=False)
                 if 'createdAt' not in json.loads(res.content):
@@ -59,8 +65,8 @@ class AvosManager(object):
                     'where':'{"username":"%s"}'%username
                     }
                 res = requests.get(
-                    url = self._avosConnector.Users,
-                    headers=self._avosConnector.headers(),
+                    url = self._avosConnectors['base'].Users,
+                    headers=self._avosConnectors['base'].headers(),
                     params=with_params,
                     verify=False
                 )
@@ -85,8 +91,8 @@ class AvosManager(object):
 
                 print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
-                    self._avosConnector.base_classes+className,
-                    headers=self._avosConnector.headers(),
+                    self._avosConnectors[config.findGroup(className)].base_classes+className,
+                    headers=self._avosConnectors[config.findGroup(className)].headers(),
                     params=kwargs,
                     verify=False
                 )
@@ -116,9 +122,9 @@ class AvosManager(object):
                 print "kwargs", json.dumps(kwargs)
                 #print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
-                    self._avosConnector.base_classes+className,
+                    self._avosConnectors[config.findGroup(className)].base_classes+className,
                     #"http://httpbin.org/get",
-                    headers=self._avosConnector.headers(),
+                    headers=self._avosConnectors[config.findGroup(className)].headers(),
                     params=kwargs,
                     verify=False
                 )
@@ -149,9 +155,9 @@ class AvosManager(object):
                 print "kwargs", json.dumps(kwargs)
                 #print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
-                    self._avosConnector.base_classes+className,
+                    self._avosConnectors[config.findGroup(className)].base_classes+className,
                     #"http://httpbin.org/get",
-                    headers=self._avosConnector.headers(),
+                    headers=self._avosConnectors[config.findGroup(className)].headers(),
                     params=kwargs,
                     verify=False
                 )
@@ -182,9 +188,9 @@ class AvosManager(object):
                 print "kwargs", json.dumps(kwargs)
                 #print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
-                    self._avosConnector.base_classes+className,
+                    self._avosConnectors[config.findGroup(className)].base_classes+className,
                     #"http://httpbin.org/get",
-                    headers=self._avosConnector.headers(),
+                    headers=self._avosConnectors[config.findGroup(className)].headers(),
                     params=kwargs,
                     verify=False
                 )
@@ -227,7 +233,7 @@ class AvosManager(object):
 
         def updateDataById(self,className,objectId,dataDict):
 
-            res = self._avosConnector._update_avos(className,str(objectId),dataDict)
+            res = self._avosConnectors[config.findGroup(className)]._update_avos(className,str(objectId),dataDict)
             if 'error' not in json.loads(res.content):
                     return res.content
             else:
@@ -241,7 +247,7 @@ class AvosManager(object):
         def updateDataByName(self,className,objName,dataDict):  #this is activities‘s update！
                 objectId =  self.getIdByName(className,objName)
                 if objectId:
-                        res = self._avosConnector._update_avos(className,str(objectId),dataDict)
+                        res = self._avosConnectors[config.findGroup(className)]._update_avos(className,str(objectId),dataDict)
                         if 'error' not in json.loads(res.content):
                                 return res.content
                         else:
@@ -253,7 +259,7 @@ class AvosManager(object):
 
         #By Zhong.zy, delete, param data is id or id list
         def deleteData(self,className,data):
-                res = self._avosConnector._remove_avos(className,data)
+                res = self._avosConnectors[config.findGroup(className)]._remove_avos(className,data)
                 if 'error' in json.loads(res.content):
                     print res.content
                     return None

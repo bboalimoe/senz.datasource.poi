@@ -4,7 +4,7 @@ __author__ = 'bboalimoe'
 import httplib
 import json
 #conn = httplib.HTTPConnection("120.27.30.239:9080")
-conn = httplib.HTTPConnection("127.0.0.1:8000")
+conn = httplib.HTTPConnection("127.0.0.1:8088")
 
 headers = {"Content-type":"application/json"} #application/x-www-form-urlencoded
 params = {

@@ -42,10 +42,10 @@ def coordArrayCompress(coordArray, samplingInteval):
     dataArray = []
     i = 0
     while i < len(coordArray):
-        floor = math.floor(coordArray[i].time / samplingInteval)
-        floor = int(floor)
-        bottom = floor * samplingInteval
-        top = (floor + 1) * samplingInteval
+        flo = floor(coordArray[i].time / samplingInteval)
+        flo = int(flo)
+        bottom = flo * samplingInteval
+        top = (flo + 1) * samplingInteval
 
         latitudeSum = 0
         longitudeSum = 0

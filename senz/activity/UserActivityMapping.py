@@ -263,10 +263,14 @@ class UserActivityMapping(object):
             dump the info to db
             :return:
             """
+            avosClassName = "UserLocationTrace"
 
             for gps in GPSlist:
-                result = self.avosManager.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"",
-                                                               "timestamp":gps['timestamp'],"userId":userId})
+
+                result = avosManager.saveData(avosClassName,{
+                                                       "latitude":gps['latitude'],"longitude":gps["longitude"],
+                                                       "activityId":"", "timestamp":gps['timestamp'],
+                                                       "near":"", "userId":userId})
                 #todo change the server's version which is typo timpstamp
                 print "GPS write"
 
