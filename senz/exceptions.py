@@ -8,6 +8,9 @@ class Invalid(NeutronException):
 class NotEnouphData(Invalid):
     message = 'Not enouph %(param)s data for method '
 
+class UpdateDataError(BadRequest):
+    message = 'Update data error : %(msg)s'
+
 
 if __name__ == '__main__':
     raise NotEnouphData(param = 'UserLocationTrace')

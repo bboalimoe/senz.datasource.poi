@@ -58,6 +58,7 @@ def GetUserLocationTags(request):
         if request.method == "POST":  #todo refactor with function or decorators
             req = request.body
 
+            print "body : %s" % req
             bodyData = json.loads(req)
             userId = bodyData["userId"]
 
@@ -74,7 +75,7 @@ def GetUserLocationTags(request):
 
     return successResponses(results)  #indicate the crawl actions have been done
 
-
+@csrf_exempt
 def AddTraceNearTags(request):
     """
 
@@ -88,12 +89,13 @@ def AddTraceNearTags(request):
     """
     try:
         req = request.body
-        userId = req['userId']
+        bodyData = json.loads(req)
+        userId = bodyData['userId']
 
         locRecg = LocationRecognition()
         locRecg.addNearTags(userId)
 
-        return successResponses()
+        return successResponses("Add near tag to traces successed!")
     except Exception as e:
         LOG.error("Add user trace near tags error : %s" % e)
         return errorResponses()

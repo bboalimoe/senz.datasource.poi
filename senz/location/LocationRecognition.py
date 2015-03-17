@@ -1,11 +1,13 @@
 # -*- encoding=utf-8 -*-
 import logging
+import datetime
 
 import scipy.cluster.hierarchy as sch
 
 from senz.common.avos.avos_manager import *
 from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress, distance
 from senz.common.utils.clusterutils import filterClustersBySize
+from senz.common.utils import timeutils
 
 
 # params
@@ -48,8 +50,8 @@ class LocationRecognition(object):
         rawDataArray = []
         for jsonRecord in jsonArray:
             #print "jsonRecord",jsonRecord
-            #rawDataArray.append(LocationAndTime(jsonRecord["timestamp"], jsonRecord["latitude"], jsonRecord["longitude"]))\
-            rawDataArray.append(LocationAndTime(jsonRecord["time"], jsonRecord["lat"], jsonRecord["lon"]))
+            rawDataArray.append(LocationAndTime(jsonRecord["timestamp"], jsonRecord["latitude"], jsonRecord["longitude"]))
+            #rawDataArray.append(LocationAndTime(jsonRecord["time"], jsonRecord["lat"], jsonRecord["lon"]))
 
         # print("%d records" % len(rawDataArray))
 
@@ -126,6 +128,8 @@ class LocationRecognition(object):
             print ("r",results)
             results.append(result)
         print (results)
+
+        print "return cluster results : %d" % len(results)
         # output are in results
         return results
 
@@ -141,30 +145,49 @@ class LocationRecognition(object):
                 i += 1
         return dataInRangeCount
 
-    def startCluster(self, userid=None):
+    def startCluster(self, userId=None):
 
         try:
-            data = self.getData(userid)
+            #return old location recognition data if it generated in 7 days
+            locRecgClass = 'LocationRecognition'
+
+            oldLocRecgData = json.loads(self.avosManager.getData(
+                                   locRecgClass,
+                                   where='{"userId":"%s"}'% userId ))['results']
+
+            if len(oldLocRecgData) > 0:
+                createDate = timeutils.ISOString2Time(oldLocRecgData[0]['createdAt'],
+                                                      timeutils.ISO_TIME_FORMAT)
+                nowDate = datetime.datetime.now()
+                if (nowDate - createDate).days < 7:
+                    return oldLocRecgData
+                else:
+                    #if recgData out of date then delete it
+                    for recgData in oldLocRecgData:
+                        self.avosManager.deleteData(locRecgClass, recgData)
+
+
+            data = self.getData(userId)
 
             results = self.cluster(data)
 
             if len(results) > 0:
-                self.saveResults(results, userid)
+                self.saveResults(results, userId)
 
             return json.dumps(results,default=lambda obj:obj.__dict__)
         except Exception as e:
-            LOG.error("exception in location clustering : %s" % e)
+            LOG.error("exception in location clustering : %s" % e.message)
+            raise e
 
-            return ''
 
 
 
     def saveResults(self, results, userId=None):
-        #todo:avos group auto found
+        #save location recgnition results to leancloud
         avosClassName = 'LocationRecognition'
         for result in results:
             for tag in result.tags:
-                result = self.avosManager.saveData(avosClassName,{"latitude":result.latitude,
+                self.avosManager.saveData(avosClassName,{"latitude":result.latitude,
                                                                     "longitude":result.longitude,
                                                                     "tag":tag.tag,
                                                                     "ratio":tag.ratio,
@@ -175,40 +198,36 @@ class LocationRecognition(object):
 
 
     def addNearTags(self, userId):
-        #add tags near to user trace data points
+        '''add tags near to user trace data points
+
+           this method will overlap old near tags
+        '''
+
         traceClass = 'UserLocationTrace'
         locRecgClass = 'LocationRecognition'
-        nearTags = ''
+        nearDistance = 200
 
-        #todo: consider trace class data is very large????
+        traceData = self.avosManager.getAllData(traceClass,  where='{"userId":"%s"}'% userId)
 
-        L = 200
-        start = 0
-        res_len = L
-        traceData = []
-        while res_len == L:
-            res = json.loads(self.avosManager.getData(traceClass,limit=L, skip=start,
-                                            where='{"userId":"%s", "near":"%s"}'% (userId, nearTags) ))['results']
-            res_len = len(res)
-            for location_record in res:
-                traceData.append(location_record)
-            start = start+L
-
-        locRecgData = json.loads(avosManager.getData(
+        locRecgData = json.loads(self.avosManager.getData(
                                    locRecgClass,
                                    where='{"userId":"%s"}'% userId ))['results']
 
         for trace in traceData:
+            trace['near'] = []
             for locRecg in locRecgData:
                 if distance(trace['longitude'], trace['latitude'],
-                             locRecg['longitude'], locRecg['latitude']) < 500:
-                    if not locRecg['near']:
-                        locRecg['near'] = []
-                    if trace['tag'] not in locRecg['near']:
-                        locRecg['near'].append(trace['tag'])
+                             locRecg['longitude'], locRecg['latitude']) < nearDistance:
+                    if locRecg['tag'] not in trace['near']:
+                        trace['near'].append(locRecg['tag'])
 
-        for trace in traceData:
-            self.avosManager.updateDataById(traceClass,trace['objectId'], {'near' : str(trace['near']) })
+        LOG.info("add near tag to %d trace data" % len(traceData))
+
+        res = self.avosManager.updateDataList(traceClass, traceData)
+        #for trace in traceData:
+        #    self.avosManager.updateDataById(traceClass,trace['objectId'], {'near' : str(trace['near']) })
+
+
 
 
     def getData(self, userid=None):
@@ -225,20 +244,13 @@ class LocationRecognition(object):
         return jsonArray
 
 
-    def getUserData(self, userid):
+
+    def getUserData(self, userId):
 
         lean = AvosManager()
+        avosClass = 'UserLocationTrace'
+        jsonArray = lean.getAllData(avosClass, where='{"userId":"%s"}'% userId)
 
-        L = 200
-        start = 0
-        res_len = L
-        jsonArray = []
-        while res_len == L:
-                res = json.loads(lean.getData('UserLocationTrace',limit=L, skip=start, where='{"userId":"%s"}'%userid ))['results']
-                res_len = len(res)
-                for location_record in res:
-                    jsonArray.append(location_record)
-                start = start+L
         print jsonArray
         print "get %d date" % len(jsonArray)
         print 'Done'

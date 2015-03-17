@@ -1,27 +1,33 @@
-__author__ = 'lsg'
+# -*- coding: utf-8 -*-
+
+__author__ = 'wuzhifan'
+
 
 import time, datetime
+
+ISO_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 def iso2timestamp(iso_time): #avos date type {u'__type': u'Date', u'iso': u'2015-05-23T11:15:00.000Z'}
         t = time.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.000Z")
         return long(time.mktime(t))
 
-def ISOString2Time( s ):
+def ISOString2Time(s, fmt="%Y-%m-%d %H:%M:%S"):
     '''
     convert a ISO format time to second
     from:2006-04-12 16:46:40 to:23123123
-    把一个时间转化为秒
+    把时间转化为秒
     '''
-    d=datetime.datetime.strptime(s,"%Y-%m-%d %H:%M:%S")
+
+    d=datetime.datetime.strptime(s,fmt)
     return time.mktime(d.timetuple())
 
-def Time2ISOString( s ):
+def Time2ISOString(s, fmt="%Y-%m-%d %H:%M:%S"):
     '''
     convert second to a ISO format time
     from: 23123123 to: 2006-04-12 16:46:40
     把给定的秒转化为定义的格式
     '''
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime( float(s) ) )
+    return time.strftime(fmt, time.localtime( float(s) ) )
 
 
 def nowAvosDate():

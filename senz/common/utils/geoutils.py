@@ -2,7 +2,7 @@ __author__ = 'lsg'
 
 from math import *
 
-class LocationAndTime:
+class LocationAndTime(object):
     """Data including location and record time"""
 
     def __init__(self, _time, _latitude, _longitude):

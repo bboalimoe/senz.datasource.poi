@@ -50,6 +50,7 @@ urlpatterns += patterns("senz.views.poi.BaiduPoiView",
 urlpatterns += patterns("senz.views.location.LocationRecoView",
 
     url(r'^usr_loc_tag/$', 'GetUserLocationTags'),
+    url(r'^add_near_tag/$', 'AddTraceNearTags'),
 
                         )
 

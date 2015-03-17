@@ -31,3 +31,11 @@
 [16/Mar/2015 17:42:20] ERROR [senz.views.location.LocationRecoView:72] get user location tags error : No JSON object could be decoded
 [16/Mar/2015 17:43:18] ERROR [senz.views.location.LocationRecoView:72] get user location tags error : Expecting property name: line 1 column 2 (char 1)
 [16/Mar/2015 17:43:36] ERROR [senz.views.location.LocationRecoView:72] get user location tags error : Expecting property name: line 1 column 2 (char 1)
+[17/Mar/2015 14:31:08] ERROR [senz.views.location.LocationRecoView:72] get user location tags error : No JSON object could be decoded
+[17/Mar/2015 14:32:32] ERROR [senz.views.location.LocationRecoView:72] get user location tags error : 'str' object has no attribute 'read'
+[17/Mar/2015 14:36:39] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : No JSON object could be decoded
+[17/Mar/2015 14:36:55] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : No JSON object could be decoded
+[17/Mar/2015 14:37:24] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : Expecting property name: line 1 column 2 (char 1)
+[17/Mar/2015 14:37:52] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : Expecting property name: line 1 column 2 (char 1)
+[17/Mar/2015 14:39:11] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : 'str' object has no attribute 'read'
+[17/Mar/2015 14:39:47] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : Expecting property name: line 1 column 2 (char 1)

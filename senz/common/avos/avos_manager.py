@@ -10,6 +10,7 @@ from senz.common.utils.util_opt import *
 
 from senz.common import config, settings
 
+from senz.exceptions import *
 
 
 warnings.filterwarnings("ignore")
@@ -101,6 +102,24 @@ class AvosManager(object):
                 else:
                     print res.content
                     return None
+
+        def getAllData(self, className, **kwargs):
+            '''get all rows of specified class
+
+            TODO:this simple method may run out of memories when class data is very large
+            '''
+            L = 200
+            start = 0
+            res_len = L
+            jsonArray = []
+            while res_len == L:
+                res = json.loads(self.getData(className,limit=L, skip=start, **kwargs))['results']
+                res_len = len(res)
+                for row in res:
+                    jsonArray.append(row)
+                start = start+L
+
+            return jsonArray
 
 
 
@@ -256,6 +275,16 @@ class AvosManager(object):
                                 return {"error":a + b}
                 else:
                         return {"error":"no such object"}  # {"error":no}
+
+
+        def updateDataList(self, className, dataDict):
+                res = self._avosConnectors[config.findGroup(className)]._update_avos(className,dataDict)
+                if 'error' in json.loads(res.content):
+                    raise UpdateDataError(msg = json.loads(res.content)['error'])
+                return res.content
+
+
+
 
         #By Zhong.zy, delete, param data is id or id list
         def deleteData(self,className,data):
