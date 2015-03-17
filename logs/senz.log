@@ -39,3 +39,25 @@
 [17/Mar/2015 14:37:52] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : Expecting property name: line 1 column 2 (char 1)
 [17/Mar/2015 14:39:11] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : 'str' object has no attribute 'read'
 [17/Mar/2015 14:39:47] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : Expecting property name: line 1 column 2 (char 1)
+[17/Mar/2015 23:21:46] INFO [senz.views.location.LocationRecoView:65] pre location cluster
+[17/Mar/2015 23:21:47] INFO [senz.location.LocationRecognition:46] start location cluster.
+[17/Mar/2015 23:21:47] WARNING [senz.location.LocationRecognition:66] Not enough data in clustering location data!
+[17/Mar/2015 23:22:13] INFO [senz.views.location.LocationRecoView:65] pre location cluster
+[17/Mar/2015 23:22:13] ERROR [senz.location.LocationRecognition:179] exception in location clustering : unsupported operand type(s) for -: 'datetime.datetime' and 'float'
+[17/Mar/2015 23:22:13] ERROR [senz.views.location.LocationRecoView:73] get user location tags error : unsupported operand type(s) for -: 'datetime.datetime' and 'float'
+[17/Mar/2015 23:37:53] INFO [senz.views.location.LocationRecoView:65] pre location cluster
+[17/Mar/2015 23:41:39] INFO [senz.views.location.LocationRecoView:65] pre location cluster
+[17/Mar/2015 23:42:11] INFO [senz.location.LocationRecognition:46] start location cluster.
+[17/Mar/2015 23:54:53] INFO [senz.location.LocationRecognition:228] add near tag to 2040 trace data
+[17/Mar/2015 23:54:53] ERROR [senz.views.location.LocationRecoView:100] Add user trace near tags error : unbound method _patch_avos() must be called with AVObject instance as first argument (got list instance instead)
+[17/Mar/2015 23:58:13] INFO [senz.location.LocationRecognition:228] add near tag to 2040 trace data
+[17/Mar/2015 23:58:13] ERROR [senz.views.location.LocationRecoView:100] Add user trace near tags error : unbound method _patch_avos() must be called with AVObject instance as first argument (got list instance instead)
+[17/Mar/2015 23:59:09] INFO [senz.location.LocationRecognition:228] add near tag to 2040 trace data
+[17/Mar/2015 23:59:09] ERROR [senz.views.location.LocationRecoView:100] Add user trace near tags error : unbound method _patch_avos() must be called with AVObject instance as first argument (got list instance instead)
+[18/Mar/2015 00:02:40] INFO [senz.location.LocationRecognition:228] add near tag to 2040 trace data
+[18/Mar/2015 00:07:51] INFO [senz.views.location.LocationRecoView:65] pre location cluster
+[18/Mar/2015 00:08:03] INFO [senz.location.LocationRecognition:46] start location cluster.
+[18/Mar/2015 00:08:04] WARNING [senz.location.LocationRecognition:66] Not enough data in clustering location data!
+[18/Mar/2015 00:10:39] INFO [senz.views.location.LocationRecoView:65] pre location cluster
+[18/Mar/2015 00:11:02] INFO [senz.location.LocationRecognition:46] start location cluster.
+[18/Mar/2015 00:11:03] WARNING [senz.location.LocationRecognition:66] Not enough data in clustering location data!

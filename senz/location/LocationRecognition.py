@@ -156,8 +156,12 @@ class LocationRecognition(object):
                                    where='{"userId":"%s"}'% userId ))['results']
 
             if len(oldLocRecgData) > 0:
-                createDate = timeutils.ISOString2Time(oldLocRecgData[0]['createdAt'],
-                                                      timeutils.ISO_TIME_FORMAT)
+                #createDate = timeutils.ISOString2Time(oldLocRecgData[0]['createdAt'],
+                #                                      timeutils.ISO_TIME_FORMAT)
+
+                createDate = datetime.datetime.strptime(oldLocRecgData[0]['createdAt'],
+                                                        timeutils.ISO_TIME_FORMAT)
+
                 nowDate = datetime.datetime.now()
                 if (nowDate - createDate).days < 7:
                     return oldLocRecgData

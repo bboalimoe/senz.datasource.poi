@@ -67,7 +67,7 @@ class AVObject(object):
             patch_ob_list = [{"method": "PUT",
                               "path": "/1.1/classes/"+cls_name+"/"+ob['objectId'],
                               "body": ob} for ob in data]
-            return AVObject._patch_avos(
+            return self._patch_avos(
                 patch_ob_list
             )
 
@@ -96,7 +96,7 @@ class AVObject(object):
             patch_ob_list = [{"method": "DELETE",
                               "path": "/1.1/classes/"+cls_name+"/"+ob['objectId']}
                              for ob in data]
-            return AVObject._patch_avos(
+            return self._patch_avos(
                 patch_ob_list
             )
         elif type(data) == dict or type(data) == str: #remove single one
