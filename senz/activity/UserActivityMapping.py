@@ -1,16 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from math import *
-import sys
+import sys, os
 
-sys.path.append("../utils")
+
 from senz.common.avos.avos_manager import *
 from senz.common.utils import timeutils
 from senz.common.utils import geoutils
 
-for i in sys.path:
-    print i
-#print "sys.path   ",sys.path
+
 
 class UserActivityMapping(object):
 
