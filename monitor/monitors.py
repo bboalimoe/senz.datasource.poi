@@ -23,12 +23,6 @@ class BaseMonitor(object):
             self.tg.add_timer(v['interval'],
                               getattr(self, 'monitor_' + ob),
                               **v['args'])
-            '''
-            if ob == 'process':
-                self.tg.add_timer(v['interval'], monitor_process, )
-            elif ob == 'port':
-                self.tg.add_timer(v['interval'], monitor_port, **v['args'])
-                '''
 
     def monitor_process(self, key_word, handler):
         p1 = subprocess.Popen(['ps', '-ef'], stdout=subprocess.PIPE)
@@ -41,9 +35,8 @@ class BaseMonitor(object):
         else:
             msg = "Process [%s] is lost at %s" % (key_word, timeutils.utcnow_ts())
             LOG.error(msg)
-            if handler:
-                handler.handle(msg)
-            exit()
+            if handler and handler.handle(msg):
+                exit()
 
     def monitor_port(self, protocol, port, handler):
         address = ('127.0.0.1', port)
@@ -55,10 +48,10 @@ class BaseMonitor(object):
         except Exception, e:
             pass
         else:
-            LOG.error("port[%s-%s] is lost at %s" % (protocol, port, timeutils.utcnow_ts()))
-            if handler:
-                handler.handle()
-            exit()
+            msg = "port[%s-%s] is lost at %s" % (protocol, port, timeutils.utcnow_ts())
+            LOG.error(msg)
+            if handler and handler.handle(msg):
+                exit()
         finally:
             client.close()
 

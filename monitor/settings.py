@@ -11,6 +11,7 @@ MONITORS = {
             'protocol': 'tcp',
             'port': 8099,
             'handler': EmailHandler(),
+            'initial_delay' : 60,
         }
     },
     #'process' : {
@@ -18,6 +19,7 @@ MONITORS = {
     #    'args' : {
     #        'key_word' : 'senz'
     #        'handler' : EmailHandler(),
+    #        'initial_delay' : None,
     #    }
     #}
 }
