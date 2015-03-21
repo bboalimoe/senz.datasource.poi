@@ -6,7 +6,7 @@ import logging
 import smtplib
 from email.mime.text import MIMEText
 
-#LOG = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 EMAIL_HOST = 'smtp.163.com'
 EMAIL_PORT = 25
@@ -41,8 +41,7 @@ class EmailHandler(object):
 
             return True
         except Exception ,e:
-            #LOG.error( 'warning email send failed : %s' % e)
-            print "warning email send failed : %s" % e
+            LOG.error( 'warning email send failed : %s' % e)
             return False
         finally:
             smtp.quit()
