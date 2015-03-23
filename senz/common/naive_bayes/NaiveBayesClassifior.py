@@ -56,7 +56,19 @@ class NaiveBayes(object):
                     probability *= 1.0/(self.modelDict[label]*self.sampleCount)              
             probability *= self.modelDict[label]
             #get sum
-            sumProbability += probability            
+            sumProbability += probability
+
+        for label in self.labelSet:
+            probability = 1.0
+            for i,feature in enumerate(features):
+                feature_label = 'f'+str(i)+'='+feature+'|'+label
+                if feature_label in self.modelDict:
+                    probability *= self.modelDict[feature_label]
+                else: # if not exit in samples, make it 1/count(label)
+                    probability *= 1.0/(self.modelDict[label]*self.sampleCount)
+            probability *= self.modelDict[label]
+            #get sum
+            sumProbability += probability
             #get target
             if label == targetLabel:
                 targetProbability = probability

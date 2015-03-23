@@ -262,19 +262,24 @@ class UserActivityMapping(object):
             :return:
             """
             avosClassName = "UserLocationTrace"
-
+            avosManager = AvosManager()
+            gpsDictList = []
             for gps in GPSlist:
+                gpsDictList.append({ "latitude":gps['latitude'],"longitude":gps["longitude"],
+                                      "activityId":"", "timestamp":gps['timestamp'],"near":"",
+                                      "userId":userId})
 
-                result = avosManager.saveData(avosClassName,{
-                                                       "latitude":gps['latitude'],"longitude":gps["longitude"],
-                                                       "activityId":"", "timestamp":gps['timestamp'],
-                                                       "near":"", "userId":userId})
-                #todo change the server's version which is typo timpstamp
-                print "GPS write"
 
-                if not result:
+            result = avosManager.saveData(avosClassName,{
+                                                   "latitude":gps['latitude'],"longitude":gps["longitude"],
+                                                   "activityId":"", "timestamp":gps['timestamp'],
+                                                   "near":"", "userId":userId})
+            #todo change the server's version which is typo timpstamp
+            print "GPS write"
 
-                   print "save error: userid:%s".format(userId)
+            if not result:
+
+               print "save error: userid:%s".format(userId)
 
 
 

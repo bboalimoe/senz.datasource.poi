@@ -65,7 +65,7 @@ class GeoCoder(object):
 if __name__ == "__main__":
     geo = GeoCoder()
     region = "​中国票务在线上海站"
-    #lng,lat=geo.geoCoding(region)
-    #print lng,lat
+    lng,lat=geo.geoCoding(region)
+    print lng,lat
     #print geo.getPOI(39.936691964083,116.45062456899)
-    print geo.getPOIByName("北京香河");
+    #print geo.getPOIByName("北京香河");

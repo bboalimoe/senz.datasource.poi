@@ -41,10 +41,11 @@ class AvosManager(object):
                 res = self._avosConnectors[config.findGroup(className)]._save_to_avos(className,dataDict)
 
                 if 'createdAt' not in json.loads(res.content):
-                        print res.content
-                        return None
+                    resInfo = json.loads(res.content)
+                    raise DataCRUDError('create %(className)s object error, %s' %
+                                        (className, resInfo['error']))
                 else:
-                        return res.content
+                    return res.content
 
         #By Zhong.zy, Create users
         def createUser(self,userInfo):
@@ -280,7 +281,7 @@ class AvosManager(object):
         def updateDataList(self, className, dataDict):
                 res = self._avosConnectors[config.findGroup(className)]._update_avos(className,dataDict)
                 if 'error' in json.loads(res.content):
-                    raise UpdateDataError(msg = json.loads(res.content)['error'])
+                    raise DataCRUDError(msg = json.loads(res.content)['error'])
                 return res.content
 
 

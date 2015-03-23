@@ -8,8 +8,8 @@ class Invalid(NeutronException):
 class NotEnouphData(Invalid):
     message = 'Not enouph %(param)s data for method '
 
-class UpdateDataError(BadRequest):
-    message = 'Update data error : %(msg)s'
+class DataCRUDError(BadRequest):
+    message = 'Handle data CRUD method error : %(msg)s'
 
 
 if __name__ == '__main__':
