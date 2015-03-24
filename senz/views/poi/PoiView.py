@@ -2,7 +2,7 @@
 __author__ = 'zhanghengyang'
 
 
-
+import logging
 import json
 
 from django.http.response import HttpResponse, JsonResponse
@@ -16,7 +16,9 @@ from django.http import JsonResponse
 from mixpanel import Mixpanel
 
 from senz.poi.controller import PoiController
+from senz.exceptions import *
 
+LOG = logging.getLogger(__name__)
 
 """
 发送请求内容：
@@ -115,8 +117,12 @@ def GetPoi(request):
     GPSlist = req["GPS"]
     Beaconlist = req["iBeacon"]
 
-    poi_contro = PoiController()
-    rtBeaLoc = poi_contro.getPoi(Beaconlist, GPSlist, userId)
+    try:
+        poiContro = PoiController()
+        rtBeaLoc = poiContro.getPoi(Beaconlist, GPSlist, userId)
+    except DataCRUDError, e:
+        LOG.info('Poi data CRUD error : %s' % e)
+        return HttpResponse('Poi data CRUD error : %s' % e, status=DataCRUDError.code)
 
 
     print "rtBeaLoc", rtBeaLoc

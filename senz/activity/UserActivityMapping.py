@@ -261,25 +261,24 @@ class UserActivityMapping(object):
             dump the info to db
             :return:
             """
+            #todo:use to_dict method put list to data handler module
+
             avosClassName = "UserLocationTrace"
             avosManager = AvosManager()
-            gpsDictList = []
-            for gps in GPSlist:
-                gpsDictList.append({ "latitude":gps['latitude'],"longitude":gps["longitude"],
-                                      "activityId":"", "timestamp":gps['timestamp'],"near":"",
-                                      "userId":userId})
+            i = 0
+            for i in range(0, len(GPSlist), 200):
+                j = i + 200 if i + 200 > len(GPSlist) else len(GPSlist)
+                locationtList = []
+                for k in range(i ,j):
+                    gps = GPSlist[k]
+                    locationtList.append({ "latitude":gps['latitude'],"longitude":gps["longitude"],
+                                          "activityId":"", "timestamp":gps['timestamp'],"near":"",
+                                          "userId":userId})
 
+                avosManager.saveData(avosClassName, locationtList)
 
-            result = avosManager.saveData(avosClassName,{
-                                                   "latitude":gps['latitude'],"longitude":gps["longitude"],
-                                                   "activityId":"", "timestamp":gps['timestamp'],
-                                                   "near":"", "userId":userId})
             #todo change the server's version which is typo timpstamp
             print "GPS write"
-
-            if not result:
-
-               print "save error: userid:%s".format(userId)
 
 
 

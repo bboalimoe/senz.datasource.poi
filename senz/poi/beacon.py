@@ -43,12 +43,19 @@ class Beacon(object):
         dump the info to db
         :return:
         """
+        avosClassName = "UserBeaconTrace"
+        i = 0
+        for i in range(0, len(beaconlist), 200):
+            j = i + 200 if i + 200 > len(beaconlist) else len(beaconlist)
+            locationtList = []
+            for k in range(i ,j):
+                beacon = beaconlist[k]
+                locationtList.append({ "latitude":beacon['latitude'],"longitude":beacon["longitude"],
+                                      "activityId":"", "timestamp":beacon['timestamp'],"near":"",
+                                      "userId":userId})
 
-        for beacon in beaconlist:
-            result = self.avosManager.saveData("UserBeaconTrace",{"major":beacon['major'],"minor":beacon["minor"],"uuid":beacon["uuid"],"rssi":beacon["rssi"],"activityId":"",
-                                                           "timpstamp":beacon['timestamp'],"userId":userId})
-            if not result:
-               print "save error: userid:%s".format(userId)
+            self.avosManager.saveData(avosClassName, locationtList)
+
 
 
     def BeaconInfo(self,beaconlist):

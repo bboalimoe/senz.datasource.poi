@@ -42,7 +42,7 @@ class AvosManager(object):
 
                 if 'createdAt' not in json.loads(res.content):
                     resInfo = json.loads(res.content)
-                    raise DataCRUDError('create %(className)s object error, %s' %
+                    raise DataCRUDError(msg='create %(className)s object error, %s' %
                                         (className, resInfo['error']))
                 else:
                     return res.content
