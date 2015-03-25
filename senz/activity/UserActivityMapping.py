@@ -3,12 +3,13 @@
 from math import *
 import sys, os
 
+import logging
 
 from senz.common.avos.avos_manager import *
 from senz.common.utils import timeutils
 from senz.common.utils import geoutils
 
-
+LOG = logging.getLogger(__name__)
 
 class UserActivityMapping(object):
 
@@ -265,16 +266,15 @@ class UserActivityMapping(object):
 
             avosClassName = "UserLocationTrace"
             avosManager = AvosManager()
-            i = 0
             for i in range(0, len(GPSlist), 200):
-                j = i + 200 if i + 200 > len(GPSlist) else len(GPSlist)
+                j = i + 200 if i + 200 < len(GPSlist) else len(GPSlist)
                 locationtList = []
                 for k in range(i ,j):
                     gps = GPSlist[k]
                     locationtList.append({ "latitude":gps['latitude'],"longitude":gps["longitude"],
                                           "activityId":"", "timestamp":gps['timestamp'],"near":"",
                                           "userId":userId})
-
+                LOG.info('Save number %d to %d datas in gps list to db' % (i, j))
                 avosManager.saveData(avosClassName, locationtList)
 
             #todo change the server's version which is typo timpstamp

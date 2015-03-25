@@ -3,7 +3,9 @@
 
 import requests
 import json
+import logging
 
+LOG = logging.getLogger(__name__)
 
 class AVObject(object):
     base = r'https://leancloud.cn' #cn.avoscloud.com
@@ -28,10 +30,11 @@ class AVObject(object):
     def _save_to_avos(self, cls_name, data):
         if type(data) == list:
             #save many object
+            LOG.info('patch request')
             patch_ob_list = [{"method": "POST",
                               "path": "/1.1/classes/"+cls_name,
                               "body": ob} for ob in data]
-            return AVObject._patch_avos(
+            return self._patch_avos(
                 patch_ob_list
             )
         else:
@@ -113,6 +116,7 @@ class AVObject(object):
 
     
     def _patch_avos(self, patch_ob_list):
+        LOG.info('send patched request')
         return requests.post(
             AVObject.base_patch,
             data=json.dumps({'requests': patch_ob_list}),

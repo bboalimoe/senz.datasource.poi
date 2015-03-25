@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 __author__ = 'wzf'
 
 import logging
@@ -36,8 +37,23 @@ class PoiController(object):
             rt.setdefault("actiEndTime",timestamped_dict[str(timestamp_)]["end_time"])
 
 
+    def _handleBeacon(self, beaconList, userId):
+
+        if beaconList:
+            beacon = Beacon()
+            beacon.dump2db(beaconList,userId)
+
+            Beaconlen = len(beaconList)
+            BeaconrtList = [{} for i in range(Beaconlen)]
+
+            return beacon.BeaconInfo(BeaconrtList)
+        else:
+            return []
+
+
+
     def getPoi(self, beaconList, gpsList, userId):
-        Beaconlen = len(beaconList)
+
         GPSlen = len(gpsList)
         rtBeaLoc = {"GPS":" ","iBeacon":" "}
 
@@ -47,19 +63,20 @@ class PoiController(object):
 
         GPSrtList = [{} for i in range(GPSlen)]
 
-        BeaconrtList = [{} for i in range(Beaconlen)]
+
 
         usermapping = UserActivityMapping()
-        beacon = Beacon()
+        LOG.info('start to store gps list')
         pg = PoiGet()
         usermapping.dump2db(gpsList,userId)
-        beacon.dump2db(beaconList,userId)
 
+        LOG.info('mapping user activity')
         timestamped_dict = usermapping.mapActivityByUser(userId)
 
         #todo
         #gps poitype
         i = 0
+        LOG.info('parse poi')
         for gps in gpsList:
             self.threadGroup.add_thread(self._parseGpsPoi, poiGetor=pg, gps=gps,
                                                            timestamped_dict=timestamped_dict,
@@ -67,7 +84,7 @@ class PoiController(object):
             i += 1
 
         #beacon poitype
-
-        BeaconrtList = beacon.BeaconInfo(BeaconrtList)
+        LOG.info('handle beacon list')
+        BeaconrtList = self._handleBeacon(beaconList, userId)
 
         return rtBeaLoc.update({"GPS":GPSrtList,"iBeacon":BeaconrtList})

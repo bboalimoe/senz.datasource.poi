@@ -13,7 +13,7 @@ from django.conf import settings
 from django.conf.urls import patterns, url
 from django.core.management import execute_from_command_line
 from django.http import JsonResponse
-from mixpanel import Mixpanel
+#from mixpanel import Mixpanel
 
 from senz.poi.controller import PoiController
 from senz.exceptions import *
@@ -105,6 +105,7 @@ def GetPoi(request):
     """
 
     """
+    LOG.info('start get poi')
     try:
         if request.method == 'POST':
             req = json.loads(request.body)  #body is deprecated
@@ -113,10 +114,11 @@ def GetPoi(request):
     except:
         return errorResponses()
 
-    userId = req["userId"]
-    GPSlist = req["GPS"]
-    Beaconlist = req["iBeacon"]
+    userId = req.get("userId")
+    GPSlist = req.get("GPS")
+    Beaconlist = req.get("iBeacon")
 
+    LOG.info('fetch to poi controller')
     try:
         poiContro = PoiController()
         rtBeaLoc = poiContro.getPoi(Beaconlist, GPSlist, userId)
