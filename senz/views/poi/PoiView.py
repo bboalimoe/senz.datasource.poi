@@ -2,7 +2,7 @@
 __author__ = 'zhanghengyang'
 
 
-
+import logging
 import json
 
 from django.http.response import HttpResponse, JsonResponse
@@ -13,10 +13,12 @@ from django.conf import settings
 from django.conf.urls import patterns, url
 from django.core.management import execute_from_command_line
 from django.http import JsonResponse
-from mixpanel import Mixpanel
+#from mixpanel import Mixpanel
 
 from senz.poi.controller import PoiController
+from senz.exceptions import *
 
+LOG = logging.getLogger(__name__)
 
 """
 发送请求内容：
@@ -103,6 +105,7 @@ def GetPoi(request):
     """
 
     """
+    LOG.info('start get poi')
     try:
         if request.method == 'POST':
             req = json.loads(request.body)  #body is deprecated
@@ -111,12 +114,17 @@ def GetPoi(request):
     except:
         return errorResponses()
 
-    userId = req["userId"]
-    GPSlist = req["GPS"]
-    Beaconlist = req["iBeacon"]
+    userId = req.get("userId")
+    GPSlist = req.get("GPS")
+    Beaconlist = req.get("iBeacon")
 
-    poi_contro = PoiController()
-    rtBeaLoc = poi_contro.getPoi(Beaconlist, GPSlist, userId)
+    LOG.info('fetch to poi controller')
+    try:
+        poiContro = PoiController()
+        rtBeaLoc = poiContro.getPoi(Beaconlist, GPSlist, userId)
+    except DataCRUDError, e:
+        LOG.info('Poi data CRUD error : %s' % e)
+        return HttpResponse('Poi data CRUD error : %s' % e, status=DataCRUDError.code)
 
 
     print "rtBeaLoc", rtBeaLoc

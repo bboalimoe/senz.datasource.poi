@@ -2,7 +2,7 @@
 
 import json
 import warnings
-
+import logging
 import requests
 
 from senz.common.avos.avos import AVObject
@@ -12,6 +12,7 @@ from senz.common import config, settings
 
 from senz.exceptions import *
 
+LOG = logging.getLogger(__name__)
 
 warnings.filterwarnings("ignore")
 
@@ -25,6 +26,7 @@ class AvosClass(AVObject):
                              settings.groups[setting_group]['avos_key']]
 '''
 
+SUCCESS_CODE = (200, 201, 202)
 
 class AvosManager(object):
         def __init__(self):
@@ -38,11 +40,16 @@ class AvosManager(object):
 
 
         def saveData(self,className,dataDict):
+                LOG.info('group name is %s' % config.findGroup(className))
+                LOG.info('connector is %s' % self._avosConnectors[config.findGroup(className)])
                 res = self._avosConnectors[config.findGroup(className)]._save_to_avos(className,dataDict)
 
-                if 'createdAt' not in json.loads(res.content):
+                LOG.info('Saved avos objs in manager and res is %s' % res.__dict__)
+                if res.status_code not in SUCCESS_CODE:
+                #if 'createdAt' not in json.loads(res.content):
                     resInfo = json.loads(res.content)
-                    raise DataCRUDError('create %(className)s object error, %s' %
+                    LOG.error('Sava avos objs error : %s' % resInfo['error'])
+                    raise DataCRUDError(msg='create %s object error, %s' %
                                         (className, resInfo['error']))
                 else:
                     return res.content
@@ -54,7 +61,7 @@ class AvosManager(object):
                     headers = self._avosConnectors['base'].headers(),
                     data = json.dumps(userInfo),
                     verify=False)
-                if 'createdAt' not in json.loads(res.content):
+                if 'createdAt' not in json.loads(res._content):
                     print 'Error: '+res.content
                     return None
                 else:
@@ -107,7 +114,7 @@ class AvosManager(object):
         def getAllData(self, className, **kwargs):
             '''get all rows of specified class
 
-            TODO:this simple method may run out of memories when class data is very large
+            TODO:this simple method may run out of memories when class data is very large!!!!!!!!!!
             '''
             L = 200
             start = 0
