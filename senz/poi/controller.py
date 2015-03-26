@@ -1,6 +1,9 @@
+# -*- coding:utf-8 -*-
 __author__ = 'wzf'
 
 import logging
+
+from webob import exc
 
 from senz.poi.poi import PoiGet
 from senz.activity.UserActivityMapping import UserActivityMapping
@@ -60,9 +63,13 @@ class PoiController(object):
 
         except Exception, e:
             LOG.error('Error in get poi: %s' % e)
-
+            return exc.HTTPInternalServerError()
             pass
 
 
 
         return rtBeaLoc.update({"GPS":GPSrtList,"iBeacon":BeaconrtList})
+
+
+if __name__ == '__main__':
+    print exc.HTTPInternalServerError()

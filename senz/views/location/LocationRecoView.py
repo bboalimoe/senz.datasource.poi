@@ -5,6 +5,11 @@ __author__ = 'bboalimoe'
 import json
 import logging
 
+import webob
+from webob import exc
+
+from django import http
+
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -51,6 +56,8 @@ def GetUserLocationTags(request):
 
     return：                   {“status”：0(1),"errors"(results):"some errors"(results)}
     """
+
+    return HttpResponse()
 
     #todo retrieve data from leancloud or other db
     try:
