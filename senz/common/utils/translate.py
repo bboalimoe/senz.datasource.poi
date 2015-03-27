@@ -1,6 +1,10 @@
 # -*- encoding=utf-8 -*-
 __author__ = 'zhanghengyang'
 
+import logging
+
+LOG = logging.getLogger(__name__)
+
 class Trans(object):
 
     def __init__(self):
@@ -26,9 +30,14 @@ class Trans(object):
 
             raise Exception("name should be str or unicode")
 
-        else:
+        elif name in cls.poi:
 
             return cls.poi[name]
+        else:
+
+            LOG.error('Get unknown poi type in trans named "%s"' % name)
+
+            return name
 
 
 

@@ -44,17 +44,20 @@ class GeoCoder(object):
 
         url = "http://api.map.baidu.com/geocoder/v2/?coordtype=bd09ll&location=%s,%s&output=json&ak=fPnXQ2dVgLevy7GwIomnhEMg&pois=1" % (lat,lng)
         result_info = get_source(url)
-        a = json.loads(result_info)
-        if a['status'] != 0:
+
+        res_dict = json.loads(result_info)
+        #LOG.info('in geo coding result %s' % result_info)
+        if res_dict['status'] != 0:
             return None #todo return the error info that baidu returns
-        print "details   ", a
+        #print "details   ", a
         #print(json.loads(result_info)['result'])
-        pois = json.loads(result_info)['result']['pois']
+        pois = res_dict['result']['pois']
         if not pois:
             return {}
         pois.sort(key=lambda x:x['distance'])
         #poi = pois[1]['name']
         #return poi.encode('utf-8')
+        #LOG.info("in geo coding return poi %s" % pois[0])
         return pois[0]
 
     def getPOIByName(self,name):

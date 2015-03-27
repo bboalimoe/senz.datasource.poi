@@ -57,8 +57,6 @@ def GetUserLocationTags(request):
     return：                   {“status”：0(1),"errors"(results):"some errors"(results)}
     """
 
-    return HttpResponse()
-
     #todo retrieve data from leancloud or other db
     try:
         locRecg = LocationRecognition()

@@ -8,19 +8,19 @@ import json
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from poi.poiGenerator import PoiGenerator
+from senz.poi.poiGenerator import PoiGenerator
 from django.conf import settings
 from django.conf.urls import patterns, url
 from django.core.management import execute_from_command_line
 from django.http import JsonResponse
-from mixpanel import Mixpanel
+#from mixpanel import Mixpanel
 import time
 #todo change all the users in the poiTailor View to devs
 
 
 # Create your views here.
 
-mp = Mixpanel('b89d8d933c962ae2e8da4337e29ff829')
+#mp = Mixpanel('b89d8d933c962ae2e8da4337e29ff829')
 
 
 def index(request):
