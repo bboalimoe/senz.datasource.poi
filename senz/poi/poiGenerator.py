@@ -86,7 +86,7 @@ class PoiGenerator(object):
             cond = dict(poiGroup=dict(__type='Pointer', className='PoiGroup', objectId=poiGroupId))
             res = self.avos.getData('PoiGroupMember', where=json.dumps(cond))
             memberList = json.loads(res)['results']
-            return [(member['location']['latitude'], member['location']['longitude']) for member in memberList]
+            return [(member['place']['latitude'], member['place']['longitude']) for member in memberList]
 
     def deletePoiGroupMemberByName(self, poiGroupName, username, lat, lng):
         poiGroupId = self.getPoiGroupIdByName(poiGroupName, username)

@@ -108,23 +108,19 @@ class PoiController(object):
         return rtBeaLoc.update({"GPS":GPSrtList,"iBeacon":BeaconrtList})
 
     def _coroutineParse(self, poiGetor, gpsList, timestampedDict, rtList):
+        #deprecated
+        #it should used under 'green' urllib
         i = 0
         for gps in gpsList:
             kwargs = {'poiGetor':poiGetor, 'gps':gps,
                       'timestamped_dict':timestampedDict,
                       'rt':rtList[i]}
-            print 1
-            print 2
-            print 3
             self.threadGroup.add_thread(_parseGpsPoi, poiGetor=poiGetor, gps=gps,
                                                            timestamped_dict=timestampedDict,
                                                            rt=rtList[i])
-            print 4
-            print 5
-            print 6
             i += 1
 
-        #self.threadGroup.wait()
+        self.threadGroup.wait()
 
 
     def _singleThreadParse(self, poiGetor, gpsList, timestampedDict, rtList):

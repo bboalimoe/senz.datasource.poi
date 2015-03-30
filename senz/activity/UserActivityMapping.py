@@ -25,7 +25,7 @@ class UserActivityMapping(object):
                 self.users = {}
                 self.locations = []
                 self.activities = []
-                self.flaggedLocation = None #record the last location record that triggers the matching
+                self.flaggedLocation = None #record the last place record that triggers the matching
                 #todo
                 self.mapped = False # tell the method if updating the results
                 #todo
@@ -37,8 +37,8 @@ class UserActivityMapping(object):
         def __isInActivity(self,user,activity):
 
 
-                aLon=activity['location']['longitude'] #geopoint
-                aLat=activity['location']['latitude']
+                aLon=activity['place']['longitude'] #geopoint
+                aLat=activity['place']['latitude']
                 activeTimes = []
                 activeLocationRecords = []
                 for oneTime in user:
@@ -157,7 +157,7 @@ class UserActivityMapping(object):
                                     self.mappingList[userId].append(activity['objectId'])
                         print 'Done'
                         self.avosManager.saveData("MappingResults",{"userid":userId,"activities":self.mappingList[userId]})
-                #todo only map one day's user location&activity data  and save one day's matching data into avos
+                #todo only map one day's user place&activity data  and save one day's matching data into avos
 
 
                 print 'Mapping finished!'
@@ -188,7 +188,7 @@ class UserActivityMapping(object):
             self._getLastPossibleActivities()
             self.GetRecentTraceByUser(userId)
 
-            #todo get the user's last location
+            #todo get the user's last place
 
             for ac in self.activities:
                 if self.__isInActivity(self.locations,ac):

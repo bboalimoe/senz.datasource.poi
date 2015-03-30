@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 __author__ = 'bboalimoe'
 
 import json
@@ -15,7 +16,7 @@ from mixpanel import Mixpanel
 @csrf_exempt
 def CreateGeoFence(request):
 
-     """
+     '''
 
     /create_geofence/
     description: create the geofence in round and square shape,with unit being mile
@@ -29,4 +30,5 @@ def CreateGeoFence(request):
     FenceGroup                 string
 
     return：                   {“status”：0(1),"errors":"some errors"(empty)}
-    """
+        '''
+     pass

@@ -320,7 +320,7 @@ if __name__ == "__main__":
         start_time = dict(__type='Date',iso=start_iso)
         end_time = dict(__type='Date',iso=start_iso)
         dataDict = {"name":"《文成公主》大型实景剧","date":date_time,
-        "start_time":start_time,"end_time":end_time,"ticket":"220","region":"北京市海淀区北京邮电大学","location":gps2GeoPoint(39.970513,116.361834),"category":""}
+        "start_time":start_time,"end_time":end_time,"ticket":"220","region":"北京市海淀区北京邮电大学","place":gps2GeoPoint(39.970513,116.361834),"category":""}
         className = "testDate"
         #avosManager.saveData(className,dataDict)
         #avosManager.saveActivity(dataDict)

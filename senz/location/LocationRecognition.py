@@ -43,7 +43,7 @@ class LocationRecognition(object):
                            timeRanges=DEFAULT_TIME_RANGES, tagOfTimeRanges=DEFAULT_TAG_OF_TIME_RANGES, timeThreshold = 300000,
                            ratioThreshold = 0.4):
 
-        LOG.info("start location cluster.")
+        LOG.info("start place cluster.")
 
         # parse json data
 
@@ -63,7 +63,7 @@ class LocationRecognition(object):
 
         print("%d standardized records" % len(dataArray))
         if len(dataArray) <= 1:
-            LOG.warning("Not enough data in clustering location data!")
+            LOG.warning("Not enough data in clustering place data!")
             return []
 
         # clustering
@@ -148,7 +148,7 @@ class LocationRecognition(object):
     def startCluster(self, userId=None):
 
         try:
-            #return old location recognition data if it generated in 7 days
+            #return old place recognition data if it generated in 7 days
             locRecgClass = 'LocationRecognition'
 
             oldLocRecgData = json.loads(self.avosManager.getData(
@@ -180,14 +180,14 @@ class LocationRecognition(object):
 
             return json.dumps(results,default=lambda obj:obj.__dict__)
         except Exception as e:
-            LOG.error("exception in location clustering : %s" % e.message)
+            LOG.error("exception in place clustering : %s" % e.message)
             raise e
 
 
 
 
     def saveResults(self, results, userId=None):
-        #save location recgnition results to leancloud
+        #save place recgnition results to leancloud
         avosClassName = 'LocationRecognition'
         for result in results:
             for tag in result.tags:

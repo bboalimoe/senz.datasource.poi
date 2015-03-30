@@ -48,7 +48,7 @@ def GetUserLocationTags(request):
     """
 
     /usr_loc_tag/
-    description:               get the identified location tags for the specified user with POST and userid
+    description:               get the identified place tags for the specified user with POST and userid
                                get all the users' locations tags with GET
     method:                    Post
         userid:                    string
@@ -67,7 +67,7 @@ def GetUserLocationTags(request):
             bodyData = json.loads(req)
             userId = bodyData["userId"]
 
-            LOG.info("pre location cluster")
+            LOG.info("pre place cluster")
             results = locRecg.startCluster(userId)
         elif request.method == "GET":
             results = locRecg.startCluster()
@@ -75,7 +75,7 @@ def GetUserLocationTags(request):
             return errorResponses("Method wrong")
 
     except Exception as e:
-        LOG.error("get user location tags error : %s" % e)
+        LOG.error("get user place tags error : %s" % e)
         return errorResponses()
 
     return successResponses(results)  #indicate the crawl actions have been done
@@ -111,8 +111,8 @@ def TriggerActions(request):
     """
     ####deprecated####
 
-    trigger the algo to compute all users' identified location tags with GET
-                                one user's identified location tags with POST and userid
+    trigger the algo to compute all users' identified place tags with GET
+                                one user's identified place tags with POST and userid
 
     logic:
     1.let the algo run until
