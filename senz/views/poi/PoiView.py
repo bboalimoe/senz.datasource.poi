@@ -15,6 +15,9 @@ from django.core.management import execute_from_command_line
 from django.http import JsonResponse
 #from mixpanel import Mixpanel
 
+
+from poi.poiGenerator import PoiGenerator
+
 from senz.poi.controller import PoiController
 from senz.exceptions import *
 
@@ -82,25 +85,8 @@ def successResponses(results):
 
 
 
-"""
-发送请求内容：
-{
-"userId": userID（这个以leancloud里面SenzData里面userInfo表的objectId为准）
-"locGPS": [ {
-"latitude": latitude,
-"longitude": longitude，
-"timestamp": timestamp（对应的是这条gps数据数据库中的时间戳，这个时间戳以sdk取出gps数据打上的时间戳为准）
-}, ...],
-"locBeacon": [ {
-"uuid": ibeacon_uuid,
-"timestamp": timestamp
-}, ...]
-}
-"""
-
-
 @csrf_exempt
-def GetPoi(request):
+def PoiView(request):
 
     """
 
@@ -130,7 +116,61 @@ def GetPoi(request):
     print "rtBeaLoc", rtBeaLoc
     return successResponses(rtBeaLoc)
 
+#source /poi/poi.py
 
+
+@csrf_exempt
+def GetBaiduPoiType(request):
+
+    """
+
+    /baidu_poitype/
+    description: get the poi type of specific lng&lat in baidu's cloud definition
+    method:                    Post
+    data format:              json
+     lat:                     string
+     lng:                      string
+    return :{"status":1(0), "results": ["poitype":"","name":""]}
+
+
+    """
+
+    try:
+        if request.method == 'POST':
+
+            req = json.loads(request.body)  #body is deprecated
+
+
+        else:
+             info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
+             return JsonResponse({"status":0, "errors":info})
+    except:
+        import sys
+        info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
+        print info
+        return JsonResponse({"status":0,"errors":info})
+
+    lat, lng = req['lat'], req['lng']
+    try:
+        pg = PoiGet()
+        results = pg.parsePoi(lat, lng)
+
+    except:
+        import sys
+        info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
+        print info
+
+        return JsonResponse({"status":0,"errors":info })
+
+
+    if not results or "error" in results.keys():
+        if not results:
+            return JsonResponse({"status":0}, {"errors":'' })
+        else:
+            return JsonResponse({"status":0}, {"errors":results['error'] })
+
+    else:
+        return JsonResponse({"status":1,"results":results})
 
 
 
