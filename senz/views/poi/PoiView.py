@@ -7,16 +7,7 @@ import json
 
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django import http
-
-from django.conf import settings
-from django.conf.urls import patterns, url
-from django.core.management import execute_from_command_line
-from django.http import JsonResponse
 #from mixpanel import Mixpanel
-
-
-from poi.poiGenerator import PoiGenerator
 
 from senz.poi.controller import PoiController
 from senz.exceptions import *
@@ -32,6 +23,8 @@ LOG = logging.getLogger(__name__)
 "longitude": longitude，
 "timestamp": timestamp（对应的是这条gps数据数据库中的时间戳，这个时间戳以sdk取出gps数据打上的时间戳为准）
 }, ...],
+
+#has not beacon process now
 "locBeacon": [ {
 "uuid": ibeacon_uuid,
 "timestamp": timestamp
@@ -50,6 +43,8 @@ LOG = logging.getLogger(__name__)
 "actiStartTime": ACTI_START_TIME（活动开始时间，无则没有这项）
 "actiEndTime": ACTI_END_TIME（活动结束时间，无则没有这项）
 }, ...]
+
+#has not beacon process now
 "iBeacon": [{
 
 "poiType": POI_TYPE,
@@ -64,127 +59,38 @@ LOG = logging.getLogger(__name__)
 
 """
 
-def errorInfo():
-    import sys
-    info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1])  # todo log the exception info
-    print info
-    return info
-
-def errorResponses(error=None):
-    if not error:
-        info = errorInfo()
-    else:
-        info = error
-
-    return JsonResponse({"status": 0}, {"errors": info})
-
-
-def successResponses(results):
-
-    return JsonResponse({"status": 1, "results": results})
-
-
-
 @csrf_exempt
 def PoiView(request):
+    ''' Parse pois from gps points and if 'userId' in request parmeter
+    it will make user activity mapping.
 
-    """
-
-    """
-    LOG.info('start get poi')
+    :param request: django http request
+    :return: poi info and user activity mapping results if necessary
+    '''
     try:
         if request.method == 'POST':
-            req = json.loads(request.body)  #body is deprecated
+            req = json.loads(request.body)
         else:
-             return errorResponses("Method wrong")
-    except:
-        return errorResponses()
+            raise BadRequest(resource='poi',
+                              msg='unsupported http method ')
 
-    userId = req.get("userId")
-    GPSlist = req.get("GPS")
-    Beaconlist = req.get("iBeacon")
+        userId = req.get('userId')
+        gpsList = req.get('GPS')
 
-    LOG.info('fetch to poi controller')
-    try:
         poiContro = PoiController()
-        rtBeaLoc = poiContro.getPoi(Beaconlist, GPSlist, userId)
+        res = poiContro.getPoi(gpsList, userId)
+
+        return JsonResponse({'results': res})
+
     except DataCRUDError, e:
-        LOG.info('Poi data CRUD error : %s' % e)
+        LOG.error('Poi data CRUD error : %s' % e)
         return HttpResponse('Poi data CRUD error : %s' % e, status=DataCRUDError.code)
-
-
-    print "rtBeaLoc", rtBeaLoc
-    return successResponses(rtBeaLoc)
-
-#source /poi/poi.py
-
-
-@csrf_exempt
-def GetBaiduPoiType(request):
-
-    """
-
-    /baidu_poitype/
-    description: get the poi type of specific lng&lat in baidu's cloud definition
-    method:                    Post
-    data format:              json
-     lat:                     string
-     lng:                      string
-    return :{"status":1(0), "results": ["poitype":"","name":""]}
-
-
-    """
-
-    try:
-        if request.method == 'POST':
-
-            req = json.loads(request.body)  #body is deprecated
-
-
-        else:
-             info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-             return JsonResponse({"status":0, "errors":info})
-    except:
-        import sys
-        info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-        print info
-        return JsonResponse({"status":0,"errors":info})
-
-    lat, lng = req['lat'], req['lng']
-    try:
-        pg = PoiGet()
-        results = pg.parsePoi(lat, lng)
-
-    except:
-        import sys
-        info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-        print info
-
-        return JsonResponse({"status":0,"errors":info })
-
-
-    if not results or "error" in results.keys():
-        if not results:
-            return JsonResponse({"status":0}, {"errors":'' })
-        else:
-            return JsonResponse({"status":0}, {"errors":results['error'] })
-
-    else:
-        return JsonResponse({"status":1,"results":results})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    except SenzExcption, e:
+        LOG.error('Poi parse handle error: %s' % e)
+        return HttpResponse('Poi parse handle error: %s' % e, status=SenzExcption.code)
+    except Exception, e:
+        info = errorInfo()
+        LOG.error(info)
+        return HttpResponse('System error: %s' % info, status=500)
 
 

@@ -48,6 +48,12 @@ class PoiController(object):
         self.threadingPool = threadpool.ThreadPool(256)
 
     def _handleBeacon(self, beaconList, userId):
+        ''' Just dump beacon info to db
+
+        :param beaconList:
+        :param userId:
+        :return:
+        '''
 
         if beaconList:
             beacon = Beacon()
@@ -62,50 +68,26 @@ class PoiController(object):
 
 
 
-    def getPoi(self, beaconList, gpsList, userId):
+    def getPoi(self, gpsList, userId):
 
         GPSlen = len(gpsList)
-        rtBeaLoc = {"GPS":" ","iBeacon":" "}
-
-
-        #todo 1.每来一次请求就把数据存入后端 2.beacon和gps数据存完后，调用匹配算法算制定userid匹配出的活动
-
 
         GPSrtList = [{} for i in range(GPSlen)]
 
 
-        mapstart = time.time()
         usermapping = UserActivityMapping()
-        mapend = time.time()
-        LOG.info('mapping used about %d seconds' % (mapend - mapstart))
         LOG.info('start to store gps list')
+
         pg = PoiGet()
         #usermapping.dump2db(gpsList,userId)
 
-        LOG.info('mapping user activity')
         timestamped_dict = usermapping.mapActivityByUser(userId)
 
-        #todo
-        #gps poitype
-        LOG.info('parse poi')
-        parsePoiStart = time.time()
-
-        #self._coroutineParse(pg, gpsList, timestamped_dict, GPSrtList)
-        #self._singleThreadParse(pg, gpsList, timestamped_dict, GPSrtList)
         self._multiThreadParse(pg, gpsList, timestamped_dict, GPSrtList)
 
-        parsePoiEnd = time.time()
-        LOG.info('parse poi used about %d seconds' % (parsePoiEnd - parsePoiStart))
-        #beacon poitype
         LOG.info('handle beacon list')
-        #BeaconrtList = self._handleBeacon(beaconList, userId)
-        count = 0
-        for i in GPSrtList:
-            if i:
-                count += 1
-        print 'Get real gps poi %d' % count
-        BeaconrtList = []
-        return rtBeaLoc.update({"GPS":GPSrtList,"iBeacon":BeaconrtList})
+
+        return {"GPS":GPSrtList}
 
     def _coroutineParse(self, poiGetor, gpsList, timestampedDict, rtList):
         #deprecated

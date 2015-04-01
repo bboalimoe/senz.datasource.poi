@@ -38,7 +38,7 @@ def distance(lon1, lat1, lon2, lat2):
 
 
 def coordArrayCompress(coordArray, samplingInteval):
-    #compress coord points in coordArray
+    #compress coord points in coordArray for cluster
     dataArray = []
     i = 0
     while i < len(coordArray):

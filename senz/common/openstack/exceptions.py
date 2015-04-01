@@ -47,30 +47,3 @@ class NeutronException(Exception):
         return False
 
 
-class BadRequest(NeutronException):
-    message = 'Bad %(resource)s request: %(msg)s'
-
-
-class NotFound(NeutronException):
-    pass
-
-
-class Conflict(NeutronException):
-    pass
-
-
-class NotAuthorized(NeutronException):
-    message = "Not authorized."
-
-
-class ServiceUnavailable(NeutronException):
-    message = "The service is unavailable"
-
-
-class InUse(NeutronException):
-    message = "The resource is inuse"
-
-
-class DuplicatedExtension(NeutronException):
-    message = "Found duplicate extension: %(alias)s"
-
