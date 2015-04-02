@@ -2,16 +2,17 @@ __author__ = 'wzf'
 
 import sys
 
-from senz.common.openstack.exceptions import *
-
 def errorInfo():
     info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1])
     return info
 
-
-class SenzExcption(NeutronException):
+class SenzExcption(Exception):
     code = 500
     message = 'Senz handle error: %(msg)s'
+
+class NotImplemented(SenzExcption):
+    code = 501
+    message = 'Function %(funtionName) not implemented.'
 
 class BadRequest(SenzExcption):
     code = 400

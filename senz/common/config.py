@@ -17,6 +17,11 @@ def getAppSettings(avosClassName):
     group = findGroup(avosClassName)
     return settings.groups[group]
 
+def get_manager(func_name):
+    for e in settings.functions:
+        if settings.functions[e]['type'] == 'func' and e == func_name:
+            return settings.functions[e]['manager']
+
 
 if __name__ == '__main__':
     print os.getcwd() + os.path.sep + 'logs'

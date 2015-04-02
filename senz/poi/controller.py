@@ -9,15 +9,22 @@ import threadpool
 from senz.poi.poi import PoiGet
 from senz.activity.UserActivityMapping import UserActivityMapping
 from senz.poi.beacon import Beacon
+from senz.common import settings
 
-from senz.common.openstack.threadgroup import ThreadGroup
-
+from senz.common.filter import FilterBase
 
 
 from senz.exceptions import *
 
 
+
+
+
 LOG = logging.getLogger(__name__)
+
+
+
+
 
 def _parseGpsPoi(poiGetor, gps,timestamped_dict, rt):
         #LOG.info('start parse gps %s' % gps)
@@ -42,10 +49,53 @@ def _parseGpsPoi(poiGetor, gps,timestamped_dict, rt):
             rt.setdefault("actiStartTime",timestamped_dict[str(timestamp_)]["start_time"])
             rt.setdefault("actiEndTime",timestamped_dict[str(timestamp_)]["end_time"])
 
+
+class PoiFilter(FilterBase):
+    @classmethod
+    def filter(cls, dataCollection, poiFunctions):
+        ''' Filter or pre-handle data in request here.
+
+        Beacon data in old request format will be dropped here until process method added
+
+        :param dataCollection: contain all
+        :return:
+        '''
+        rowData = {}
+        for func in poiFunctions:
+            argNames = poiFunctions[func]
+            for argName in argNames:
+            if type in dataCollection:
+                rowData[type] = dataCollection.get(type)
+                del dataCollection[type]
+
+
+#function needed in poi module and their arguments
+POI_FUNCTION = {'parse' : ['GPS'],
+                'activity_map' : ['GPS', 'userId']}
+
 class PoiController(object):
+    name = 'poi'
+
     def __init__(self):
-        self.threadGroup = ThreadGroup(1024)
-        self.threadingPool = threadpool.ThreadPool(256)
+        self.managers = {}
+
+        for func in POI_FUNCTION:
+            self.managers[func] = settings.managers.get('%s.%s' %
+                                                (PoiController.name, POI_FUNCTION))
+
+    def parse(self, requestData):
+        func_name = parse.__name__
+
+        parseManager = self.managers['parse']
+        parseManager.parse(requestData)
+
+        kwargs = parseManager.filter(requestData)
+
+
+        poiManager
+        if 'userId' in kwargs:
+
+
 
     def _handleBeacon(self, beaconList, userId):
         ''' Just dump beacon info to db
@@ -88,6 +138,24 @@ class PoiController(object):
         LOG.info('handle beacon list')
 
         return {"GPS":GPSrtList}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def _coroutineParse(self, poiGetor, gpsList, timestampedDict, rtList):
         #deprecated
