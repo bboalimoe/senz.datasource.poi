@@ -27,6 +27,13 @@ groups = {
     }
 }
 
+PARSE_POI = 'parse_poi'
+ACTIVITY_MAPPING = 'activity_mapping'
+BEACON = 'beacon'
+PLACE_RECOGNITION = 'place_recognition'
+GEO_FENCE = 'geo_fence'
+POI_GROUP = 'poi_group'
+
 
 poi_group_func = {
     'type' : 'collection',
@@ -38,35 +45,35 @@ poi_group_func = {
 }
 
 functions = {
-    'parse_poi' : {
+    PARSE_POI : {
         'manager' : PoiManager(),
         'args' : ['gps',],
         'store' : False,
         'type' : 'func'
     },
-    'activity_mapping' : {
+    ACTIVITY_MAPPING : {
         'manager' : ActivityManager(),
         'args' : ['gps', 'user_id'],
         'store' : False,
         'type' : 'func'
     },
-    'place_recognition': {
+    PLACE_RECOGNITION : {
 
     },
-    'beacon' : {
+    BEACON : {
 
     },
-    'geo_fence' : {
+    GEO_FENCE : {
 
     },
-    'poi_group' : poi_group_func,
+    POI_GROUP : poi_group_func,
 }
 
 controllers = {
-    'poi' : {
+    'PoiController' : {
         'class' : PoiController,
         'methods' : {
-            'parse' : ['parse_poi', 'activity_mapping']
+            'parse' : [PARSE_POI, ACTIVITY_MAPPING]
         }
     }
 }

@@ -10,6 +10,7 @@ from senz.poi.poi import PoiGet
 from senz.activity.UserActivityMapping import UserActivityMapping
 from senz.poi.beacon import Beacon
 from senz.common import settings
+from senz.common import config
 
 from senz.common.filter import FilterBase
 
@@ -49,7 +50,7 @@ def _parseGpsPoi(poiGetor, gps,timestamped_dict, rt):
             rt.setdefault("actiStartTime",timestamped_dict[str(timestamp_)]["start_time"])
             rt.setdefault("actiEndTime",timestamped_dict[str(timestamp_)]["end_time"])
 
-
+"""
 class PoiFilter(FilterBase):
     @classmethod
     def filter(cls, dataCollection, poiFunctions):
@@ -67,35 +68,22 @@ class PoiFilter(FilterBase):
             if type in dataCollection:
                 rowData[type] = dataCollection.get(type)
                 del dataCollection[type]
-
-
-#function needed in poi module and their arguments
-POI_FUNCTION = {'parse' : ['GPS'],
-                'activity_map' : ['GPS', 'userId']}
+"""
 
 class PoiController(object):
-    name = 'poi'
-
     def __init__(self):
         self.managers = {}
+        self.pipeline = {}
+        control_settings = settings.controllers[self.__class__.__name__]
 
-        for func in POI_FUNCTION:
-            self.managers[func] = settings.managers.get('%s.%s' %
-                                                (PoiController.name, POI_FUNCTION))
+        for method in control_settings:
+            for func in control_settings[method]:
+                if func not in self.managers:
+                    manager = config.get_manager(func)
+                    self.managers[func] = manager
 
-    def parse(self, requestData):
-        func_name = parse.__name__
-
-        parseManager = self.managers['parse']
-        parseManager.parse(requestData)
-
-        kwargs = parseManager.filter(requestData)
-
-
-        poiManager
-        if 'userId' in kwargs:
-
-
+    def parse(self, manager, requestData):
+        pass
 
     def _handleBeacon(self, beaconList, userId):
         ''' Just dump beacon info to db

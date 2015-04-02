@@ -14,6 +14,8 @@ from senz.exceptions import *
 
 LOG = logging.getLogger(__name__)
 
+PARSE_METHOD_NAME = 'parse'
+
 @csrf_exempt
 def PoiView(request):
     ''' Parse pois from gps points and if 'userId' in request parmeter
@@ -30,6 +32,7 @@ def PoiView(request):
                               msg='unsupported http method ')
 
         poiController = PoiController()
+
         res = poiController.parse(requestData)
 
         return JsonResponse({'results': res})
