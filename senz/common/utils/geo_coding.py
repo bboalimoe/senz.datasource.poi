@@ -40,7 +40,7 @@ class GeoCoder(object):
         lat = 2*lat_1 - lat_2
         return lng,lat
 
-    def getPOI(self,lat,lng):
+    def get_poi(self,lat,lng):
 
         url = "http://api.map.baidu.com/geocoder/v2/?coordtype=bd09ll&place=%s,%s&output=json&ak=fPnXQ2dVgLevy7GwIomnhEMg&pois=1" % (lat,lng)
         result_info = get_source(url)

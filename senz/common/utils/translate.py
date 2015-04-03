@@ -5,45 +5,8 @@ import logging
 
 LOG = logging.getLogger(__name__)
 
-class Trans(object):
 
-    def __init__(self):
-
-        self.ac = activity_dict
-        self.poi = poitype_dict
-
-
-    def activity_trans(cls, name):
-
-        if not isinstance(name, str) and not isinstance(name, unicode):
-
-            raise Exception("name should be str or unicode")
-
-        else:
-
-            return cls.ac[name]
-
-
-    def poitype_trans(cls, name):
-
-        if not isinstance(name, str) and not isinstance(name, unicode):
-
-            raise Exception("name should be str or unicode")
-
-        elif name in cls.poi:
-
-            return cls.poi[name]
-        else:
-
-            LOG.error('Get unknown poi type in trans named "%s"' % name)
-
-            return name
-
-
-
-
-
-activity_dict = {
+ACTIVITY_DICT = {
     u"音乐" : "music",
     u"戏剧" : "opera",
     u"讲座" : "lecture",
@@ -54,12 +17,9 @@ activity_dict = {
     u"公益" : "public",
     u"旅行" : "travel",
     u"其他" : "other",
-
 }
 
-
-poitype_dict = {
-
+POITYPE_DICT = {
 u"休闲娱乐":"leisure",
 u"地产小区":"neighborhood",
 u"政府机构":"government",
@@ -81,4 +41,31 @@ u"汽车服务":"car",
 u"医疗":"hospital",
 u"酒店":"hotel"
 }
+
+class Trans(object):
+    #todo:use common.openstack.gettextutils overwrite
+    @classmethod
+    def activity_trans(cls, name):
+        if not isinstance(name, str) and not isinstance(name, unicode):
+            raise Exception("name should be str or unicode")
+        elif name in ACTIVITY_DICT:
+            return ACTIVITY_DICT[name]
+        else:
+            LOG.error('Get unknown activity type in trans named "%s"' % name)
+            return name
+
+    @classmethod
+    def poitype_trans(cls, name):
+        if not isinstance(name, str) and not isinstance(name, unicode):
+            raise Exception("name should be str or unicode")
+        elif name in POITYPE_DICT:
+            return POITYPE_DICT[name]
+        else:
+            LOG.error('Get unknown poi type in trans named "%s"' % name)
+            return name
+
+
+
+
+
 

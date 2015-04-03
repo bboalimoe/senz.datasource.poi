@@ -6,7 +6,6 @@ import scipy.cluster.hierarchy as sch
 
 from senz.common.avos.avos_manager import *
 from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress, distance
-from senz.common.utils.clusterutils import filterClustersBySize
 from senz.common.utils import timeutils
 
 
@@ -17,9 +16,24 @@ DEFAULT_TIME_RANGES = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16,
 DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
 version = '0.1'
 
+def filterClustersBySize(cluster, dataArray, size):
+    allCluster = [[] for row in range(cluster.max())]
+
+    i = 0
+    while i < len(cluster):
+        index = cluster[i] - 1
+        allCluster[index].append(dataArray[i])  # put points to its cluster
+        i += 1
+
+    validCluster = []
+    for cluster in allCluster:
+        if (len(cluster) >= size):
+            validCluster.append(cluster)   # filter cluster
+
+    return validCluster
+
 
 # data structure
-
 class LocationWithTags:
     """Location from cluster result and tags by analysing timestamps"""
 
