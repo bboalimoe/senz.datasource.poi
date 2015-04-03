@@ -26,14 +26,13 @@ def PoiView(request):
     '''
     try:
         if request.method == 'POST':
-            requestData = json.loads(request.body)
+            body_context = json.loads(request.body)
         else:
             raise BadRequest(resource='poi',
                               msg='unsupported http method ')
 
-        poiController = PoiController()
-
-        res = poiController.parse(requestData)
+        poi_controller = PoiController()
+        res = poi_controller.parse(body_context)
 
         return JsonResponse({'results': res})
 

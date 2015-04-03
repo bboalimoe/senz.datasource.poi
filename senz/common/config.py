@@ -17,11 +17,12 @@ def getAppSettings(avosClassName):
     group = findGroup(avosClassName)
     return settings.groups[group]
 
-def get_manager(func_name):
+def get_task(task_name):
     for e in settings.functions:
-        if settings.functions[e]['type'] == 'func' and e == func_name:
-            return settings.functions[e]['manager']
-
+        if settings.functions[e]['type'] == 'collection':
+            get_task(settings.functions[e])
+        if settings.functions[e]['type'] == 'task' and e == task_name:
+            return settings.functions[e]
 
 if __name__ == '__main__':
     print os.getcwd() + os.path.sep + 'logs'

@@ -29,7 +29,7 @@ class PoiGet(object):
         poi = self.getPoi(lat, lng)
         return dict(at=poi)
 
-    def parsePoi(self, lat, lng):
+    def parse_poi(self, lat, lng):
 
         "return {'poiType': 'estate', 'name': u'\u767e\u5ea6\u5927\u53a6'} "
         poi = self.getPoi(lat, lng)
@@ -41,7 +41,7 @@ class PoiGet(object):
         if not poi:
             return {}
 
-        return dict(name=poi['name'], poiType=trans.poitype_trans(poi['poiType']) )
+        return dict(name=poi['name'], poi_type=trans.poitype_trans(poi['poiType']) )
 
 
 if __name__ == '__main__':

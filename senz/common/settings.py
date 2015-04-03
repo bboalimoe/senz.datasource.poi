@@ -40,7 +40,7 @@ poi_group_func = {
     'manager' : PoiGroupManager(),
     'group_add' : {
         'args' : ['name'],
-        'type' : 'func'
+        'type' : 'task'
     }
 }
 
@@ -49,13 +49,13 @@ functions = {
         'manager' : PoiManager(),
         'args' : ['gps',],
         'store' : False,
-        'type' : 'func'
+        'type' : 'task'
     },
     ACTIVITY_MAPPING : {
         'manager' : ActivityManager(),
         'args' : ['gps', 'user_id'],
         'store' : False,
-        'type' : 'func'
+        'type' : 'task'
     },
     PLACE_RECOGNITION : {
 
@@ -72,7 +72,7 @@ functions = {
 controllers = {
     'PoiController' : {
         'class' : PoiController,
-        'methods' : {
+        'jobs' : {
             'parse' : [PARSE_POI, ACTIVITY_MAPPING]
         }
     }
