@@ -20,6 +20,8 @@ class PoiManager(MultiThreadManager):
             self.add_thread(self.add_poi_to_gps, gps=g)
         self.wait()
 
+    def store(self, context):
+        if ''context['results']
 
     def _handleBeacon(self, beaconList, userId):
         ''' Just dump beacon info to db.

@@ -36,6 +36,7 @@ class Pipeline(object):
                 arg = context.get(name)
                 if arg:
                     kwargs[name] = arg
+
             if len(kwargs) != len(arg_names):
                 LOG.info('Not enough args for task %s in pipeline of %s for %s job, workflow will'
                              'skip it.' % (task, self.controller, self.job))

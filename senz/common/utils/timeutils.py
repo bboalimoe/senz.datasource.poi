@@ -5,6 +5,7 @@ __author__ = 'wuzhifan'
 
 import time, datetime
 
+
 ISO_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 def iso2timestamp(iso_time): #avos date type {u'__type': u'Date', u'iso': u'2015-05-23T11:15:00.000Z'}
@@ -46,3 +47,5 @@ def DaysBeforeAvosDate(day):
 
     utc_time = utc_time.replace(" ","T")
     return utc_time+".000Z"
+
+

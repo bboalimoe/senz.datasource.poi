@@ -37,7 +37,7 @@ POI_GROUP = 'poi_group'
 
 poi_group_func = {
     'type' : 'collection',
-    'manager' : PoiGroupManager(),
+    'manager' : PoiGroupManager,
     'group_add' : {
         'args' : ['name'],
         'type' : 'task'
@@ -46,13 +46,13 @@ poi_group_func = {
 
 functions = {
     PARSE_POI : {
-        'manager' : PoiManager(),
+        'manager' : PoiManager,
         'args' : ['gps',],
-        'store' : False,
+        'store' : True,
         'type' : 'task'
     },
     ACTIVITY_MAPPING : {
-        'manager' : ActivityManager(),
+        'manager' : ActivityManager,
         'args' : ['gps', 'user_id'],
         'store' : False,
         'type' : 'task'
@@ -73,7 +73,7 @@ controllers = {
     'PoiController' : {
         'class' : PoiController,
         'jobs' : {
-            'parse' : [PARSE_POI, ACTIVITY_MAPPING]
+            'parse' : [ACTIVITY_MAPPING, PARSE_POI]
         }
     }
 }

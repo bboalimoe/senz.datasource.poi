@@ -167,6 +167,7 @@ class UserActivityMapping(object):
                 L = 200
                 start = 0
                 res_len = L
+                locations = []
                 while res_len == L:
                         res = json.loads( self.avosManager.getDateBetweenDataByUser("UserLocationTrace",
                                                                               "createdAt",
@@ -177,24 +178,29 @@ class UserActivityMapping(object):
                                                                               skip=start))['results']
                         res_len = len(res)
                         for loc in res:
-                            self.locations.append(loc)
+                            locations.append(loc)
                         start = start+L
                 print 'Done'
+                return locations
 
 
 
-        def mapActivityByUser(self, userId):
+        def mapActivityByUser(self, userId, locations):
 
             self._getLastPossibleActivities()
-            self.GetRecentTraceByUser(userId)
+            if len(locations) > 100:
+                self.locations = locations
+            else:
+                self.locations = self.GetRecentTraceByUser(userId)
 
             #todo get the user's last place
-
             for ac in self.activities:
-                if self.__isInActivity(self.locations,ac):
 
-                    self.avosManager.updateDataById("UserLocationTrace",self.flaggedLocation["objectId"],{"activityId":ac["objectId"]})
+                if self.__isInActivity(self.locations,ac):
+                    self.flaggedLocation.update({"activityId":ac["objectId"]})
+                    #self.avosManager.updateDataById("UserLocationTrace",self.flaggedLocation["objectId"],{"activityId":ac["objectId"]})
                     #save the mapping results
+
 
             return self.timestampedMappedActivity
 
