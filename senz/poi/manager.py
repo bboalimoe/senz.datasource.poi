@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 __author__ = 'wuzhifan'
 
+import logging
+
 from senz.poi.beacon import Beacon
 from senz.common.manager import ManagerBase, MultiThreadManager
 from senz.poi.poi import PoiGet
-
+from senz.exceptions import error_info
+LOG = logging.getLogger(__name__)
 
 class StoreBackend(object):
     '''Simple store backend use leancloud
@@ -25,8 +28,12 @@ class PoiManager(MultiThreadManager):
         self.store_backend = StoreBackend()
 
     def add_poi_to_gps(self, gps):
-        poi = self.poi_getor.parse_poi(gps["latitude"], gps["longitude"])
-        gps.update(poi)
+        try:
+            poi = self.poi_getor.parse_poi(gps["latitude"], gps["longitude"])
+            gps.update(poi)
+        except Exception, e:
+
+            LOG.error('Error in parse gps point:%s , sys info:%s' % (gps, error_info()))
 
     def parse_poi(self, context, gps):
         for g in gps:

@@ -11,10 +11,9 @@ from senz.common.utils.translate import Trans
 class PoiGet(object):
     def __init__(self):
         self.avos = AvosManager()
+        self.geo_coder = GeoCoder()
 
     def get_poi(self, lat, lng):
-        if not self.geo_coder:
-            self.geo_coder = GeoCoder()
         return self.geo_coder.get_poi(lat, lng)
 
     def get(self, device_id, developer_id, location, beacon):

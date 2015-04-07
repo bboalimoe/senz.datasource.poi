@@ -14,16 +14,18 @@ class TestPoiManager(TestPoi):
         self.manager = PoiManager(pipeline=None, task_name='parse_poi')
 
     def test_parse_poi(self):
-        gps_data = self.get_data()
+        gps_data = self.get_data()['gps']
+        #print gps_data
         context = {}
+        print "start parse poi"
         self.manager.parse_poi(context, gps_data)
         count = 0
         for gps in gps_data:
-            poi_type = gps['poi_type']
+            poi_type = gps.get('poi_type')
             if poi_type:
                 count += 1
 
-        if count / len(gps_data) >= 0.9:
+        if float(count) / float(len(gps_data)) >= 0.9:
             print 'OK'
         else:
             print 'something wrong with poi parse'

@@ -3,9 +3,11 @@ __author__ = 'wzf'
 import sys, os
 import json
 import httplib
-
+import logging
 
 sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
+FILE = os.getcwd()
+logging.basicConfig(filename=os.path.join(FILE,'log.txt'),level=logging.INFO)
 
 TEST_HOST = "127.0.0.1:8088"
 

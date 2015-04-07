@@ -43,7 +43,7 @@ def PoiView(request):
         LOG.error('Poi parse handle error: %s' % e)
         return HttpResponse('Poi parse handle error: %s' % e, status=SenzExcption.code)
     except Exception, e:
-        info = errorInfo()
+        info = error_info()
         LOG.error(info)
         return HttpResponse('System error: %s' % info, status=500)
 

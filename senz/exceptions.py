@@ -2,7 +2,7 @@ __author__ = 'wzf'
 
 import sys
 
-def errorInfo():
+def error_info():
     info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1])
     return info
 

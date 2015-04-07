@@ -25,7 +25,7 @@ def get_source(url):
                         page=urllib2.urlopen(req,timeout=10).read()
                         # page=urllib2.urlopen(url,timeout=1).read()
                 except:
-                        print 'request again, retrytimes:%s' % i
+                        #print 'request again, retrytimes:%s' % i
                         time.sleep(0.5)
                         continue
                 break;
@@ -41,7 +41,7 @@ def get_ajax_source(url,data):
                         page=urllib2.urlopen(req).read()
                         # page=urllib2.urlopen(url,timeout=1).read()
                 except:
-                        print 'click problem, retrytimes:%s' % i
+                        #print 'click problem, retrytimes:%s' % i
                         time.sleep(0.1)
                         continue
                 break;
