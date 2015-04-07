@@ -4,6 +4,7 @@ __author__ = 'wuzhifan'
 import inspect
 import logging
 from senz.common import config, settings
+from senz.common.openstack import importutils
 
 LOG = logging.getLogger(__name__)
 
@@ -18,7 +19,8 @@ class Pipeline(object):
         self.task_list = task_list
         for t in task_list:
             task = config.get_task(t)
-            self.managers[t] = task['manager']
+            manager_class = importutils.import_class(task['manager'])
+            self.managers[t] = manager_class(self, t)
 
     def run(self, context):
         '''Run tasks of pipeline in order.
@@ -44,7 +46,8 @@ class Pipeline(object):
 
             method = getattr(self.managers[task], task)
             res = method(context, **kwargs)
-            context['results'][task] = res
+            if res:
+                context['results'][task] = res
             if task.get('store'):
                 self.managers[task].store(context)
 
@@ -57,4 +60,4 @@ class ControllerBase(object):
         control_settings = settings.controllers[self.__class__.__name__]
         jobs = control_settings['jobs']
         for job in jobs:
-            self.pipeline[job] = Pipeline(jobs[job])
+            self.pipeline[job] = Pipeline(self, job, jobs[job])

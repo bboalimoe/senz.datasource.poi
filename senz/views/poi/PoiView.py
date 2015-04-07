@@ -31,8 +31,8 @@ def PoiView(request):
             raise BadRequest(resource='poi',
                               msg='unsupported http method ')
 
-        poi_controller = PoiController()
-        res = poi_controller.parse(body_context)
+        controller = PoiController()
+        res = controller.parse(body_context)
 
         return JsonResponse({'results': res})
 

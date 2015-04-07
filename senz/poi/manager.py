@@ -5,11 +5,24 @@ from senz.poi.beacon import Beacon
 from senz.common.manager import ManagerBase, MultiThreadManager
 from senz.poi.poi import PoiGet
 
-class PoiManager(MultiThreadManager):
-    def __init__(self):
-        super(PoiManager, self).__init__()
 
+class StoreBackend(object):
+    '''Simple store backend use leancloud
+    '''
+    def __init__(self):
+        self.avos_class = 'UserLocationTrace'
+        from senz.common.avos.avos_manager import AvosManager
+        self.avos_manager = AvosManager()
+
+    def store(self, data):
+        self.avos_manager.saveData(self.avos_class, data)
+
+
+class PoiManager(MultiThreadManager):
+    def __init__(self, **kwargs):
+        super(PoiManager, self).__init__(**kwargs)
         self.poi_getor = PoiGet()
+        self.store_backend = StoreBackend()
 
     def add_poi_to_gps(self, gps):
         poi = self.poi_getor.parse_poi(gps["latitude"], gps["longitude"])
@@ -21,7 +34,9 @@ class PoiManager(MultiThreadManager):
         self.wait()
 
     def store(self, context):
-        if ''context['results']
+        if self.task_name in context['results']:
+            res = context['results'][self.task_name]
+            self.store_backend.store(res)
 
     def _handleBeacon(self, beaconList, userId):
         ''' Just dump beacon info to db.
@@ -47,4 +62,5 @@ class PoiManager(MultiThreadManager):
 
 class PoiGroupManager(ManagerBase):
     pass
+
 

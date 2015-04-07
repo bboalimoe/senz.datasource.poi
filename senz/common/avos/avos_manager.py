@@ -7,8 +7,7 @@ import requests
 
 from senz.common.avos.avos import AVObject
 from senz.common.utils.util_opt import *
-
-from senz.common import config, settings
+from senz.common.openstack import importutils
 
 from senz.exceptions import *
 
@@ -26,12 +25,14 @@ class AvosClass(AVObject):
                              settings.groups[setting_group]['avos_key']]
 '''
 
+settings = importutils.import_module('senz.common.settings')
+config = importutils.import_module('senz.common.config')
+
 SUCCESS_CODE = (200, 201, 202)
 
 class AvosManager(object):
         def __init__(self):
                 #init avos connectors related to different avos apps
-
                 self._avosConnectors = {'base': AVObject(settings.groups['base'])}
 
                 for group in settings.groups:

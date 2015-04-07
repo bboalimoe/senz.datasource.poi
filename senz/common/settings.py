@@ -8,10 +8,6 @@
 #avos_app_key = 'dxbawm2hh0338hb37wap59gticgr92dpajd80tzekrgv1ptw'
 #avos_app_master_key = 'u0nu3suqria905en9gbq7isetlf5exoqmndv4fxcfck26kdr'
 
-from senz.poi.manager import PoiManager, PoiGroupManager
-from senz.activity.manager import ActivityManager
-from senz.poi.controller import PoiController
-
 groups = {
     'base' : {
         'avos_app_id' : 'vigxpgtjk8w6ruxcfaw4kju3ssyttgcqz38y6y6uablqivjd',
@@ -37,7 +33,7 @@ POI_GROUP = 'poi_group'
 
 poi_group_func = {
     'type' : 'collection',
-    'manager' : PoiGroupManager,
+    'manager' : 'senz.poi.manager.PoiGroupManager',
     'group_add' : {
         'args' : ['name'],
         'type' : 'task'
@@ -46,13 +42,13 @@ poi_group_func = {
 
 functions = {
     PARSE_POI : {
-        'manager' : PoiManager,
+        'manager' : 'senz.poi.manager.PoiManager',
         'args' : ['gps',],
         'store' : True,
         'type' : 'task'
     },
     ACTIVITY_MAPPING : {
-        'manager' : ActivityManager,
+        'manager' : 'senz.activity.manager.ActivityManager',
         'args' : ['gps', 'user_id'],
         'store' : False,
         'type' : 'task'
@@ -71,7 +67,7 @@ functions = {
 
 controllers = {
     'PoiController' : {
-        'class' : PoiController,
+        #'class' : PoiController,
         'jobs' : {
             'parse' : [ACTIVITY_MAPPING, PARSE_POI]
         }
