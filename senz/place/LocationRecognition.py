@@ -177,14 +177,14 @@ class LocationRecognition(object):
                                                         timeutils.ISO_TIME_FORMAT)
 
                 nowDate = datetime.datetime.now()
-                '''
+
                 if (nowDate - createDate).days < 7:
                     return oldLocRecgData
                 else:
                     #if recgData out of date then delete it
                     for recgData in oldLocRecgData:
                         self.avosManager.deleteData(locRecgClass, recgData)
-                        '''
+
 
 
             data = self.getData(userId)
