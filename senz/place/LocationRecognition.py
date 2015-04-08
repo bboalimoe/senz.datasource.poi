@@ -7,6 +7,9 @@ import scipy.cluster.hierarchy as sch
 from senz.common.avos.avos_manager import *
 from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress, distance
 from senz.common.utils import timeutils
+from senz.common.openstack import timeutils as op_timeutils
+
+from senz.exceptions import *
 
 
 # params
@@ -14,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 DEFAULT_TIME_RANGES = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
-version = '0.1'
+VERSION = '0.1'
 
 def filterClustersBySize(cluster, dataArray, size):
     allCluster = [[] for row in range(cluster.max())]
@@ -77,8 +80,8 @@ class LocationRecognition(object):
 
         print("%d standardized records" % len(dataArray))
         if len(dataArray) <= 1:
-            LOG.warning("Not enough data in clustering place data!")
-            return []
+            LOG.warning("Not enough data for places clustering!")
+            raise BadRequest("Not enough data for places clustering!")
 
         # clustering
 
@@ -147,7 +150,7 @@ class LocationRecognition(object):
         # output are in results
         return results
 
-    def countDataInRange(self,dataArray, timeRanges):
+    def countDataInRange(self, dataArray, timeRanges):
 
         dataInRangeCount = [0] * len(timeRanges)
         for data in dataArray:
@@ -170,19 +173,18 @@ class LocationRecognition(object):
                                    where='{"userId":"%s"}'% userId ))['results']
 
             if len(oldLocRecgData) > 0:
-                #createDate = timeutils.ISOString2Time(oldLocRecgData[0]['createdAt'],
-                #                                      timeutils.ISO_TIME_FORMAT)
-
                 createDate = datetime.datetime.strptime(oldLocRecgData[0]['createdAt'],
                                                         timeutils.ISO_TIME_FORMAT)
 
                 nowDate = datetime.datetime.now()
+                '''
                 if (nowDate - createDate).days < 7:
                     return oldLocRecgData
                 else:
                     #if recgData out of date then delete it
                     for recgData in oldLocRecgData:
                         self.avosManager.deleteData(locRecgClass, recgData)
+                        '''
 
 
             data = self.getData(userId)
@@ -190,9 +192,10 @@ class LocationRecognition(object):
             results = self.cluster(data)
 
             if len(results) > 0:
-                self.saveResults(results, userId)
+                transformed_res = self.saveResults(results, userId)
 
-            return json.dumps(results,default=lambda obj:obj.__dict__)
+            return transformed_res
+            #return json.dumps(results,default=lambda obj:obj.__dict__)
         except Exception as e:
             LOG.error("exception in place clustering : %s" % e.message)
             raise e
@@ -203,16 +206,17 @@ class LocationRecognition(object):
     def saveResults(self, results, userId=None):
         #save place recgnition results to leancloud
         avosClassName = 'LocationRecognition'
+        #transform results to suit database
+        transformed_res = []
         for result in results:
             for tag in result.tags:
-                self.avosManager.saveData(avosClassName,{"latitude":result.latitude,
-                                                                    "longitude":result.longitude,
-                                                                    "tag":tag.tag,
-                                                                    "ratio":tag.ratio,
-                                                                    "estimateTime":result.estimateTime,
-                                                                    "userId":userId,
-                                                                    "date": "",
-                                                                    "status": ""})
+                place_tag = {"latitude":result.latitude, "longitude":result.longitude, "tag":tag.tag,
+                                "ratio":tag.ratio, "estimateTime":result.estimateTime, "userId":userId,
+                                "date": "", "status": ""}
+                transformed_res.append(place_tag)
+                self.avosManager.saveData(avosClassName, place_tag)
+
+        return transformed_res
 
 
     def addNearTags(self, userId):
@@ -251,9 +255,10 @@ class LocationRecognition(object):
     def getData(self, userid=None):
 
         if not userid:
-            print "shit"
-            file = open("testLocation.json")
-            jsonArray = json.load(file)["results"]
+            raise BadRequest(resource='places', msg='user_id required')
+            #print "shit"
+            #file = open("testLocation.json")
+            #jsonArray = json.load(file)["results"]
 
         else:
             jsonArray = self.getUserData(userid)

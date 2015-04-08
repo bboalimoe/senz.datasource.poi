@@ -15,11 +15,11 @@ class TestBase(object):
     def __init__(self):
         pass
 
-    def testBase(self, params, method, url):
+    def testBase(self, params, method, url, headers):
         self.conn = httplib.HTTPConnection(TEST_HOST)
         self.conn.request(method, url,
                           json.JSONEncoder().encode(params),
-                          self.headers)
+                          headers)
 
         print "json.JSONEncoder().encode(params)   ", \
                               json.JSONEncoder().encode(params)
