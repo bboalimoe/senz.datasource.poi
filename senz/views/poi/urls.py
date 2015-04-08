@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 poi_groups_patterns = patterns('senz.views.poi.PoiGroupView',
     #url(r'^$', 'index'),
     url(r'^$',  'GetDevPoiGroups'),
-    url(r'^(?P<id>[A-Za-z0-9\-]+)$', 'PoiGroup'),
+    url(r'^(?P<id>[A-Za-z0-9\-]+)/$', 'PoiGroup'),
 
     #url(r'^poi/$', 'GetPoiByGeoPointAndDev'),     combined with r'^$'
     url(r'^member/$', 'PoiGroupMember'),

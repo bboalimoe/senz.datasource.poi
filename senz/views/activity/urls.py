@@ -4,5 +4,4 @@ urlpatterns = patterns('senz.views.activity.ActivityMappingView',
 
     url(r'^initiate_map/$', 'InitiateMapping'),
     url(r'^activity/$', 'GetActivitiesById'),
-
 )

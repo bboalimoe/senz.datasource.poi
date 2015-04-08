@@ -44,7 +44,7 @@ functions = {
     PARSE_POI : {
         'manager' : 'senz.poi.manager.PoiManager',
         'args' : ['gps',],
-        'store' : True,
+        'store' : False,
         'type' : 'task'
     },
     ACTIVITY_MAPPING : {

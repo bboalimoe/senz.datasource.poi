@@ -2,11 +2,15 @@ __author__ = 'wzf'
 
 import sys
 
-def error_info():
-    info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1])
-    return info
+from senz.common.openstack.exceptions import NeutronException
 
-class SenzExcption(Exception):
+def error_info():
+
+    info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1])
+    trace_back = sys.exc_info()[2]
+    return info, trace_back
+
+class SenzExcption(NeutronException):
     code = 500
     message = 'Senz handle error: %(msg)s'
 

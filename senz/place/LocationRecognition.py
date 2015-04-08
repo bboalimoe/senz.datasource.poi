@@ -107,7 +107,7 @@ class LocationRecognition(object):
         globalDataInRangeCount = self.countDataInRange(dataArray, timeRanges)
 
         results = []
-        print validCluster
+        #print validCluster
         for cluster in validCluster:
             clusterDataInRangeCount = self.countDataInRange(cluster, timeRanges)
 
@@ -118,7 +118,7 @@ class LocationRecognition(object):
                     i += 1
                     continue
                 ratio = float(clusterDataInRangeCount[i]) / globalDataInRangeCount[i]
-                print ratio
+                #print ratio
                 if ratio > ratioThreshold:
                     estimateTime = clusterDataInRangeCount[i] * samplingInteval    #todo: estimateTime is point count multi interval??????
                     tags.append(TagInfo(tagOfTimeRanges[i], estimateTime, ratio))
