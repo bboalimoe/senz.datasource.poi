@@ -278,3 +278,18 @@
 [08/Apr/2015 17:36:13] ERROR [senz.views.poi.PoiView:44] Poi parse handle error: Bad poi request: unsupported http method 
 [08/Apr/2015 17:37:48] ERROR [senz.views.poi.PoiView:44] Poi parse handle error: Bad poi request: unsupported http method 
 [08/Apr/2015 17:38:45] ERROR [senz.views.poi.PoiView:43] Poi parse handle error: Bad poi request: unsupported http method 
+[09/Apr/2015 16:40:32] INFO [senz.views.place.LocationRecoView:27] Pre places recognition
+[09/Apr/2015 16:40:35] INFO [senz.place.LocationRecognition:63] start place cluster.
+[09/Apr/2015 16:40:35] WARNING [senz.place.LocationRecognition:83] Not enough data for places clustering!
+[09/Apr/2015 16:40:35] ERROR [senz.place.LocationRecognition:200] exception in place clustering : __init__() takes exactly 1 argument (2 given)
+[09/Apr/2015 16:40:35] ERROR [senz.views.place.LocationRecoView:37] ("<type 'exceptions.TypeError'> || __init__() takes exactly 1 argument (2 given)", <traceback object at 0x03EFD198>)
+[09/Apr/2015 16:40:46] INFO [senz.views.place.LocationRecoView:27] Pre places recognition
+[09/Apr/2015 16:40:46] INFO [senz.place.LocationRecognition:63] start place cluster.
+[09/Apr/2015 16:40:46] WARNING [senz.place.LocationRecognition:83] Not enough data for places clustering!
+[09/Apr/2015 16:40:46] ERROR [senz.place.LocationRecognition:200] exception in place clustering : __init__() takes exactly 1 argument (2 given)
+[09/Apr/2015 16:40:46] ERROR [senz.views.place.LocationRecoView:37] ("<type 'exceptions.TypeError'> || __init__() takes exactly 1 argument (2 given)", <traceback object at 0x03F3FAD0>)
+[09/Apr/2015 16:46:30] INFO [senz.views.place.LocationRecoView:27] Pre places recognition
+[09/Apr/2015 16:46:32] INFO [senz.place.LocationRecognition:63] start place cluster.
+[09/Apr/2015 16:46:32] WARNING [senz.place.LocationRecognition:83] Not enough data for places clustering!
+[09/Apr/2015 16:46:32] ERROR [senz.place.LocationRecognition:201] exception in place clustering : Bad %(resource)s request: %(msg)s
+[09/Apr/2015 16:46:32] ERROR [senz.views.place.LocationRecoView:32] Place recognition handle error: Bad place request: Not enough data for places clustering!

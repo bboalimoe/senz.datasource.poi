@@ -81,7 +81,8 @@ class LocationRecognition(object):
         print("%d standardized records" % len(dataArray))
         if len(dataArray) <= 1:
             LOG.warning("Not enough data for places clustering!")
-            raise BadRequest("Not enough data for places clustering!")
+            raise BadRequest(resource='place',
+                              msg="Not enough data for places clustering!")
 
         # clustering
 
@@ -187,8 +188,8 @@ class LocationRecognition(object):
 
 
 
-            data = self.getData(userId)
-
+            #data = self.getData(userId)
+            data = self.get_user_trace(userId)
             results = self.cluster(data)
 
             if len(results) > 0:
@@ -252,27 +253,37 @@ class LocationRecognition(object):
 
 
 
-    def getData(self, userid=None):
+    def getData(self, user_id=None):
 
-        if not userid:
+        if not user_id:
             raise BadRequest(resource='places', msg='user_id required')
             #print "shit"
             #file = open("testLocation.json")
             #jsonArray = json.load(file)["results"]
 
         else:
-            jsonArray = self.getUserData(userid)
+            jsonArray = self.getUserData(user_id)
 
 
         return jsonArray
+
+    def get_user_trace(self, user_id):
+        avos_class = 'UserLocation'
+        raw_date = self.avosManager.getAllData(avos_class, where='{"user":"%s"}'% user_id)
+        results = []
+        for row in raw_date:
+            location = row['location'].split(',')
+            results.append(dict(objectId=row['objectId'], timestamp=row['timestamp'], longitude=location[0],
+                                latitude=location[1], userId=row['user']))
+
+        return results
 
 
 
     def getUserData(self, userId):
 
-        lean = AvosManager()
         avosClass = 'UserLocationTrace'
-        jsonArray = lean.getAllData(avosClass, where='{"userId":"%s"}'% userId)
+        jsonArray = self.avosManager.getAllData(avosClass, where='{"userId":"%s"}'% userId)
 
         print jsonArray
         print "get %d date" % len(jsonArray)
@@ -310,13 +321,12 @@ if __name__ == '__main__':
     '''
 
     '''
-    lean = AvosManager()
-    res = json.loads(lean.getData('UserLocationTrace', limit=1000, skip=0))['results']
-    print len(res)
-    print res
-    '''
-
     obj = LocationRecognition()
     #print obj.startCluster("54d82fefe4b0d414801050ee")
     #print obj.startCluster("")
     print obj.startCluster("2b4e710aab89f6c5")
+    '''
+
+    o = LocationRecognition()
+    print o.get_user_trace('54f17f60e4b077bf8374adeb')
+

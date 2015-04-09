@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
 from test_poi import TestPoi
 from senz.poi.manager import PoiManager
 
-
+from senz.place.LocationRecognition import LocationRecognition
 
 class TestPoiManager(TestPoi):
     def __init__(self):
@@ -29,8 +29,6 @@ class TestPoiManager(TestPoi):
             print 'OK'
         else:
             print 'something wrong with poi parse'
-
-
 
 if __name__ == '__main__':
     test_manager = TestPoiManager()
