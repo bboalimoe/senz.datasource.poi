@@ -15,9 +15,13 @@ from senz.exceptions import *
 # params
 LOG = logging.getLogger(__name__)
 
-DEFAULT_TIME_RANGES = [[22, 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
+DEFAULT_TIME_RANGES = [[ 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
 VERSION = '0.1'
+
+DEFAULT_SAMPLE_INTEVAL = 10
+
+DEFAULT_SAMPLE_THRESHOLD = 300
 
 def filterClustersBySize(cluster, dataArray, size):
     allCluster = [[] for row in range(cluster.max())]
@@ -56,8 +60,8 @@ class LocationRecognition(object):
     def __init__(self):
         self.avosManager = AvosManager()
 
-    def cluster(self, jsonArray, maxClusterRadius=0.00125, samplingInteval=10000,
-                           timeRanges=DEFAULT_TIME_RANGES, tagOfTimeRanges=DEFAULT_TAG_OF_TIME_RANGES, timeThreshold = 300000,
+    def cluster(self, jsonArray, maxClusterRadius=0.00125, samplingInteval=DEFAULT_SAMPLE_INTEVAL,
+                           timeRanges=DEFAULT_TIME_RANGES, tagOfTimeRanges=DEFAULT_TAG_OF_TIME_RANGES, timeThreshold = DEFAULT_SAMPLE_THRESHOLD,
                            ratioThreshold = 0.4):
 
         LOG.info("start place cluster.")
@@ -104,8 +108,24 @@ class LocationRecognition(object):
         validCluster = filterClustersBySize(clusterResult, dataArray, timeThreshold / samplingInteval)
 
         # add tags
-
+        print "%d valid cluster" % len(validCluster)
         globalDataInRangeCount = self.countDataInRange(dataArray, timeRanges)
+
+
+        print "global data range count : %s" % globalDataInRangeCount
+        #print "valid cluster : %s" % validCluster
+        for cluster in validCluster:
+            temp = []
+            for date in cluster:
+                timeStamp = time.localtime(date.time)
+                #print timeStamp
+                if timeStamp.tm_hour in DEFAULT_TIME_RANGES[0]:
+                    #print timeStamp.tm_hour
+                    temp.append(dict(lat=date.latitude,
+                                     lon=date.longitude,
+                                     time=datetime.datetime.fromtimestamp(date.time).strftime("%Y-%m-%dT%H:%M:%S.%fZ")))
+            LOG.info("cluster : %s" % temp)
+            LOG.info("cluster length: %s" % len(temp))
 
         results = []
         #print validCluster
@@ -119,7 +139,7 @@ class LocationRecognition(object):
                     i += 1
                     continue
                 ratio = float(clusterDataInRangeCount[i]) / globalDataInRangeCount[i]
-                #print ratio
+                print ratio
                 if ratio > ratioThreshold:
                     estimateTime = clusterDataInRangeCount[i] * samplingInteval    #todo: estimateTime is point count multi interval??????
                     tags.append(TagInfo(tagOfTimeRanges[i], estimateTime, ratio))
@@ -155,13 +175,16 @@ class LocationRecognition(object):
 
         dataInRangeCount = [0] * len(timeRanges)
         for data in dataArray:
-            timeStamp = time.localtime(data.time / 1000)
+            #timeStamp = time.localtime(data.time / 1000)
+            timeStamp = time.localtime(data.time)
+            #print timeStamp, data.latitude, data.longitude
             i = 0
             while i < len(timeRanges):
                 if timeStamp.tm_hour in timeRanges[i]:
                     dataInRangeCount[i] += 1
                 i += 1
         return dataInRangeCount
+
 
     def startCluster(self, userId=None):
 
@@ -190,12 +213,13 @@ class LocationRecognition(object):
 
             #data = self.getData(userId)
             data = self.get_user_trace(userId)
-            results = self.cluster(data)
+            results = self.cluster(data, samplingInteval=1200, timeThreshold=3600)
 
             if len(results) > 0:
                 transformed_res = self.saveResults(results, userId)
-
-            return transformed_res
+                return transformed_res
+            else:
+                return []
             #return json.dumps(results,default=lambda obj:obj.__dict__)
         except Exception as e:
             LOG.error("exception in place clustering : %s" % e.message)
@@ -269,12 +293,16 @@ class LocationRecognition(object):
 
     def get_user_trace(self, user_id):
         avos_class = 'UserLocation'
-        raw_date = self.avosManager.getAllData(avos_class, where='{"user":"%s"}'% user_id)
+        user_pointer = {"__type": "Pointer", "className": "_User","objectId": user_id}
+        raw_date = self.avosManager.getAllData(avos_class, where='{"user": %s }'% json.dumps(user_pointer))
         results = []
         for row in raw_date:
-            location = row['location'].split(',')
-            results.append(dict(objectId=row['objectId'], timestamp=row['timestamp'], longitude=location[0],
-                                latitude=location[1], userId=row['user']))
+            timestamp = timeutils.iso2timestamp(row['createdAt'])
+            #print timestamp
+            results.append(dict(objectId=row['objectId'], timestamp=timestamp,
+                                longitude=row['location']['longitude'],
+                                latitude=row['location']['latitude'],
+                                userId=row['user']))
 
         return results
 

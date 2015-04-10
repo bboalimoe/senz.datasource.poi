@@ -9,7 +9,7 @@ import time, datetime
 ISO_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 def iso2timestamp(iso_time): #avos date type {u'__type': u'Date', u'iso': u'2015-05-23T11:15:00.000Z'}
-        t = time.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.000Z")
+        t = time.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.%fZ")
         return long(time.mktime(t))
 
 def ISOString2Time(s, fmt="%Y-%m-%d %H:%M:%S"):
