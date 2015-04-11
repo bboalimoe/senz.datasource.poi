@@ -48,4 +48,31 @@ def DaysBeforeAvosDate(day):
     utc_time = utc_time.replace(" ","T")
     return utc_time+".000Z"
 
+def locol_utc_offset():
+    now_stamp = time.time()
+    local_time = datetime.datetime.fromtimestamp(now_stamp)
+    utc_time = datetime.datetime.utcfromtimestamp(now_stamp)
+    return local_time - utc_time
+
+LOCAL_UTC_OFFSET = locol_utc_offset()
+
+def utc2local(utc_st):
+    '''convert utc datetime to local datetime
+
+    :param utc_st: datetime.datetime type
+    :return:
+    '''
+    local_st = utc_st + LOCAL_UTC_OFFSET
+    return local_st
+
+def local2utc(local_st):
+    '''convert local datetime to utc datetime
+
+    :param local_st: datetime.datetime type
+    :return:
+    '''
+    time_struct = time.mktime(local_st.timetuple())
+    utc_st = datetime.datetime.utcfromtimestamp(time_struct)
+    return utc_st
+
 

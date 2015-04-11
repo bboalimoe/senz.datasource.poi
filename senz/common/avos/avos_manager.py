@@ -109,8 +109,8 @@ class AvosManager(object):
                 if 'error' not in json.loads(res.content):
                         return res.content
                 else:
-                    print res.content
-                    return None
+                    LOG.error(str(res.content))
+                    raise SenzExcption(msg="Error in avos get data:%s" % str(res.content))
 
         def getAllData(self, className, **kwargs):
             '''get all rows of specified class
@@ -122,7 +122,11 @@ class AvosManager(object):
             res_len = L
             jsonArray = []
             while res_len == L:
-                res = json.loads(self.getData(className,limit=L, skip=start, **kwargs))['results']
+                try:
+                    raw = self.getData(className,limit=L, skip=start, **kwargs)
+                except NeutronException, e:
+                    break
+                res = json.loads(raw)['results']
                 res_len = len(res)
                 for row in res:
                     jsonArray.append(row)

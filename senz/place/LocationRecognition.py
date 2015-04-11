@@ -15,7 +15,7 @@ from senz.exceptions import *
 # params
 LOG = logging.getLogger(__name__)
 
-DEFAULT_TIME_RANGES = [[ 23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
+DEFAULT_TIME_RANGES = [[0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
 VERSION = '0.1'
 
@@ -60,7 +60,7 @@ class LocationRecognition(object):
     def __init__(self):
         self.avosManager = AvosManager()
 
-    def cluster(self, jsonArray, maxClusterRadius=0.00125, samplingInteval=DEFAULT_SAMPLE_INTEVAL,
+    def cluster(self, jsonArray, maxClusterRadius=0.0125, samplingInteval=DEFAULT_SAMPLE_INTEVAL,
                            timeRanges=DEFAULT_TIME_RANGES, tagOfTimeRanges=DEFAULT_TAG_OF_TIME_RANGES, timeThreshold = DEFAULT_SAMPLE_THRESHOLD,
                            ratioThreshold = 0.4):
 
@@ -112,14 +112,14 @@ class LocationRecognition(object):
         globalDataInRangeCount = self.countDataInRange(dataArray, timeRanges)
 
 
-        print "global data range count : %s" % globalDataInRangeCount
+        LOG.info("global data range count : %s" % globalDataInRangeCount)
         #print "valid cluster : %s" % validCluster
         for cluster in validCluster:
             temp = []
             for date in cluster:
                 timeStamp = time.localtime(date.time)
                 #print timeStamp
-                if timeStamp.tm_hour in DEFAULT_TIME_RANGES[0]:
+                if timeStamp.tm_hour in DEFAULT_TIME_RANGES[1]:
                     #print timeStamp.tm_hour
                     temp.append(dict(lat=date.latitude,
                                      lon=date.longitude,
@@ -297,7 +297,15 @@ class LocationRecognition(object):
         raw_date = self.avosManager.getAllData(avos_class, where='{"user": %s }'% json.dumps(user_pointer))
         results = []
         for row in raw_date:
-            timestamp = timeutils.iso2timestamp(row['createdAt'])
+            utc_time = op_timeutils.parse_isotime(row['createdAt'])
+            local_time = timeutils.utc2local(utc_time)
+
+            weekday = local_time.weekday()
+            if weekday in [0, 6]:
+                continue
+
+            timestamp = time.mktime(local_time.timetuple())
+            #print row
             #print timestamp
             results.append(dict(objectId=row['objectId'], timestamp=timestamp,
                                 longitude=row['location']['longitude'],
