@@ -2,7 +2,7 @@ __author__ = 'wzf'
 
 from base import TestBase
 
-from senz.common.avos import avos_manager
+from senz.db.avos import avos_manager
 
 
 class TestPoi(TestBase):

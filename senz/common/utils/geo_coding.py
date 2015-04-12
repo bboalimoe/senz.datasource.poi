@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from senz.common.avos.avos_manager import *
+from senz.db.avos.avos_manager import *
 
 
 class GeoCoder(object):

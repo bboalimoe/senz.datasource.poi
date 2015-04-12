@@ -7,6 +7,7 @@ from senz.poi.beacon import Beacon
 from senz.common.manager import ManagerBase, MultiThreadManager
 from senz.poi.poi import PoiGet
 from senz.exceptions import error_info
+
 LOG = logging.getLogger(__name__)
 
 class StoreBackend(object):
@@ -14,7 +15,7 @@ class StoreBackend(object):
     '''
     def __init__(self):
         self.avos_class = 'UserLocationTrace'
-        from senz.common.avos.avos_manager import AvosManager
+        from senz.db.avos.avos_manager import AvosManager
         self.avos_manager = AvosManager()
 
     def store(self, data):

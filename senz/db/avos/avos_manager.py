@@ -3,13 +3,14 @@
 import json
 import warnings
 import logging
+
 import requests
 
-from senz.common.avos.avos import AVObject
+from senz.db.avos.avos import AVObject
 from senz.common.utils.util_opt import *
 from senz.common.openstack import importutils
-
 from senz.exceptions import *
+
 
 LOG = logging.getLogger(__name__)
 
@@ -110,7 +111,7 @@ class AvosManager(object):
                         return res.content
                 else:
                     LOG.error(str(res.content))
-                    raise SenzExcption(msg="Error in avos get data:%s" % str(res.content))
+                    raise DataCRUDError(msg="Error in avos get data:%s" % str(res.content))
 
         def getAllData(self, className, **kwargs):
             '''get all rows of specified class

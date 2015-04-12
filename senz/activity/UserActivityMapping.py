@@ -1,11 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from math import *
-import sys, os
 
-import logging
-
-from senz.common.avos.avos_manager import *
+from senz.db.avos.avos_manager import *
 from senz.common.utils import timeutils
 from senz.common.utils import geoutils
 
@@ -188,7 +184,7 @@ class UserActivityMapping(object):
         def mapActivityByUser(self, userId, locations):
 
             self._getLastPossibleActivities()
-            if len(locations) > 100:
+            if locations and len(locations) > 100:
                 self.locations = locations
             else:
                 self.locations = self.GetRecentTraceByUser(userId)

@@ -27,6 +27,5 @@ class TestBase(object):
 
         respon = self.conn.getresponse()
         data = respon.read()
-        print data
-
         self.conn.close()
+        return data

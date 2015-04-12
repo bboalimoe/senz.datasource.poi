@@ -3,7 +3,7 @@
 
 #sys.path.append('../utils')
 
-from senz.common.avos.avos_manager import *
+from senz.db.avos.avos_manager import *
 from senz.common.utils.util_opt import *
 from senz.common.utils.geo_coding import GeoCoder
 from senz.common.utils.translate import Trans

@@ -1,15 +1,13 @@
 # -*- encoding=utf-8 -*-
-import logging
-import datetime
 
 import scipy.cluster.hierarchy as sch
 
-from senz.common.avos.avos_manager import *
+from senz.db.avos.avos_manager import *
 from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress, distance
 from senz.common.utils import timeutils
-from senz.common.openstack import timeutils as op_timeutils
-
 from senz.exceptions import *
+
+from senz.db.resource.user import UserTrace
 
 
 # params
@@ -19,9 +17,13 @@ DEFAULT_TIME_RANGES = [[0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
 VERSION = '0.1'
 
-DEFAULT_SAMPLE_INTEVAL = 10
+DEFAULT_SAMPLE_INTEVAL = 600 #unit is second
 
-DEFAULT_SAMPLE_THRESHOLD = 300
+DEFAULT_SAMPLE_THRESHOLD = 1800 #unit is second
+
+DEFAULT_CLUSTER_RATIO = 0.4
+
+DEFAULT_CLUSTER_RADIUS = 0.0125
 
 def filterClustersBySize(cluster, dataArray, size):
     allCluster = [[] for row in range(cluster.max())]
@@ -60,9 +62,9 @@ class LocationRecognition(object):
     def __init__(self):
         self.avosManager = AvosManager()
 
-    def cluster(self, jsonArray, maxClusterRadius=0.0125, samplingInteval=DEFAULT_SAMPLE_INTEVAL,
+    def cluster(self, jsonArray, maxClusterRadius=DEFAULT_CLUSTER_RADIUS, samplingInteval=DEFAULT_SAMPLE_INTEVAL,
                            timeRanges=DEFAULT_TIME_RANGES, tagOfTimeRanges=DEFAULT_TAG_OF_TIME_RANGES, timeThreshold = DEFAULT_SAMPLE_THRESHOLD,
-                           ratioThreshold = 0.4):
+                           ratioThreshold = DEFAULT_CLUSTER_RATIO):
 
         LOG.info("start place cluster.")
 
@@ -111,22 +113,6 @@ class LocationRecognition(object):
         print "%d valid cluster" % len(validCluster)
         globalDataInRangeCount = self.countDataInRange(dataArray, timeRanges)
 
-
-        LOG.info("global data range count : %s" % globalDataInRangeCount)
-        #print "valid cluster : %s" % validCluster
-        for cluster in validCluster:
-            temp = []
-            for date in cluster:
-                timeStamp = time.localtime(date.time)
-                #print timeStamp
-                if timeStamp.tm_hour in DEFAULT_TIME_RANGES[1]:
-                    #print timeStamp.tm_hour
-                    temp.append(dict(lat=date.latitude,
-                                     lon=date.longitude,
-                                     time=datetime.datetime.fromtimestamp(date.time).strftime("%Y-%m-%dT%H:%M:%S.%fZ")))
-            LOG.info("cluster : %s" % temp)
-            LOG.info("cluster length: %s" % len(temp))
-
         results = []
         #print validCluster
         for cluster in validCluster:
@@ -158,14 +144,11 @@ class LocationRecognition(object):
                 count += 1
 
             avgLa = sumLa / count
-            print "avgLa", avgLa
             avgLo = sumLo / count
 
             result = LocationWithTags(avgLa, avgLo, tags)
             result.estimateTime = count * samplingInteval
-            print ("r",results)
             results.append(result)
-        print (results)
 
         print "return cluster results : %d" % len(results)
         # output are in results
@@ -175,9 +158,12 @@ class LocationRecognition(object):
 
         dataInRangeCount = [0] * len(timeRanges)
         for data in dataArray:
-            #timeStamp = time.localtime(data.time / 1000)
             timeStamp = time.localtime(data.time)
-            #print timeStamp, data.latitude, data.longitude
+
+            weekday = timeStamp.weekday()
+            if weekday in [0, 6]:
+                continue
+
             i = 0
             while i < len(timeRanges):
                 if timeStamp.tm_hour in timeRanges[i]:
@@ -186,16 +172,21 @@ class LocationRecognition(object):
         return dataInRangeCount
 
 
-    def startCluster(self, userId=None):
+    def startCluster(self, userId, samplingInteval, timeThreshold=None):
+
+        locRecgClass = 'LocationRecognition'
 
         try:
             #return old place recognition data if it generated in 7 days
-            locRecgClass = 'LocationRecognition'
 
             oldLocRecgData = json.loads(self.avosManager.getData(
                                    locRecgClass,
                                    where='{"userId":"%s"}'% userId ))['results']
+        except DataCRUDError, e:
+            LOG.warning("Get data of LocationRecognition failed.")
+            oldLocRecgData = []
 
+        try:
             if len(oldLocRecgData) > 0:
                 createDate = datetime.datetime.strptime(oldLocRecgData[0]['createdAt'],
                                                         timeutils.ISO_TIME_FORMAT)
@@ -210,10 +201,14 @@ class LocationRecognition(object):
                         self.avosManager.deleteData(locRecgClass, recgData)
 
 
-
             #data = self.getData(userId)
-            data = self.get_user_trace(userId)
-            results = self.cluster(data, samplingInteval=1200, timeThreshold=3600)
+
+            data = UserTrace().get_user_trace(userId)
+
+            if not timeThreshold:
+                timeThreshold = 3 * samplingInteval
+
+            results = self.cluster(data, samplingInteval=samplingInteval, timeThreshold=timeThreshold)
 
             if len(results) > 0:
                 transformed_res = self.saveResults(results, userId)
@@ -236,8 +231,7 @@ class LocationRecognition(object):
         for result in results:
             for tag in result.tags:
                 place_tag = {"latitude":result.latitude, "longitude":result.longitude, "tag":tag.tag,
-                                "ratio":tag.ratio, "estimateTime":result.estimateTime, "userId":userId,
-                                "date": "", "status": ""}
+                                "ratio":tag.ratio, "estimateTime":result.estimateTime, "userId":userId,}
                 transformed_res.append(place_tag)
                 self.avosManager.saveData(avosClassName, place_tag)
 
@@ -291,41 +285,7 @@ class LocationRecognition(object):
 
         return jsonArray
 
-    def get_user_trace(self, user_id):
-        avos_class = 'UserLocation'
-        user_pointer = {"__type": "Pointer", "className": "_User","objectId": user_id}
-        raw_date = self.avosManager.getAllData(avos_class, where='{"user": %s }'% json.dumps(user_pointer))
-        results = []
-        for row in raw_date:
-            utc_time = op_timeutils.parse_isotime(row['createdAt'])
-            local_time = timeutils.utc2local(utc_time)
 
-            weekday = local_time.weekday()
-            if weekday in [0, 6]:
-                continue
-
-            timestamp = time.mktime(local_time.timetuple())
-            #print row
-            #print timestamp
-            results.append(dict(objectId=row['objectId'], timestamp=timestamp,
-                                longitude=row['location']['longitude'],
-                                latitude=row['location']['latitude'],
-                                userId=row['user']))
-
-        return results
-
-
-
-    def getUserData(self, userId):
-
-        avosClass = 'UserLocationTrace'
-        jsonArray = self.avosManager.getAllData(avosClass, where='{"userId":"%s"}'% userId)
-
-        print jsonArray
-        print "get %d date" % len(jsonArray)
-        print 'Done'
-
-        return jsonArray
         #result = lean.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"", "timpstamp":gps['timestamp'],"userId":userId})
 
 

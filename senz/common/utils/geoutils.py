@@ -50,7 +50,7 @@ def coordArrayCompress(coordArray, samplingInteval):
         latitudeSum = 0
         longitudeSum = 0
         count = 0
-        while i < len(coordArray) and coordArray[i].time in range(bottom, top):
+        while i < len(coordArray) and coordArray[i].time >= bottom and coordArray[i].time <= top:
             latitudeSum += coordArray[i].latitude
             longitudeSum += coordArray[i].longitude
             count += 1

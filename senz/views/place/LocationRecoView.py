@@ -17,15 +17,27 @@ LOG = logging.getLogger(__name__)
 
 
 @csrf_exempt
-def GetUserLocationTags(request, user_id):
+def GetUserLocationTags(request):
     """
     description:             places recognition of user identified by 'user_id'
     """
     try:
+        if request.method == 'POST':
+            body_context = json.loads(request.body)
+        else:
+            raise BadRequest(resource='place',
+                              msg='unsupported http method ')
+
+        user_id = body_context.get('user_id')
+        sampling_interval = body_context.get('sampling_interval')
+        time_threshold = body_context.get('time_threshold')
+
         place_recg = LocationRecognition()
 
         LOG.info('Pre places recognition')
-        results = place_recg.startCluster(user_id)
+        print sampling_interval
+        print time_threshold
+        results = place_recg.startCluster(user_id, sampling_interval, time_threshold)
         return JsonResponse({'results':results})
 
     except SenzExcption, e:
