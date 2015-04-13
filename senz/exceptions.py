@@ -56,7 +56,7 @@ class NotEnouphData(Invalid):
     message = 'Not enouph %(param)s data for method '
 
 
-class DataCRUDError(SenzExcption):
+class AvosCRUDError(SenzExcption):
     message = 'Handle data CRUD method error : %(msg)s'
 
 

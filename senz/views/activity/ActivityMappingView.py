@@ -1,81 +1,48 @@
 # -*- coding = utf-8 -*-
 import json
-
+import logging
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from senz.exceptions import *
 
-from poi.poiGenerator import PoiGenerator
-from django.conf import settings
-from django.conf.urls import patterns, url
-from django.core.management import execute_from_command_line
 from django.http import JsonResponse
-from mixpanel import Mixpanel
+#from mixpanel import Mixpanel
 from senz.activity.UserActivityMapping import UserActivityMapping
 
-
-
-
+LOG = logging.getLogger(__name__)
 
 @csrf_exempt
-def InitiateMapping(request):
+def UserActivityView(request):
+    ''' Parse pois from gps points and if 'userId' in request parmeter
+    it will make user activity mapping.
 
-    """
-
-        /initial_map/
-        description:                initiate mapping actions
-
-        method:                    Get
-
-        return:                   {"status":0(1),"errors":"some errors"(empty)}
-    """
-    #todo control logic
-    um = UserActivityMapping()
+    :param request: django http request
+    :return: poi info and user activity mapping results if necessary
+    '''
     try:
-        um.mapping()
+        if request.method == 'POST':
+            body_context = json.loads(request.body)
+        else:
+            raise BadRequest(resource='activity',
+                              msg='unsupported http method ')
 
-    except:
-        import sys
-        info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-        print info
-        return JsonResponse({"status":0,"errors":info})
+        user_id = body_context.get('user_id')
+        last_days = body_context.get('last_days')
 
-    return JsonResponse({"status":1})
+        controller = UserActivityMapping()
+        res = controller.map_user_activity(user_id=user_id, last_days=last_days)
 
 
-@csrf_exempt
-def GetActivitiesById(request):
+        return JsonResponse({'results': res})
 
-        """
-            /activity/
-            description:                get the mapped 10 activities for the user with the userid
-
-            method:                    POST
-             data format:              json
-             userId:                  string
-             amount:                  int
-            return:                   {"status":0(1),"errors":"some errors"(empty)}
-        """
-
-        try:
-
-            if request.method == 'POST':
-                req = json.loads(request.body)
-
-            else:
-                return JsonResponse( {"status":0,"errors":"Method illegal"})
-        except:
-            import sys
-            info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-            return JsonResponse({"status":0,"errors":info})
-
-        userId, amount = req['userId'], req['amount']
-        try:
-            um = UserActivityMapping()
-            Results = um.mappingActivitiesByUser(userId, int(amount) )
-        except:
-            import sys
-            info = "%s || %s" % (sys.exc_info()[0], sys.exc_info()[1]) #todo log the exception info
-            return JsonResponse({"status":0, "errors":info})
-
-        return JsonResponse({"status":1, "results":Results["results"][0] })
+    except AvosCRUDError, e:
+        LOG.error('Avos data CRUD error : %s' % e)
+        return HttpResponse('Avos data CRUD error : %s' % e, status=AvosCRUDError.code)
+    except SenzExcption, e:
+        LOG.error('Activity handle error: %s' % e)
+        return HttpResponse('Activity handle error: %s' % e, status=SenzExcption.code)
+    except Exception, e:
+        info, trace = error_info()
+        LOG.error(info + ' || ' + str(trace))
+        return HttpResponse('System error: %s' % info, status=500)
 

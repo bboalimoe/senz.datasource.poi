@@ -45,8 +45,8 @@ def GetUserLocationTags(request):
         return HttpResponse('Place recognition handle error: %s' % e, status=SenzExcption.code)
 
     except Exception as e:
-        info = error_info()
-        LOG.error(info)
+        info, trace= error_info()
+        LOG.error(info + '||' + str(trace))
         return HttpResponse('System error: %s' % info, status=500)
 
 

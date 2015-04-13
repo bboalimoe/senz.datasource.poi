@@ -3,9 +3,6 @@ __author__ = 'wzf'
 from base import TestBase
 
 class TestPlaceApi(TestBase):
-    '''deprecated
-
-    '''
     def __init__(self):
         super(TestPlaceApi, self).__init__()
         self.headers = {"Content-type":"application/json"}
