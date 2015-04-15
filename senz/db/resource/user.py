@@ -38,7 +38,7 @@ class UserTrace(object):
             #'timestamp' should be unit by microsecond
                 timestamp = time.mktime(local_time.timetuple())
 
-            print row
+            #print row
             #print timestamp
             results.append(dict(objectId=row['objectId'], timestamp=timestamp,
                                 longitude=row['location']['longitude'],
@@ -72,16 +72,18 @@ class UserTrace(object):
         start = 0
         res_len = L
         locations = []
+        user_pointer = {"__type": "Pointer", "className": "_User","objectId": user_id}
         while res_len == L:
-            res = json.loads( self.avos_manager.getDateBetweenDataByUser(TRACE_CLASS,
+            res = json.loads( self.avos_manager.getDateBetweenData(TRACE_CLASS,
                                                                   "createdAt",
                                                                   timeutils.DaysBeforeAvosDate(last_days),
                                                                   timeutils.nowAvosDate(),
-                                                                  user_id,
+                                                                  where='{"user": %s }'% json.dumps(user_pointer),
                                                                   limit=L,
                                                                   skip=start))['results']
             res_len = len(res)
 
+            print "get %d user trace" % res_len
             for loc in res:
                 locations.append(loc)
             start = start+L

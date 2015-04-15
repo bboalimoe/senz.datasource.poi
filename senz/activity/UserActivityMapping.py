@@ -35,12 +35,13 @@ class UserActivityMapping(object):
             self.timestampedMappedActivity = {}
 
         #Consider whether user in this activity
-        def __isInActivity(self,user,activity):
+        def _isInActivity(self,user,activity):
             aLon=activity['location']['longitude'] #geopoint
             aLat=activity['location']['latitude']
             activeTimes = []
             activeLocationRecords = []
             for oneTime in user:
+
                     uLon=oneTime['longitude']
                     uLat=oneTime['latitude']
                     if(geoutils.distance(aLon, aLat, uLon, uLat)<100):
@@ -56,11 +57,12 @@ class UserActivityMapping(object):
             endTime = timeutils.iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
 
             actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
-            if actives >= len(activeTimes)*0.5:
+            if actives >= len(activeTimes)*0.35:
                 print "activeLocationRecords",activeLocationRecords
                 activeLocationRecords.sort(key=lambda x:x["timestamp"])
                 flaggedLocation = activeLocationRecords[-1]
-                self.timestampedMappedActivity.setdefault(str(flaggedLocation["timpstamp"]),activity)
+                self.timestampedMappedActivity.setdefault(str(flaggedLocation["timestamp"]),activity)
+                flaggedLocation.update({'activityId': activity['objectId']})
                 return flaggedLocation
             else:
                 return None
@@ -68,7 +70,7 @@ class UserActivityMapping(object):
         def _getLastPossibleActivities(self, last_days=3): #first return the last 3 days(3*24*60*60 sec)'s activities before the timeNow
 
                 print 'Getting activities ...'
-                L = 200
+                L = 100
                 start = 0
                 res_len = L
                 while res_len == L:
@@ -112,7 +114,7 @@ class UserActivityMapping(object):
                 for activity in self.activities:
                     #print "activity", activity['objectId']
                     print "fuck\n\n\n\n\n\n"
-                    if self.__isInActivity(user,activity):
+                    if self._isInActivity(user,activity):
                             #print "activity['objectId']",activity['objectId']
                             self.mappingList[userId].append(activity['objectId'])
                 print 'Done'
@@ -121,10 +123,6 @@ class UserActivityMapping(object):
 
 
             print 'Mapping finished!'
-
-
-
-
 
         def map_user_activity(self, user_id, trace_list=None, last_days=3):
 
@@ -138,7 +136,7 @@ class UserActivityMapping(object):
             #todo get the user's last place
             res = []
             for ac in self.activities:
-                flag = self.__isInActivity(self.locations, ac)
+                flag = self._isInActivity(self.locations, ac)
                 if flag:
                     res.append(flag)
                     #self.flaggedLocation.update({"activityId":ac["objectId"]})

@@ -35,18 +35,14 @@ def nowAvosDate():
     #unix epoch time 和 timestamp一致，存入avos后台的utc也是iso和前面是一个转化值。所以呈现出来的string形式，与北京时间不同，差8小时。
 
     now = time.time()
-    utc_time = datetime.datetime.utcfromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
-
-    utc_time = utc_time.replace(" ","T")
-    return utc_time+".000Z"
+    utc_time = datetime.datetime.utcfromtimestamp(now).strftime(ISO_TIME_FORMAT)
+    return utc_time
 
 def DaysBeforeAvosDate(day):
 
     before_time = time.time() - day*24*60*60
-    utc_time = datetime.datetime.utcfromtimestamp(before_time).strftime('%Y-%m-%d %H:%M:%S')
-
-    utc_time = utc_time.replace(" ","T")
-    return utc_time+".000Z"
+    utc_time = datetime.datetime.utcfromtimestamp(before_time).strftime(ISO_TIME_FORMAT)
+    return utc_time
 
 def locol_utc_offset():
     now_stamp = time.time()

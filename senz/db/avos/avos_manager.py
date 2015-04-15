@@ -202,7 +202,7 @@ class AvosManager(object):
                         kwargs[k] = json.dumps(kwargs[k])
 
                 """
-                print "kwargs", json.dumps(kwargs)
+                print "kwargs", kwargs
                 #print "jsonify",type(json.dumps(kwargs))
                 res = requests.get(
                     self._avosConnectors[config.findGroup(className)].base_classes+className,
