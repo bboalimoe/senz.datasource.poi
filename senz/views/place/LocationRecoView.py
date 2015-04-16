@@ -42,12 +42,14 @@ def GetUserLocationTags(request):
 
     except SenzExcption, e:
         LOG.error('Place recognition handle error: %s' % e)
-        return HttpResponse('Place recognition handle error: %s' % e, status=SenzExcption.code)
+        return HttpResponse('Place recognition handle error: %s' % e,
+                                    content_type='text/plain',
+                                    status=SenzExcption.code)
 
     except Exception as e:
         info = error_info()
         LOG.error(info)
-        return HttpResponse('System error: %s' % info, status=500)
+        return HttpResponse('System error: %s' % info, content_type='text/plain',status=500)
 
 
 @csrf_exempt
@@ -64,12 +66,14 @@ def AddTraceNearTags(request, user_id):
 
     except SenzExcption, e:
         LOG.error('Add place "near" tag error: %s' % e)
-        return HttpResponse('Add place "near" tag error: %s' % e, status=SenzExcption.code)
+        return HttpResponse('Add place "near" tag error: %s' % e,
+                                   content_type='text/plain', status=SenzExcption.code)
 
     except Exception as e:
         info = error_info()
         LOG.error(info)
-        return HttpResponse('System error: %s' % info, status=500)
+        return HttpResponse('System error: %s' % info,
+                                  content_type='text/plain', status=500)
 
 
 
