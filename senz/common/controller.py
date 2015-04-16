@@ -23,6 +23,7 @@ class Pipeline(object):
             self.managers[t] = manager_class(self, t)
 
     def run(self, context):
+        #todo : handle method with optional args !!!!!!
         '''Run tasks of pipeline in order.
 
         :param context: request context

@@ -5,7 +5,11 @@ from senz.db.avos.avos_manager import *
 from senz.common.utils import timeutils
 from senz.common.utils import geoutils
 
+from senz.db.resource.user import UserTrace
+
 LOG = logging.getLogger(__name__)
+
+ACTIVITY_CLASS = "activities"
 
 class UserActivityMapping(object):
 
@@ -16,86 +20,52 @@ class UserActivityMapping(object):
         #todo  4.Naive Bayes added
 
         def __init__(self):
-                self.avosManager = AvosManager()
-                self.mappingList = {}
-                self.users = {}
-                self.locations = []
-                self.activities = []
-                self.flaggedLocation = None #record the last place record that triggers the matching
-                #todo
-                self.mapped = False # tell the method if updating the results
-                #todo
-                self.lastMappingTime = None  # retrieve the time from the db or the file
-                                             # it's for checking the mapping period in case the info is outdated
-                self.timestampedMappedActivity = {}
+            self.user_trace = UserTrace()
+            self.avosManager = AvosManager()
+            self.mappingList = {}
+            #self.users = {}
+            self.locations = []
+            self.activities = []
+            #self.flaggedLocation = None #record the last place record that triggers the matching
+            #todo
+            self.mapped = False # tell the method if updating the results
+            #todo
+            self.lastMappingTime = None  # retrieve the time from the db or the file
+                                         # it's for checking the mapping period in case the info is outdated
+            self.timestampedMappedActivity = {}
 
         #Consider whether user in this activity
         def __isInActivity(self,user,activity):
+            aLon=activity['location']['longitude'] #geopoint
+            aLat=activity['location']['latitude']
+            activeTimes = []
+            activeLocationRecords = []
+            for oneTime in user:
+                    uLon=oneTime['longitude']
+                    uLat=oneTime['latitude']
+                    if(geoutils.distance(aLon, aLat, uLon, uLat)<100):
+                            activeTimes.append(oneTime['timestamp'])
+                            activeLocationRecords.append(oneTime)
 
+            #print "start time", activity['start_time']
 
-                aLon=activity['place']['longitude'] #geopoint
-                aLat=activity['place']['latitude']
-                activeTimes = []
-                activeLocationRecords = []
-                for oneTime in user:
-                        uLon=oneTime['longitude']
-                        uLat=oneTime['latitude']
-                        if(geoutils.distance(aLon, aLat, uLon, uLat)<100):
-                                activeTimes.append(oneTime['timestamp'])
-                                activeLocationRecords.append(oneTime)
+            if len(activeTimes) == 0:
+                    return 0
+            #print "start time", activity['start_time']
+            startTime = timeutils.iso2timestamp(activity['start_time']['iso'])
+            endTime = timeutils.iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
 
-                print "start time", activity['start_time']
+            actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
+            if actives >= len(activeTimes)*0.5:
+                print "activeLocationRecords",activeLocationRecords
+                activeLocationRecords.sort(key=lambda x:x["timestamp"])
+                flaggedLocation = activeLocationRecords[-1]
+                self.timestampedMappedActivity.setdefault(str(flaggedLocation["timpstamp"]),activity)
+                return flaggedLocation
+            else:
+                return None
 
-                if len(activeTimes) == 0:
-                        return 0
-                #print "start time", activity['start_time']
-                startTime = timeutils.iso2timestamp(activity['start_time']['iso'])
-                endTime = timeutils.iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
-
-                actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
-                if actives >= len(activeTimes)*0.5:
-                        print "activeLocationRecords",activeLocationRecords
-                        activeLocationRecords.sort(key=lambda x:x["timestamp"])
-                        self.flaggedLocation = activeLocationRecords[-1]
-                        self.timestampedMappedActivity.setdefault(str(self.flaggedLocation["timpstamp"]),activity)
-                        return 1
-                else:
-                        return 0
-
-        def __isMatchTimeLoc(self):
-            """
-            deprecated
-            :return:
-            """
-            return
-                        
-        
-        def __getUserList(self):
-                """
-                the location_record's userId(deviceid)
-
-                deprecated
-
-                :return:
-                """
-                print 'Getting user list ...'
-                L = 200
-                start = 0
-                res_len = L
-                while res_len == L:                       
-                        res = json.loads(self.avosManager.getData('location_record',limit=L, skip=start))['results']
-                        res_len = len(res)
-                        for user in res:
-                                if user['userId'] not in self.users:
-                                        self.users[user['userId']]=[user]
-                                else:
-                                        self.users[user['userId']].append(user);
-                        start = start+L
-                print 'Done'
-
-
-
-        def _getLastPossibleActivities(self): #first return the last 3 days(3*24*60*60 sec)'s activities before the timeNow
+        def _getLastPossibleActivities(self, last_days=3): #first return the last 3 days(3*24*60*60 sec)'s activities before the timeNow
 
                 print 'Getting activities ...'
                 L = 200
@@ -103,102 +73,81 @@ class UserActivityMapping(object):
                 res_len = L
                 while res_len == L:
                     #get the
-                    res = json.loads(self.avosManager.getDateBetweenData("activities","start_time",
-                                                                         timeutils.DaysBeforeAvosDate(3),
+                    res = json.loads(self.avosManager.getDateBetweenData(ACTIVITY_CLASS,"start_time",
+                                                                         timeutils.DaysBeforeAvosDate(last_days),
                                                                          timeutils.nowAvosDate(),
                                                                          limit=L,skip=start) )['results']
                     res_len = len(res)
+                    print "get %d activities" % res_len
                     self.activities = self.activities+res
                     start = start+L
                 print 'Done'
 
-
-
-        def __getActivities(self):
-                """
-                deprecated
-                """
-                print 'Getting activities ...'
-                L = 200
-                start = 0
-                res_len = L
-                while res_len == L:                       
-                        res = json.loads(self.avosManager.getData('activities' ,limit=L, skip=start))['results']
-                        res_len = len(res)
-                        self.activities = self.activities+res
-                        start = start+L
-                print 'Done'
                 
         def mapping(self, saveTo=0 ):
+            ''' this method should be rewrite!!!!
 
-                #todo saveTo indicates where to save the data
-                ## 0 -> db
-                ## 1->  local file
-                ## ...
-                """
-                calculate every user's mapping results
-                :return:
-                """
-                self.__getUserList()
-                self.__getActivities()
-
-                for userId,user in self.users.items():
-                        print 'Mapping user: id=  '+userId+' ...'
-                        self.mappingList[userId] = []
-                        for activity in self.activities:
-                            #print "activity", activity['objectId']
-                            print "fuck\n\n\n\n\n\n"
-                            if self.__isInActivity(user,activity):
-                                    #print "activity['objectId']",activity['objectId']
-                                    self.mappingList[userId].append(activity['objectId'])
-                        print 'Done'
-                        self.avosManager.saveData("MappingResults",{"userid":userId,"activities":self.mappingList[userId]})
-                #todo only map one day's user place&activity data  and save one day's matching data into avos
+            :param saveTo:
+            :return:
+            '''
 
 
-                print 'Mapping finished!'
+            #todo saveTo indicates where to save the data
+            ## 0 -> db
+            ## 1->  local file
+            ## ...
+            """
+            calculate every user's mapping results
+            :return:
+            """
 
-        def GetRecentTraceByUser(self,userId):
-                print 'Getting user list ...'
-                L = 200
-                start = 0
-                res_len = L
-                locations = []
-                while res_len == L:
-                        res = json.loads( self.avosManager.getDateBetweenDataByUser("UserLocationTrace",
-                                                                              "createdAt",
-                                                                              timeutils.DaysBeforeAvosDate(3),
-                                                                              timeutils.nowAvosDate(),
-                                                                              userId,
-                                                                              limit=L,
-                                                                              skip=start))['results']
-                        res_len = len(res)
-                        for loc in res:
-                            locations.append(loc)
-                        start = start+L
+            users = self.user_trace.get_trace_users()
+
+            #self.__getUserList()
+            #self.__getActivities()
+
+            for userId,user in self.users.items():
+                print 'Mapping user: id=  '+userId+' ...'
+                self.mappingList[userId] = []
+                for activity in self.activities:
+                    #print "activity", activity['objectId']
+                    print "fuck\n\n\n\n\n\n"
+                    if self.__isInActivity(user,activity):
+                            #print "activity['objectId']",activity['objectId']
+                            self.mappingList[userId].append(activity['objectId'])
                 print 'Done'
-                return locations
+                self.avosManager.saveData("MappingResults",{"userid":userId,"activities":self.mappingList[userId]})
+            #todo only map one day's user place&activity data  and save one day's matching data into avos
+
+
+            print 'Mapping finished!'
 
 
 
-        def mapActivityByUser(self, userId, locations):
 
-            self._getLastPossibleActivities()
-            if locations and len(locations) > 100:
-                self.locations = locations
+
+        def map_user_activity(self, user_id, trace_list=None, last_days=3):
+
+            self._getLastPossibleActivities(last_days)
+
+            if trace_list and len(trace_list) > 100:
+                self.locations = trace_list
             else:
-                self.locations = self.GetRecentTraceByUser(userId)
+                self.locations = self.user_trace.get_user_recent_trace(user_id, last_days)
 
             #todo get the user's last place
+            res = []
             for ac in self.activities:
-
-                if self.__isInActivity(self.locations,ac):
-                    self.flaggedLocation.update({"activityId":ac["objectId"]})
+                flag = self.__isInActivity(self.locations, ac)
+                if flag:
+                    res.append(flag)
+                    #self.flaggedLocation.update({"activityId":ac["objectId"]})
                     #self.avosManager.updateDataById("UserLocationTrace",self.flaggedLocation["objectId"],{"activityId":ac["objectId"]})
                     #save the mapping results
 
 
-            return self.timestampedMappedActivity
+            #return self.timestampedMappedActivity
+            return res
 
 
 

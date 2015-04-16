@@ -51,7 +51,7 @@ class AvosManager(object):
                 #if 'createdAt' not in json.loads(res.content):
                     resInfo = json.loads(res.content)
                     LOG.error('Sava avos objs error : %s' % resInfo['error'])
-                    raise DataCRUDError(msg='create %s object error, %s' %
+                    raise AvosCRUDError(msg='create %s object error, %s' %
                                         (className, resInfo['error']))
                 else:
                     return res.content
@@ -88,6 +88,23 @@ class AvosManager(object):
                 if results:
                         return results[0]['objectId']
 
+        def get_users(self, group):
+            ''' get all users belong to group
+
+            :param group: poi setting group name
+            :return: user list
+            '''
+            res = requests.get(
+                url=self._avosConnectors[group].Users,
+                headers=self._avosConnectors[group].headers(),
+                params={},
+                verify=False
+            )
+            if not res.ok:
+                LOG.error('get users in %s encounter error : %s' % group)
+                raise AvosCRUDError(msg='get users in %s encounter error : %s' % group)
+            return  json.loads(res.content)['results']
+
 
         #By Zhong.zy, Get info by specified opt
         def getData(self,className,**kwargs):
@@ -111,7 +128,7 @@ class AvosManager(object):
                         return res.content
                 else:
                     LOG.error(str(res.content))
-                    raise DataCRUDError(msg="Error in avos get data:%s" % str(res.content))
+                    raise AvosCRUDError(msg="Error in avos get data:%s" % str(res.content))
 
         def getAllData(self, className, **kwargs):
             '''get all rows of specified class
@@ -176,7 +193,7 @@ class AvosManager(object):
                 a = ' { "%s":{"$gte":{"__type": "Date", "iso": "%s"} ,"$lte":{"__type": "Date", "iso":"%s"}}}'\
                       %(timeName,date1,date2)
                 #where={"score":{"$gte":1000,"$lte":3000}}
-                where_dict = {"where":a}
+                where_dict = {"where": a}
                 kwargs.update(where_dict)
                 """
                 for k in kwargs.keys():
@@ -199,13 +216,15 @@ class AvosManager(object):
                 if 'error' not in json.loads(res.content):
                         return res.content
                 else:
-                    print res.content
-                    return None
+                    LOG.error('get class "%s" between %s and %s failed.' % (className, date1, date2))
+                    raise AvosCRUDError(msg='get class "%s" between %s and %s failed.' %
+                                                                             (className, date1, date2))
+
 
         def getDateBetweenDataByUser(self,className, timeName, date1, date2, userId, **kwargs):
-                #avos data type constrain the json's value should be a number or string
+                '''this method should be deprecated use 'getDateBetweenData' instead.
 
-                #where={"start_time":{"$gte":{"__type": "Date", "iso": time.strftime("%Y-%m-%d %H:%M:%S") } }}
+                '''
                 a = ' { "%s":{"$gte":{"__type": "Date", "iso": "%s"} ,"$lte":{"__type": "Date", "iso":"%s"}},"userId":"%s"}'\
                       %(timeName,date1,date2,userId)
                 #where={"score":{"$gte":1000,"$lte":3000}}
@@ -294,7 +313,7 @@ class AvosManager(object):
         def updateDataList(self, className, dataDict):
                 res = self._avosConnectors[config.findGroup(className)]._update_avos(className,dataDict)
                 if 'error' in json.loads(res.content):
-                    raise DataCRUDError(msg = json.loads(res.content)['error'])
+                    raise AvosCRUDError(msg = json.loads(res.content)['error'])
                 return res.content
 
 

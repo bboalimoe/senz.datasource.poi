@@ -14,8 +14,6 @@ from senz.exceptions import *
 
 LOG = logging.getLogger(__name__)
 
-PARSE_METHOD_NAME = 'parse'
-
 @csrf_exempt
 def PoiView(request):
     ''' Parse pois from gps points and if 'userId' in request parmeter
@@ -36,15 +34,15 @@ def PoiView(request):
 
         return JsonResponse({'results': res})
 
-    except DataCRUDError, e:
+    except AvosCRUDError, e:
         LOG.error('Poi data CRUD error : %s' % e)
-        return HttpResponse('Poi data CRUD error : %s' % e, status=DataCRUDError.code)
+        return HttpResponse('Poi data CRUD error : %s' % e, status=AvosCRUDError.code)
     except SenzExcption, e:
         LOG.error('Poi parse handle error: %s' % e)
         return HttpResponse('Poi parse handle error: %s' % e, status=SenzExcption.code)
     except Exception, e:
         info, trace = error_info()
-        LOG.error(info + ' || ' + trace)
+        LOG.error(info + ' || ' + str(trace))
         return HttpResponse('System error: %s' % info, status=500)
 
 

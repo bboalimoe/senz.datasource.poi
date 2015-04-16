@@ -182,7 +182,7 @@ class LocationRecognition(object):
             oldLocRecgData = json.loads(self.avosManager.getData(
                                    locRecgClass,
                                    where='{"userId":"%s"}'% userId ))['results']
-        except DataCRUDError, e:
+        except AvosCRUDError, e:
             LOG.warning("Get data of LocationRecognition failed.")
             oldLocRecgData = []
 
