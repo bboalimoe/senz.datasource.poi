@@ -3,8 +3,8 @@
 bidict
 
 #ubuntu scipy install:
-#sudo apt-get install python-numpy python-scipy python-matplotlib ipython ipython-notebook  \
-#                     python-pandas python-sympy python-nose
+sudo apt-get install python-numpy python-scipy python-matplotlib ipython ipython-notebook  \
+                     python-pandas python-sympy python-nose
 scipy==0.15.1
 
 numpy==1.9.2

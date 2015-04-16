@@ -47,8 +47,8 @@ def GetUserLocationTags(request):
                                     status=SenzExcption.code)
 
     except Exception as e:
-        info = error_info()
-        LOG.error(info)
+        info, trace= error_info()
+        LOG.error(info + '||' + trace)
         return HttpResponse('System error: %s' % info, content_type='text/plain',status=500)
 
 

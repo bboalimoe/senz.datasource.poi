@@ -9,7 +9,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
 FILE = os.getcwd()
 logging.basicConfig(filename=os.path.join(FILE,'log.txt'),level=logging.INFO)
 
-TEST_HOST = "127.0.0.1:8088"
+LOCAL_HOST = "127.0.0.1:8088"
+
+TEST_HOST = "120.27.30.239:9222"
+
+HOST_250 = '192.168.60.250:8088'
+
+HOST_144 = '192.168.248.144:8099'
 
 class TestBase(object):
     def __init__(self):

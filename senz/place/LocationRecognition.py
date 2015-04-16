@@ -160,7 +160,7 @@ class LocationRecognition(object):
         for data in dataArray:
             timeStamp = time.localtime(data.time)
 
-            weekday = timeStamp.weekday()
+            weekday = datetime.datetime.fromtimestamp(data.time).weekday()
             if weekday in [0, 6]:
                 continue
 

@@ -32,13 +32,10 @@ class UserTrace(object):
             else:
                 utc_time = op_timeutils.parse_isotime(row['createdAt'])
                 local_time = timeutils.utc2local(utc_time)
-
-
-
-            #'timestamp' should be unit by microsecond
+                #'timestamp' should be unit by second
                 timestamp = time.mktime(local_time.timetuple())
 
-            print row
+            #print row
             #print timestamp
             results.append(dict(objectId=row['objectId'], timestamp=timestamp,
                                 longitude=row['location']['longitude'],
