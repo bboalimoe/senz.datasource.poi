@@ -143,6 +143,7 @@ class AvosManager(object):
                 try:
                     raw = self.getData(className,limit=L, skip=start, **kwargs)
                 except NeutronException, e:
+                    print e
                     break
                 res = json.loads(raw)['results']
                 res_len = len(res)
