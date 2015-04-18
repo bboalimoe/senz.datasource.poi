@@ -20,7 +20,7 @@ class NotImplemented(SenzExcption):
 
 class BadRequest(SenzExcption):
     code = 400
-    message = 'Bad %(resource)s request: %(msg)s'
+    message = 'Bad request: %(msg)s'
 
 
 class NotFound(SenzExcption):

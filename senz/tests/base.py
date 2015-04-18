@@ -22,7 +22,7 @@ class TestBase(object):
         pass
 
     def testBase(self, params, method, url, headers):
-        self.conn = httplib.HTTPConnection(TEST_HOST)
+        self.conn = httplib.HTTPConnection(LOCAL_HOST)
         self.conn.request(method, url,
                           json.JSONEncoder().encode(params),
                           headers)
