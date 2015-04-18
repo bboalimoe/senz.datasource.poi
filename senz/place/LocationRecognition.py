@@ -113,6 +113,8 @@ class LocationRecognition(object):
         print "%d valid cluster" % len(validCluster)
         globalDataInRangeCount = self.countDataInRange(dataArray, timeRanges)
 
+        print "global : %s" % globalDataInRangeCount
+
         results = []
         #print validCluster
         for cluster in validCluster:
@@ -156,11 +158,14 @@ class LocationRecognition(object):
 
     def countDataInRange(self, dataArray, timeRanges):
 
+        test_res = []
+
         dataInRangeCount = [0] * len(timeRanges)
         for data in dataArray:
             timeStamp = time.localtime(data.time)
 
-            weekday = datetime.datetime.fromtimestamp(data.time).weekday()
+            row_datetime = datetime.datetime.fromtimestamp(data.time)
+            weekday = row_datetime.weekday()
             if weekday in [0, 6]:
                 continue
 
@@ -168,7 +173,18 @@ class LocationRecognition(object):
             while i < len(timeRanges):
                 if timeStamp.tm_hour in timeRanges[i]:
                     dataInRangeCount[i] += 1
+
+                    #test
+                    if i == 0:
+                        test_res.append(dict(lat=data.latitude,
+                                             lon=data.longitude,
+                                             time=row_datetime.strftime(timeutils.ISO_TIME_FORMAT)))
                 i += 1
+
+        #print "day time res : %s" % test_res
+        #LOG.info("day time res : %s" % test_res)
+        #print "day time res len : %d" % len(test_res)
+        #print "cluster len : %d" % len(dataArray)
         return dataInRangeCount
 
 
