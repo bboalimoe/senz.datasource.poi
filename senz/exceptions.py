@@ -16,7 +16,7 @@ class SenzExcption(NeutronException):
 
 class NotImplemented(SenzExcption):
     code = 501
-    message = 'Function %(funtionName) not implemented.'
+    message = 'Function %(function_name) not implemented.'
 
 class BadRequest(SenzExcption):
     code = 400

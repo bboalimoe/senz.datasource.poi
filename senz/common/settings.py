@@ -29,13 +29,19 @@ groups = {
     },
 }
 
+#function names
 PARSE_POI = 'parse_poi'
 ACTIVITY_MAPPING = 'activity_mapping'
 BEACON = 'beacon'
 PLACE_RECOGNITION = 'place_recognition'
+INTERNAL_PLACE_RECOGNITION = 'internal_place_recognition'
 GEO_FENCE = 'geo_fence'
 POI_GROUP = 'poi_group'
 
+
+#store types
+RAW = 'raw'
+RESULTS = 'results'
 
 poi_group_func = {
     'type' : 'collection',
@@ -50,17 +56,26 @@ functions = {
     PARSE_POI : {
         'manager' : 'senz.poi.manager.PoiManager',
         'args' : ['gps',],
-        'store' : False,
+        'store' : [],
         'type' : 'task'
     },
     ACTIVITY_MAPPING : {
         'manager' : 'senz.activity.manager.ActivityManager',
         'args' : ['gps', 'user_id'],
-        'store' : False,
+        'store' : [],
         'type' : 'task'
     },
     PLACE_RECOGNITION : {
-
+        'manager' : 'senz.place.manager.PlaceManager',
+        'method' : 'place_recognition',
+        'store' : [RAW, RESULTS],
+        'type' : 'task'
+    },
+    INTERNAL_PLACE_RECOGNITION : {
+        'manager' : 'senz.place.manager.PlaceManager',
+        'method' : 'internal_place_recognition',
+        'store' : [RESULTS],
+        'type' : 'task'
     },
     BEACON : {
 
@@ -76,6 +91,13 @@ controllers = {
         #'class' : PoiController,
         'jobs' : {
             'parse' : [ACTIVITY_MAPPING, PARSE_POI]
+        }
+    },
+    'PlaceController' : {
+        #'class' : PoiController,
+        'jobs' : {
+            'place_recognition' : [PLACE_RECOGNITION,],
+            'internal_place_recognition' : [INTERNAL_PLACE_RECOGNITION,],
         }
     }
 }
