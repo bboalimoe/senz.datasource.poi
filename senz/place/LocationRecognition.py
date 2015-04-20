@@ -13,7 +13,7 @@ from senz.db.resource.user import UserTrace
 # params
 LOG = logging.getLogger(__name__)
 
-DEFAULT_TIME_RANGES = [[0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
+DEFAULT_TIME_RANGES = [[23, 0, 1, 2, 3, 4, 5, 6, 7], [9, 10, 11, 14, 15, 16, 17]]
 DEFAULT_TAG_OF_TIME_RANGES = ["home", "office"]
 VERSION = '0.1'
 
@@ -188,7 +188,7 @@ class LocationRecognition(object):
         return dataInRangeCount
 
 
-    def startCluster(self, userId, samplingInteval, timeThreshold=None):
+    def startCluster(self, userId, user_trace=None):
 
         locRecgClass = 'LocationRecognition'
 
@@ -218,13 +218,12 @@ class LocationRecognition(object):
 
 
             #data = self.getData(userId)
+            if not user_trace:
+                data = UserTrace().get_user_trace(userId)
+            else:
+                data =user_trace
 
-            data = UserTrace().get_user_trace(userId)
-
-            if not timeThreshold:
-                timeThreshold = 3 * samplingInteval
-
-            results = self.cluster(data, samplingInteval=samplingInteval, timeThreshold=timeThreshold)
+            results = self.cluster(data)
 
             if len(results) > 0:
                 transformed_res = self.saveResults(results, userId)

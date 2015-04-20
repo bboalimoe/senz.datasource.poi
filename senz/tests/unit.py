@@ -7,7 +7,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
 from test_poi import TestPoi
 from senz.poi.manager import PoiManager
 from senz.activity.UserActivityMapping import UserActivityMapping
+from senz.place.LocationRecognition import LocationRecognition
 
+from senz.db.avos.avos_manager import AvosManager
 from senz.place.LocationRecognition import LocationRecognition
 
 class TestPoiManager(TestPoi):
@@ -74,12 +76,35 @@ class TestActivityManager(object):
         tool = UserActivityMapping()
         print tool._isInActivity(user_traces, activity)
 
+class TestPlaceManager(object):
+    def test_place_recognition(self):
+        avos_manager = AvosManager()
+        gpslist = avos_manager.getAllData('UserLocation')
+
+        clean_data = []
+        for g in gpslist:
+            clean_data.append(dict(timestamp = g['timestamp'] / 1000,
+                                   latitude=g['location']['latitude'],
+                                   longitude=g['location']['longitude']))
+
+
+        place_recog = LocationRecognition()
+
+        res = place_recog.cluster(clean_data)
+
+        print res[0].__dict__
+
+        return res
+
 
 
 
 if __name__ == '__main__':
     #test_manager = TestPoiManager()
     #test_manager.test_parse_poi()
-    test = TestActivityManager()
-    test.test_activity_mapping()
+    #test = TestActivityManager()
+    #test.test_activity_mapping()
+
+    manager = TestPlaceManager()
+    manager.test_place_recognition()
 

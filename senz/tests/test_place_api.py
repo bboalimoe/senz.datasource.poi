@@ -2,11 +2,14 @@ __author__ = 'wzf'
 
 from base import TestBase
 
+from senz.db.avos.avos_manager import AvosManager
+
 class TestPlaceApi(TestBase):
     def __init__(self):
         super(TestPlaceApi, self).__init__()
         self.headers = {"Content-type":"application/json"}
         #self.destUserId = "54f6df98e4b0c976f0300c00"
+        self.avos_manager = AvosManager()
 
     def testLocTag(self, user_id, sampling_interval=600, time_threshold=1800):
         url = '/senz/places/'
@@ -18,6 +21,16 @@ class TestPlaceApi(TestBase):
         }
         return self.testBase(params, method, url, self.headers)
 
+    def test_internal_place_recognition(self, user_id, user_trace):
+        url = '/senz/places/internal/'
+        method = 'POST'
+        params = {
+            'user_id' : user_id,
+            'user_trace' : user_trace,
+        }
+
+        return self.testBase(params, method, url, self.headers)
+
     def testAddNearTag(self):
         url = '/senz/places/user/' + self.destUserId + '/tag/'
         method = 'GET'
@@ -26,6 +39,34 @@ class TestPlaceApi(TestBase):
 
 
 if __name__ == '__main__':
+    testor = TestPlaceApi()
+
+    avos_manager = AvosManager()
+    gpslist = avos_manager.getAllData('UserLocation')
+
+    clean_data = {}
+    for g in gpslist:
+        if g['installation'] in clean_data:
+
+            dest = clean_data[g['installation']]
+
+        else:
+
+            dest = []
+            clean_data[g['installation']] = dest
+
+        dest.append(dict(timestamp = g['timestamp'] / 1000,
+                           latitude=g['location']['latitude'],
+                           longitude=g['location']['longitude']))
+
+    print len(clean_data)
+    #for user_install_id in clean_data:
+    #    print len(clean_data[user_install_id])
+    #    res = testor.test_internal_place_recognition(user_install_id, clean_data[user_install_id])
+    #    print res
+
+
+    '''
     users = { #'zhushixiang' : '550e7481e4b01608684b3f8e',
               #'zhanghengyang' : '54f6df98e4b0c976f0300c00',
               'hihell' : '54f189d3e4b077bf8375477d',
@@ -35,7 +76,8 @@ if __name__ == '__main__':
               #'bboalimoe' : '54f935fde4b06c41dfde8ae8',
               #'meowoodie' : '54f190fde4b077bf8375ac60',
     }
-    testor = TestPlaceApi()
+
     for user in users:
         print testor.testLocTag(users[user])
+        '''
     #testor.testAddNearTag()
