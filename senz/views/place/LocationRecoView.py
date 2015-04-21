@@ -48,7 +48,7 @@ def internal_get_user_places(request):
     '''
 
     manager = LocationRecognition()
-    results = manager.startCluster('no_user', body_context.get('user_trace'))
+    results = manager.startCluster(body_context.get('uer_id'), body_context.get('user_trace'))
     return results
 
 

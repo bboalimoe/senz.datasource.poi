@@ -59,11 +59,25 @@ if __name__ == '__main__':
                            latitude=g['location']['latitude'],
                            longitude=g['location']['longitude']))
 
-    print len(clean_data)
-    #for user_install_id in clean_data:
-    #    print len(clean_data[user_install_id])
-    #    res = testor.test_internal_place_recognition(user_install_id, clean_data[user_install_id])
-    #    print res
+    #print len(clean_data)
+    for user_install_id in clean_data:
+        if len(clean_data[user_install_id]) < 10:
+            continue
+
+        if len(clean_data[user_install_id]) > 300:
+            copy = []
+            for d in clean_data[user_install_id]:
+                copy.append([d['longitude'], d['latitude']])
+
+            print copy
+
+
+
+            #print clean_data[user_install_id]
+            print user_install_id
+            print len(clean_data[user_install_id])
+            res = testor.test_internal_place_recognition(user_install_id, clean_data[user_install_id])
+            print res
 
 
     '''
