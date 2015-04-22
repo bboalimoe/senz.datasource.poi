@@ -49,7 +49,7 @@ POI_GROUP = 'poi_group'
 RAW = 'raw'
 RESULTS = 'results'
 
-poi_group_func = {
+poi_group_task = {
     'type' : 'collection',
     'manager' : 'senz.poi.manager.PoiGroupManager',
     'group_add' : {
@@ -58,7 +58,8 @@ poi_group_func = {
     }
 }
 
-functions = {
+tasks = {
+
     PARSE_POI : {
         'manager' : 'senz.poi.manager.PoiManager',
         'args' : ['gps',],
@@ -83,13 +84,14 @@ functions = {
         'store' : [RESULTS],
         'type' : 'task'
     },
-    BEACON : {
 
+    BEACON : {
+        'type' : None
     },
     GEO_FENCE : {
-
+        'type' : None
     },
-    POI_GROUP : poi_group_func,
+    POI_GROUP : poi_group_task,
 }
 
 controllers = {

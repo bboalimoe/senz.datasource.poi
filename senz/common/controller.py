@@ -31,7 +31,7 @@ class Pipeline(object):
         for t in task_list:
             task = config.get_task(t)
             manager_class = importutils.import_class(task['manager'])
-            self.managers[t] = manager_class(self, job, t)
+            self.managers[t] = manager_class(self, t)
 
     def run(self, context):
         '''Run tasks of pipeline in order.
@@ -39,9 +39,12 @@ class Pipeline(object):
         :param context: request context
         :return:task results, success task list and failure task list
         '''
+        LOG.debug("start task list %s" % self.task_list)
+
         context['results'] = {}
 
         for task in self.task_list:
+
             task_detail = config.get_task(task)
 
             method = getattr(self.managers[task], task_detail['method'], None)
@@ -50,13 +53,21 @@ class Pipeline(object):
                 LOG.error('Request task method not implemented.')
                 raise NotImplemented(function_name=task_detail['method'])
 
+
             arg_spec = inspect.getargspec(method)
+
+            print "arg spec %s " % str(arg_spec)
+
             arg_names = arg_spec.args
+            arg_names.pop(0)  #pop 'self' arg
             arg_defaults = arg_spec.defaults
-            no_default_args_len = len(arg_names) - len(arg_defaults)
+            if arg_defaults:
+                no_default_args_len = len(arg_names) - len(arg_defaults)
+            else:
+                no_default_args_len = len(arg_names)
 
             kwargs = {}
-            for i in range(arg_names):
+            for i in range(len(arg_names)):
                 arg = context.get(arg_names[i])
                 if arg:
                     kwargs[arg_names[i]] = arg
@@ -66,9 +77,10 @@ class Pipeline(object):
 
             if len(kwargs) != len(arg_names):
                 LOG.info('Not enough args for task %s in pipeline of %s for %s job, workflow will'
-                             'skip it.' % (task, self.controller, self.job))
+                             'skip it.' % (task, self.controller.__class__.__name__, self.job))
                 continue
 
+            LOG.debug("Get args %s in %s task." % (kwargs, task))
             res = method(context, **kwargs)
 
             if res:

@@ -18,7 +18,10 @@ class PlaceManager(ManagerBase):
         pass
 
     def store(self, context):
-        pass
+        print "in place manager store"
 
-    def place_recognition(self, user_id, auth_key, user_trace):
-        pass
+    def place_recognition(self, user, auth_key, user_trace):
+        print "in place manager place recognition " % user , auth_key, user_trace
+
+    def internal_place_recognition(self, user_id):
+        print "in place manager place recognition" % user_id

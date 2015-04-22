@@ -3,6 +3,8 @@ __author__ = 'wuzhifan'
 
 import logging
 import json
+import traceback
+import sys
 
 from django.http.response import HttpResponse, JsonResponse
 
@@ -40,8 +42,9 @@ def django_view(http_method):
                                                                     content_type='text/plain',
                                                                     status=SenzExcption.code)
             except Exception as e:
+                LOG.error(traceback.print_exception(*(sys.exc_info())))
                 info, trace= error_info()
-                LOG.error(info + '||' + str(trace))
+                #LOG.error(info + '||' + trace.print_exc())
                 return HttpResponse('System error: %s' % info, content_type='text/plain',status=500)
 
         return view_base

@@ -18,11 +18,12 @@ def getAppSettings(avosClassName):
     return settings.groups[group]
 
 def get_task(task_name):
-    for e in settings.functions:
-        if settings.functions[e]['type'] == 'collection':
-            get_task(settings.functions[e])
-        if settings.functions[e]['type'] == 'task' and e == task_name:
-            return settings.functions[e]
+    for e in settings.tasks:
+        #print e
+        if settings.tasks[e]['type'] == 'collection':
+            get_task(settings.tasks[e])
+        if settings.tasks[e]['type'] == 'task' and e == task_name:
+            return settings.tasks[e]
 
 if __name__ == '__main__':
     print os.getcwd() + os.path.sep + 'logs'
