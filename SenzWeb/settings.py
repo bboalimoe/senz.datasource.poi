@@ -115,7 +115,7 @@ LOGGING = {
         },
         'console': {
             # Set the level to "DEBUG" for verbose output logging.
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
         'syslog': {

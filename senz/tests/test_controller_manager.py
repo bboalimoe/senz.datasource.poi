@@ -29,9 +29,11 @@ class TestControllerManager(TestBase):
 def test_place_recognition(internal=False):
     testor = TestControllerManager()
     args = {
-        'user_id' : 'hello world'
+        'user_id' : 'hello world',
+        'auth_key' : 'hello world',
     }
     print testor.test(args=args, internal=internal)
+
 
 if __name__ == '__main__':
     test_place_recognition(internal=True)

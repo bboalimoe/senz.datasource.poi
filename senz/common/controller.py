@@ -14,6 +14,9 @@ def get_current_function_name():
     return inspect.stack()[1][3]
 
 def task(func):
+    ''' indicate whether method is a task in controller
+
+    '''
     def wrapper(self, context, *args, **kwargs):
         job = func.func_name
         pipeline = self.pipeline[job]
@@ -21,6 +24,7 @@ def task(func):
         return func(self, context, *args, **kwargs)
 
     return wrapper
+
 
 class Pipeline(object):
     def __init__(self, controller, job, task_list):
@@ -31,7 +35,7 @@ class Pipeline(object):
         for t in task_list:
             task = config.get_task(t)
             manager_class = importutils.import_class(task['manager'])
-            self.managers[t] = manager_class(self, t)
+            self.managers[t] = manager_class(self, task)
 
     def run(self, context):
         '''Run tasks of pipeline in order.
@@ -75,7 +79,7 @@ class Pipeline(object):
                     #use default value if arg not in context
                     kwargs[arg_names[i]] = arg_defaults[i - no_default_args_len]
 
-            if len(kwargs) != len(arg_names):
+            if len(kwargs) != len(arg_names) - 1:
                 LOG.info('Not enough args for task %s in pipeline of %s for %s job, workflow will'
                              'skip it.' % (task, self.controller.__class__.__name__, self.job))
                 continue
@@ -86,7 +90,7 @@ class Pipeline(object):
             if res:
                 context['results'][task] = res
 
-            if task.get('store'):
+            if task_detail.get('store'):
                 self.managers[task].store(context)
 
         return context['results']
@@ -94,7 +98,7 @@ class Pipeline(object):
 
 class ControllerBase(object):
     def __init__(self):
-        '''Make pipelines depend on jobs in settings
+        '''Init pipelines depend on jobs in settings of this controller
 
         '''
         self.pipeline = {}

@@ -27,9 +27,9 @@ INIT_THREAD_NUM = 256
 DEFAULT_THREAD_TYPE = 'threading'   #'greenthread' type has some problem with current request lib
 
 class ManagerBase(object):
-    def __init__(self, pipeline, task_name):
+    def __init__(self, pipeline, task_detail):
         self.pipeline = pipeline
-        self.task_name = task_name
+        self.task_detail = task_detail
 
 class MultiThreadManager(ManagerBase):
     '''Manager with thread pool to handle request.

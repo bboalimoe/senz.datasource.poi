@@ -7,3 +7,8 @@
 [22/Apr/2015 17:50:52] ERROR [senz.views.base:45] None
 [22/Apr/2015 17:51:35] INFO [senz.common.controller:80] Not enough args for task place_recognition in pipeline of PlaceController for place_recognition job, workflow willskip it.
 [22/Apr/2015 17:52:53] ERROR [senz.views.base:45] None
+[23/Apr/2015 09:48:26] ERROR [senz.views.base:45] None
+[23/Apr/2015 09:50:39] ERROR [senz.views.base:45] None
+[23/Apr/2015 09:59:46] INFO [senz.common.controller:80] Not enough args for task internal_place_recognition in pipeline of PlaceController for internal_place_recognition job, workflow willskip it.
+[23/Apr/2015 10:03:37] ERROR [senz.views.base:45] None
+[23/Apr/2015 10:05:14] ERROR [senz.views.base:45] None

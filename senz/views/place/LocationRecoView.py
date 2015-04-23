@@ -23,7 +23,7 @@ def get_user_places(request):
     description:             places recognition of user identified by 'user_id'
     """
     body_context = json.loads(request.body)
-    print "Pre places recognition"
+
     LOG.debug('Pre places recognition')
 
     controller = PlaceController()

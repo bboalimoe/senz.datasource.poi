@@ -257,6 +257,8 @@ class LocationRecognition(object):
         '''add tags near to user trace data points
 
            this method will overlap old near tags
+
+           deprecated
         '''
 
         traceClass = 'UserLocationTrace'
@@ -280,28 +282,6 @@ class LocationRecognition(object):
         LOG.info("add near tag to %d trace data" % len(traceData))
 
         res = self.avosManager.updateDataList(traceClass, traceData)
-        #for trace in traceData:
-        #    self.avosManager.updateDataById(traceClass,trace['objectId'], {'near' : str(trace['near']) })
-
-
-
-
-    def getData(self, user_id=None):
-
-        if not user_id:
-            raise BadRequest(resource='places', msg='user_id required')
-            #print "shit"
-            #file = open("testLocation.json")
-            #jsonArray = json.load(file)["results"]
-
-        else:
-            jsonArray = self.getUserData(user_id)
-
-
-        return jsonArray
-
-
-        #result = lean.saveData("UserLocationTrace",{"latitude":gps['latitude'],"longitude":gps["longitude"],"activityId":"", "timpstamp":gps['timestamp'],"userId":userId})
 
 
 
