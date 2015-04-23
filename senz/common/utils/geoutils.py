@@ -59,3 +59,9 @@ def coordArrayCompress(coordArray, samplingInteval):
         dataArray.append(LocationAndTime(bottom, latitudeSum / count, longitudeSum / count))
 
     return  dataArray
+
+def is_same_location(new_lng, new_lat, old_lng, old_lat):
+    if abs(new_lng - old_lng) < 0.001 and abs(new_lat - old_lat) < 0.001:
+        return True
+    else:
+        return False

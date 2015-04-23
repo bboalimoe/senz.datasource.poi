@@ -25,6 +25,8 @@ DEFAULT_CLUSTER_RATIO = 0.4
 
 DEFAULT_CLUSTER_RADIUS = 0.0125
 
+INTERNAL_PLACE_STORE = 'LocationRecognition'
+
 def filterClustersBySize(cluster, dataArray, size):
     allCluster = [[] for row in range(cluster.max())]
 
@@ -188,9 +190,9 @@ class LocationRecognition(object):
         return dataInRangeCount
 
 
-    def startCluster(self, userId, user_trace=None):
+    def startCluster(self, userId, store_class=INTERNAL_PLACE_STORE, user_trace=None):
 
-        locRecgClass = 'LocationRecognition'
+        locRecgClass = store_class
 
         try:
             #return old place recognition data if it generated in 7 days

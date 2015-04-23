@@ -45,10 +45,10 @@ class TestAvos(object):
 
 if __name__ == '__main__':
     test = TestAvos()
-    #test.test_get_all_data()
-    res = json.loads(test.test_get_recent_activities())['results']
-    print len(res)
-    print res
+    test.test_get_all_data()
+    #res = json.loads(test.test_get_recent_activities())['results']
+    #print len(res)
+    #print res
     #'{"start_time":{"$gte":{"__type":"Date","iso":"2015-04-10T13:00:00.000Z"},"$lte":{"__type":"Date","iso":"2015-04-13T13:00:00.000Z"}}}'
 
 

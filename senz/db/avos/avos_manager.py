@@ -42,11 +42,8 @@ class AvosManager(object):
 
 
         def saveData(self,className,dataDict):
-                LOG.info('group name is %s' % config.findGroup(className))
-                LOG.info('connector is %s' % self._avosConnectors[config.findGroup(className)])
                 res = self._avosConnectors[config.findGroup(className)]._save_to_avos(className,dataDict)
 
-                LOG.info('Saved avos objs in manager and res is %s' % res.__dict__)
                 if res.status_code not in SUCCESS_CODE:
                 #if 'createdAt' not in json.loads(res.content):
                     resInfo = json.loads(res.content)
