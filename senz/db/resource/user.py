@@ -14,6 +14,18 @@ USER_TRACE_PROJECT = 'life_logger'
 
 TRACE_CLASS = 'UserLocation'
 
+def get_trace_timestamp(trace_point):
+    if 'timestamp' in trace_point:
+        timestamp = trace_point['timestamp']
+    else:
+        utc_time = op_timeutils.parse_isotime(trace_point['createdAt'])
+        local_time = timeutils.utc2local(utc_time)
+        #'timestamp' should be unit by second
+        timestamp = time.mktime(local_time.timetuple()) * 1000
+        trace_point['timestamp'] = timestamp
+
+    return timestamp
+
 class UserTrace(object):
     def __init__(self):
         self.avos_manager = AvosManager()
@@ -27,13 +39,7 @@ class UserTrace(object):
         '''
         results = []
         for row in raw_data:
-            if 'timestamp' in row:
-                timestamp = row['timestamp'] / 1000
-            else:
-                utc_time = op_timeutils.parse_isotime(row['createdAt'])
-                local_time = timeutils.utc2local(utc_time)
-                #'timestamp' should be unit by second
-                timestamp = time.mktime(local_time.timetuple())
+            timestamp = get_trace_timestamp(row)
 
             #print row
             #print timestamp

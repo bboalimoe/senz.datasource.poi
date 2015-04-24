@@ -75,7 +75,16 @@ class LocationRecognition(object):
         rawDataArray = []
         for jsonRecord in jsonArray:
             #print "jsonRecord",jsonRecord
-            rawDataArray.append(LocationAndTime(jsonRecord["timestamp"], jsonRecord["latitude"], jsonRecord["longitude"]))
+
+            #make timestamp from microsecond to second facilitate computing
+            timestamp = jsonRecord["timestamp"] / 1000
+            if 'location' in jsonRecord:
+                lng = jsonRecord['location']["longitude"]
+                lat = jsonRecord['location']["latitude"]
+            else:
+                lng = jsonRecord["longitude"]
+                lat = jsonRecord["latitude"]
+            rawDataArray.append(LocationAndTime(timestamp, lat, lng))
             #rawDataArray.append(LocationAndTime(jsonRecord["time"], jsonRecord["lat"], jsonRecord["lon"]))
 
         # print("%d records" % len(rawDataArray))
@@ -228,7 +237,7 @@ class LocationRecognition(object):
             results = self.cluster(data)
 
             if len(results) > 0:
-                transformed_res = self.saveResults(results, userId)
+                transformed_res = self.saveResults(results, userId, store_class)
                 return transformed_res
             else:
                 return []
@@ -238,17 +247,18 @@ class LocationRecognition(object):
             raise e
 
 
-
-
-    def saveResults(self, results, userId=None):
+    def saveResults(self, results,  userId=None, save_class=INTERNAL_PLACE_STORE,):
         #save place recgnition results to leancloud
-        avosClassName = 'LocationRecognition'
+        avosClassName = save_class
         #transform results to suit database
         transformed_res = []
         for result in results:
             for tag in result.tags:
-                place_tag = {"latitude":result.latitude, "longitude":result.longitude, "tag":tag.tag,
-                                "ratio":tag.ratio, "estimateTime":result.estimateTime, "userId":userId,}
+                place_tag = {"location" :{"latitude":result.latitude,
+                                            "longitude":result.longitude,
+                                             "__type":"GeoPoint"},
+                             "tag":tag.tag, "ratio":tag.ratio,
+                             "estimateTime":result.estimateTime, "userId":userId,}
                 transformed_res.append(place_tag)
                 self.avosManager.saveData(avosClassName, place_tag)
 

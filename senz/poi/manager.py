@@ -36,8 +36,8 @@ class PoiManager(MultiThreadManager):
 
             LOG.error('Error in parse gps point:%s , sys info:%s' % (gps, error_info()))
 
-    def parse_poi(self, context, gps):
-        for g in gps:
+    def parse_poi(self, context, user_trace):
+        for g in user_trace:
             self.add_thread(self.add_poi_to_gps, gps=g)
         self.wait()
 

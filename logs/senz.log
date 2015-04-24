@@ -12,3 +12,37 @@
 [23/Apr/2015 09:59:46] INFO [senz.common.controller:80] Not enough args for task internal_place_recognition in pipeline of PlaceController for internal_place_recognition job, workflow willskip it.
 [23/Apr/2015 10:03:37] ERROR [senz.views.base:45] None
 [23/Apr/2015 10:05:14] ERROR [senz.views.base:45] None
+[24/Apr/2015 09:56:28] ERROR [senz.views.base:45] None
+[24/Apr/2015 10:03:27] ERROR [senz.views.base:45] None
+[24/Apr/2015 10:42:28] ERROR [senz.views.base:45] None
+[24/Apr/2015 10:44:33] ERROR [senz.views.base:40] Request get_user_places error: Senz handle error: Duplicated geo point with same timestamp.
+[24/Apr/2015 10:51:43] ERROR [senz.views.base:40] Request get_user_places error: Senz handle error: Duplicated geo point with same timestamp.
+[24/Apr/2015 10:58:28] ERROR [senz.views.base:45] None
+[24/Apr/2015 11:02:52] ERROR [senz.views.base:45] None
+[24/Apr/2015 11:05:38] INFO [senz.db.avos.avos:33] patch request
+[24/Apr/2015 11:05:38] INFO [senz.db.avos.avos:119] send patched request
+[24/Apr/2015 11:06:00] INFO [senz.place.LocationRecognition:71] start place cluster.
+[24/Apr/2015 11:06:00] ERROR [senz.place.LocationRecognition:239] exception in place clustering : timestamp
+[24/Apr/2015 11:06:00] ERROR [senz.views.base:45] None
+[24/Apr/2015 11:12:51] INFO [senz.db.avos.avos:33] patch request
+[24/Apr/2015 11:12:51] INFO [senz.db.avos.avos:119] send patched request
+[24/Apr/2015 11:13:12] INFO [senz.place.LocationRecognition:71] start place cluster.
+[24/Apr/2015 11:13:12] ERROR [senz.place.LocationRecognition:239] exception in place clustering : latitude
+[24/Apr/2015 11:13:12] ERROR [senz.views.base:45] None
+[24/Apr/2015 11:23:28] INFO [senz.db.avos.avos:33] patch request
+[24/Apr/2015 11:23:28] INFO [senz.db.avos.avos:119] send patched request
+[24/Apr/2015 11:24:07] INFO [senz.place.LocationRecognition:71] start place cluster.
+[24/Apr/2015 11:38:41] INFO [senz.db.avos.avos:33] patch request
+[24/Apr/2015 11:38:41] INFO [senz.db.avos.avos:119] send patched request
+[24/Apr/2015 11:38:41] INFO [senz.place.LocationRecognition:71] start place cluster.
+[24/Apr/2015 11:43:25] INFO [senz.db.avos.avos:33] patch request
+[24/Apr/2015 11:43:25] INFO [senz.db.avos.avos:119] send patched request
+[24/Apr/2015 11:43:25] INFO [senz.place.LocationRecognition:71] start place cluster.
+[24/Apr/2015 13:25:40] INFO [senz.common.controller:84] Not enough args for task place_recognition in pipeline of PlaceController for place_recognition job, workflow willskip it.
+[24/Apr/2015 13:34:20] INFO [senz.common.controller:84] Not enough args for task place_recognition in pipeline of PlaceController for place_recognition job, workflow willskip it.
+[24/Apr/2015 13:38:31] INFO [senz.db.avos.avos:33] patch request
+[24/Apr/2015 13:38:31] INFO [senz.db.avos.avos:119] send patched request
+[24/Apr/2015 13:45:13] INFO [senz.db.avos.avos:33] patch request
+[24/Apr/2015 13:45:13] INFO [senz.db.avos.avos:119] send patched request
+[24/Apr/2015 13:45:15] INFO [senz.place.LocationRecognition:71] start place cluster.
+[24/Apr/2015 13:48:22] INFO [senz.place.LocationRecognition:71] start place cluster.

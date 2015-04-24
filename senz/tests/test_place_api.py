@@ -1,5 +1,5 @@
 __author__ = 'wzf'
-
+import json
 from base import TestBase
 
 from senz.db.avos.avos_manager import AvosManager
@@ -8,25 +8,24 @@ class TestPlaceApi(TestBase):
     def __init__(self):
         super(TestPlaceApi, self).__init__()
         self.headers = {"Content-type":"application/json"}
-        #self.destUserId = "54f6df98e4b0c976f0300c00"
+        self.destUserId = "54f6df98e4b0c976f0300c00"
         self.avos_manager = AvosManager()
 
     def testLocTag(self, user_id, sampling_interval=600, time_threshold=1800):
-        url = '/senz/places/'
-        method = 'POST'
-        params = {
-            'user_id' : user_id,
-            'sampling_interval' : sampling_interval,
-            'time_threshold' : time_threshold,
-        }
-        return self.testBase(params, method, url, self.headers)
-
-    def test_internal_place_recognition(self, user_id, user_trace):
         url = '/senz/places/internal/'
         method = 'POST'
         params = {
             'user_id' : user_id,
-            'user_trace' : user_trace,
+        }
+        return self.testBase(params, method, url, self.headers)
+
+    def test_place_recognition(self, user_id, dev_key, user_trace):
+        url = '/senz/places/'
+        method = 'POST'
+        params = {
+            'external_user' : user_id,
+            'dev_key' : dev_key,
+            'user_trace' : [],
         }
 
         return self.testBase(params, method, url, self.headers)
@@ -41,9 +40,16 @@ class TestPlaceApi(TestBase):
 if __name__ == '__main__':
     testor = TestPlaceApi()
 
+    print testor.testLocTag('54f189d3e4b077bf8375477d')
+    '''
     avos_manager = AvosManager()
-    gpslist = avos_manager.getAllData('UserLocation')
+    user_pointer = {"__type": "Pointer", "className": "_User", "objectId": "54f189d3e4b077bf8375477d"}
+    gpslist = avos_manager.getAllData('UserLocation', where='{"user":%s}' % json.dumps(user_pointer))    #Warning:DataSample UserLocation
 
+    print testor.test_place_recognition('jiusi', 'wzf', gpslist)
+    '''
+
+    '''
     clean_data = {}
     for g in gpslist:
         if g['installation'] in clean_data:
@@ -78,6 +84,7 @@ if __name__ == '__main__':
             print len(clean_data[user_install_id])
             res = testor.test_internal_place_recognition(user_install_id, clean_data[user_install_id])
             print res
+            '''
 
 
     '''
@@ -94,4 +101,5 @@ if __name__ == '__main__':
     for user in users:
         print testor.testLocTag(users[user])
         '''
+
     #testor.testAddNearTag()

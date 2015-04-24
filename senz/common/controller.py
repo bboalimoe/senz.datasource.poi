@@ -60,7 +60,7 @@ class Pipeline(object):
 
             arg_spec = inspect.getargspec(method)
 
-            print "arg spec %s " % str(arg_spec)
+            #print "arg spec %s " % str(arg_spec)
 
             arg_names = arg_spec.args
             arg_names.pop(0)  #pop 'self' arg
@@ -73,7 +73,7 @@ class Pipeline(object):
             kwargs = {}
             for i in range(len(arg_names)):
                 arg = context.get(arg_names[i])
-                if arg:
+                if arg is not None:
                     kwargs[arg_names[i]] = arg
                 elif i >= no_default_args_len:
                     #use default value if arg not in context
@@ -84,7 +84,7 @@ class Pipeline(object):
                              'skip it.' % (task, self.controller.__class__.__name__, self.job))
                 continue
 
-            LOG.debug("Get args %s in %s task." % (kwargs, task))
+            #LOG.debug("Get args %s in %s task." % (kwargs, task))
             res = method(context, **kwargs)
 
             if res:
