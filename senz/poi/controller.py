@@ -3,7 +3,7 @@ __author__ = 'wzf'
 
 import logging
 
-from senz.common.controller import get_current_function_name, ControllerBase
+from senz.common.controller import ControllerBase, task
 
 LOG = logging.getLogger(__name__)
 
@@ -12,10 +12,9 @@ class PoiController(ControllerBase):
     def __init__(self):
         super(PoiController, self).__init__()
 
+    @task
     def parse(self, context):
-        job = get_current_function_name()
-        pipeline = self.pipeline[job]
-        return pipeline.run(context)
+        return context['results']
 
 
 

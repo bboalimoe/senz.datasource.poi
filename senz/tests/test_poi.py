@@ -17,9 +17,11 @@ class TestPoi(TestBase):
         return {'gps' : gpsList}
 
     def testPoiGet(self):
-        params = {'user_id' : self.dest_user_id,
-                  'gps' : self.get_data()['gps']}
-        self.testBase(params, 'POST', '/senz/pois/', self.headers)
+        params = {
+            'poi_type' : 'estate',
+            'locations' : [{'timestamp': 1427642632501L, 'location': {'latitude': 39.9874398746627, '__type': u'GeoPoint', 'longitude': 116.438323511219053}}]
+            }
+        print self.testBase(params, 'POST', '/senz/pois/', self.headers)
 
 if __name__ == '__main__':
     test = TestPoi()

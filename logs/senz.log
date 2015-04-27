@@ -46,3 +46,6 @@
 [24/Apr/2015 13:45:13] INFO [senz.db.avos.avos:119] send patched request
 [24/Apr/2015 13:45:15] INFO [senz.place.LocationRecognition:71] start place cluster.
 [24/Apr/2015 13:48:22] INFO [senz.place.LocationRecognition:71] start place cluster.
+[27/Apr/2015 21:02:01] ERROR [senz.views.base:48] None
+[27/Apr/2015 21:10:46] ERROR [senz.views.base:48] None
+[27/Apr/2015 21:12:23] ERROR [senz.views.base:48] None

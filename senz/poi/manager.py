@@ -6,6 +6,9 @@ import logging
 from senz.poi.beacon import Beacon
 from senz.common.manager import ManagerBase, MultiThreadManager
 from senz.poi.poi import PoiGet
+
+from senz.common.utils import geo_coding, translate
+
 from senz.exceptions import error_info
 from senz.db.avos.avos_manager import AvosManager
 
@@ -25,23 +28,38 @@ class StoreBackend(object):
 class PoiManager(MultiThreadManager):
     def __init__(self, **kwargs):
         super(PoiManager, self).__init__(**kwargs)
-        self.poi_getor = PoiGet()
+        self.poi_getor = geo_coding.GeoCoder()
         self.store_backend = StoreBackend()
 
-    def add_poi_to_gps(self, gps):
+    def add_poi_to_gps(self, gps, poi_type=None):
         try:
-            poi = self.poi_getor.parse_poi(gps["latitude"], gps["longitude"])
-            gps.update(poi)
+            if 'location' in gps:
+                g = gps['location']
+            else:
+                g = gps
+            pois = self.poi_getor.get_poi(g["latitude"], g["longitude"])
+            if poi_type:
+                 for p in pois:
+                    #todo: poi type auto increase will be a problem!!
+                    p_type = translate.Trans.poitype_trans(p['poiType'])
+                    if p_type != poi_type:
+                        pois.remove(p)
+
+            gps['pois'] = pois
         except Exception, e:
 
             LOG.error('Error in parse gps point:%s , sys info:%s' % (gps, error_info()))
 
-    def parse_poi(self, context, user_trace):
-        for g in user_trace:
-            self.add_thread(self.add_poi_to_gps, gps=g)
+    def parse_poi(self, context, locations, poi_type=None, user_id=None):
+
+        for g in locations:
+            self.add_thread(self.add_poi_to_gps, gps=g, poi_type=poi_type)
         self.wait()
 
     def store(self, context):
+        ''' deprecated
+
+        '''
         if self.task_name in context['results']:
             res = context['results'][self.task_name]
             self.store_backend.store(res)

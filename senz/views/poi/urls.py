@@ -10,7 +10,7 @@ poi_groups_patterns = patterns('senz.views.poi.PoiGroupView',
 )
 
 urlpatterns = patterns('',
-    url(r'^$', 'senz.views.poi.PoiView.PoiView'),
+    url(r'^$', 'senz.views.poi.PoiView.parse_poi'),
     url(r'^groups/$', include(poi_groups_patterns)),
 )
 

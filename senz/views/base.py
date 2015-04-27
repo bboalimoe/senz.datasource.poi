@@ -23,9 +23,7 @@ def django_view(http_method):
             :return: view result
             '''
             try:
-                if request.method == http_method:
-                    body_context = json.loads(request.body)
-                else:
+                if request.method != http_method:
                     raise BadRequest(msg='unsupported http method ')
 
                 LOG.debug('Got request to %s.' % func.func_name)
@@ -35,6 +33,11 @@ def django_view(http_method):
                     results = str(results)
 
                 return JsonResponse({'results':results})
+
+
+            except AvosCRUDError, e:
+                LOG.error('Poi data CRUD error : %s' % e)
+                return HttpResponse('Poi data CRUD error : %s' % e, status=AvosCRUDError.code)
 
             except SenzExcption, e:
                 LOG.error('Request %s error: %s' % (func.func_name, e))

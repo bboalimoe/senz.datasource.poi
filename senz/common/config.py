@@ -17,13 +17,16 @@ def getAppSettings(avosClassName):
     group = findGroup(avosClassName)
     return settings.groups[group]
 
-def get_task(task_name):
-    for e in settings.tasks:
+def get_task(task_name, tasks=settings.tasks):
+    for e in tasks:
         #print e
-        if settings.tasks[e]['type'] == 'collection':
-            get_task(settings.tasks[e])
-        if settings.tasks[e]['type'] == 'task' and e == task_name:
-            return settings.tasks[e]
+        if tasks[e]['type'] == 'collection':
+            if 'tasks' not in tasks[e]:
+                continue
+            else:
+                return get_task(task_name, tasks[e]['tasks'])
+        if tasks[e]['type'] == 'task' and e == task_name:
+            return tasks[e]
 
 if __name__ == '__main__':
     print os.getcwd() + os.path.sep + 'logs'

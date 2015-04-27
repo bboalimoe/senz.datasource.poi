@@ -58,9 +58,11 @@ RESULTS = 'results'
 poi_group_task = {
     'type' : 'collection',
     'manager' : 'senz.poi.manager.PoiGroupManager',
-    'group_add' : {
-        'args' : ['name'],
-        'type' : 'task'
+    'tasks' : {
+        'group_add' : {
+            'args' : ['name'],
+            'type' : 'task'
+        },
     }
 }
 
@@ -68,7 +70,7 @@ tasks = {
 
     PARSE_POI : {
         'manager' : 'senz.poi.manager.PoiManager',
-        'args' : ['gps',],
+        'method' : 'place_poi',
         'store' : [],
         'type' : 'task'
     },
@@ -104,7 +106,7 @@ controllers = {
     'PoiController' : {
         #'class' : PoiController,
         'jobs' : {
-            'parse' : [ACTIVITY_MAPPING, PARSE_POI]
+            'parse' : [PARSE_POI,],
         }
     },
     'PlaceController' : {

@@ -28,11 +28,15 @@ class PoiGet(object):
         poi = self.get_poi(lat, lng)
         return dict(at=poi)
 
-    def parse_poi(self, lat, lng):
-        poi = self.get_poi(lat, lng)
-        if not poi:
+    def get_nearest_poi(self, lat, lng):
+        pois = self.get_poi(lat, lng)
+        if not pois:
             return {}
-        return dict(name=poi['name'], poi_type=Trans.poitype_trans(poi['poiType']) )
+
+        pois.sort(key=lambda x:x['distance'])
+
+        res_poi = pois[0]
+        return dict(name=res_poi['name'], poi_type=Trans.poitype_trans(res_poi['poiType']) )
 
 
 if __name__ == '__main__':

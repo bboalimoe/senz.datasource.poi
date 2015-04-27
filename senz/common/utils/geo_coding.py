@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import re
+import unicodedata
 
 from senz.db.avos.avos_manager import *
 
@@ -54,11 +55,11 @@ class GeoCoder(object):
         pois = res_dict['result']['pois']
         if not pois:
             return {}
-        pois.sort(key=lambda x:x['distance'])
         #poi = pois[1]['name']
         #return poi.encode('utf-8')
         #LOG.info("in geo coding return poi %s" % pois[0])
-        return pois[0]
+
+        return pois
 
     def getPOIByName(self,name):
         url = "http://api.map.baidu.com/geocoder/v2/?address=%s&output=json&ak=fPnXQ2dVgLevy7GwIomnhEMg&pois=1" % name
@@ -73,7 +74,8 @@ if __name__ == "__main__":
     lng = 116.43832351121905
     lat = 39.9874398746627
     res = geo.get_poi(lat, lng)
-    print res
+    print str(res)
+    print res['direction']
     print res['poiType']
     print res['addr']
     print res['name']

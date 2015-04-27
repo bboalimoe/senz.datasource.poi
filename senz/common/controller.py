@@ -63,9 +63,12 @@ class Pipeline(object):
             #print "arg spec %s " % str(arg_spec)
 
             arg_names = arg_spec.args
-            arg_names.pop(0)  #pop 'self' arg
+            arg_names.remove('self')
+            arg_names.remove('context')
+
             arg_defaults = arg_spec.defaults
             if arg_defaults:
+                #if context has default this will be wrong!
                 no_default_args_len = len(arg_names) - len(arg_defaults)
             else:
                 no_default_args_len = len(arg_names)
