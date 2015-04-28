@@ -49,3 +49,15 @@
 [27/Apr/2015 21:02:01] ERROR [senz.views.base:48] None
 [27/Apr/2015 21:10:46] ERROR [senz.views.base:48] None
 [27/Apr/2015 21:12:23] ERROR [senz.views.base:48] None
+[28/Apr/2015 21:52:16] ERROR [senz.views.base:48] None
+[28/Apr/2015 21:57:55] ERROR [senz.views.base:48] None
+[28/Apr/2015 21:58:34] ERROR [senz.views.base:48] None
+[28/Apr/2015 22:02:03] ERROR [senz.views.base:43] Request parse_poi error: Senz handle error: Can not find task parse_poi in pipeline parse for controller PoiController
+[28/Apr/2015 22:03:47] ERROR [senz.views.base:43] Request parse_poi error: Senz handle error: Can not find task parse_poi in pipeline parse for controller PoiController
+[28/Apr/2015 22:15:17] ERROR [senz.views.base:48] None
+[28/Apr/2015 22:23:47] ERROR [senz.views.base:48] None
+[28/Apr/2015 22:26:47] INFO [senz.common.controller:91] Not enough args for task parse_poi in pipeline of PoiController for parse job, workflow willskip it.
+[28/Apr/2015 22:34:07] ERROR [senz.views.base:48] None
+[28/Apr/2015 22:37:21] ERROR [senz.views.base:48] None
+[28/Apr/2015 22:50:51] ERROR [senz.poi.manager:52] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.9874398746627, u'__type': u'GeoPoint', u'longitude': 116.43832351121905}} , sys info:("<type 'exceptions.UnboundLocalError'> || local variable 'p_type' referenced before assignment", <traceback object at 0x0320F350>)
+[28/Apr/2015 22:58:39] ERROR [senz.poi.manager:58] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.9874398746627, u'__type': u'GeoPoint', u'longitude': 116.43832351121905}} , sys info:("<type 'exceptions.IndexError'> || list index out of range", <traceback object at 0x036A7288>)

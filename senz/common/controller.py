@@ -34,6 +34,10 @@ class Pipeline(object):
         self.task_list = task_list
         for t in task_list:
             task = config.get_task(t)
+            if not task:
+                raise SenzExcption(msg="Can not find task %s in pipeline %s for controller %s" %
+                                       (t, job, controller.__class__.__name__))
+
             manager_class = importutils.import_class(task['manager'])
             self.managers[t] = manager_class(self, task)
 
@@ -64,7 +68,6 @@ class Pipeline(object):
 
             arg_names = arg_spec.args
             arg_names.remove('self')
-            arg_names.remove('context')
 
             arg_defaults = arg_spec.defaults
             if arg_defaults:
@@ -75,6 +78,10 @@ class Pipeline(object):
 
             kwargs = {}
             for i in range(len(arg_names)):
+                if arg_names[i] == 'context' and not context.get('context'):
+                    kwargs['context'] = context
+                    continue
+
                 arg = context.get(arg_names[i])
                 if arg is not None:
                     kwargs[arg_names[i]] = arg
@@ -82,19 +89,20 @@ class Pipeline(object):
                     #use default value if arg not in context
                     kwargs[arg_names[i]] = arg_defaults[i - no_default_args_len]
 
-            if len(kwargs) != len(arg_names) - 1:
+            if len(kwargs) != len(arg_names):
                 LOG.info('Not enough args for task %s in pipeline of %s for %s job, workflow will'
                              'skip it.' % (task, self.controller.__class__.__name__, self.job))
                 continue
 
             #LOG.debug("Get args %s in %s task." % (kwargs, task))
-            res = method(context, **kwargs)
+            res = method(**kwargs)
 
             if res:
                 context['results'][task] = res
 
             if task_detail.get('store'):
                 self.managers[task].store(context)
+
 
         return context['results']
 

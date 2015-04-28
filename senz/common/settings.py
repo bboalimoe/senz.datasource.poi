@@ -67,10 +67,9 @@ poi_group_task = {
 }
 
 tasks = {
-
     PARSE_POI : {
         'manager' : 'senz.poi.manager.PoiManager',
-        'method' : 'place_poi',
+        'method' : 'parse_poi',
         'store' : [],
         'type' : 'task'
     },

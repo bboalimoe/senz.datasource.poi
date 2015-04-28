@@ -35,13 +35,14 @@ class MultiThreadManager(ManagerBase):
     '''Manager with thread pool to handle request.
 
     '''
-    def __init__(self, thread_type=DEFAULT_THREAD_TYPE, init_size=INIT_THREAD_NUM, **kwargs):
-        super(MultiThreadManager, self).__init__(**kwargs)
-        self._thread_type = thread_type
-        if thread_type == 'threading':
-            self.thread_pool = threading_pool_init(init_size)
-        elif thread_type == 'greenthread':
-            self.thread_pool = ThreadGroup(init_size)
+    def __init__(self, *args, **kwargs):
+        super(MultiThreadManager, self).__init__(*args, **kwargs)
+        self._thread_type = kwargs['thread_type'] if 'thread_type' in kwargs else DEFAULT_THREAD_TYPE
+        self._init_size = kwargs['init_size'] if 'init_size' in kwargs else INIT_THREAD_NUM
+        if self._thread_type == 'threading':
+            self.thread_pool = threading_pool_init(self._init_size)
+        elif self._thread_type == 'greenthread':
+            self.thread_pool = ThreadGroup(self._init_size)
         else:
             self.thread_pool = None
             raise SenzExcption(msg='Unkown thread type!')

@@ -23,12 +23,15 @@ def get_task(task_name, tasks=settings.tasks):
         if tasks[e]['type'] == 'collection':
             if 'tasks' not in tasks[e]:
                 continue
-            else:
-                return get_task(task_name, tasks[e]['tasks'])
+            in_collection = get_task(task_name, tasks[e]['tasks'])
+            if in_collection:
+                return in_collection
         if tasks[e]['type'] == 'task' and e == task_name:
             return tasks[e]
 
 if __name__ == '__main__':
-    print os.getcwd() + os.path.sep + 'logs'
-    getAppSettings("")
-    getAppSettings("LocationRecognition")
+    #print os.getcwd() + os.path.sep + 'logs'
+    #getAppSettings("")
+    #getAppSettings("LocationRecognition")
+
+    print get_task('parse_poi')
