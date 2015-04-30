@@ -75,7 +75,7 @@ tasks = {
     },
     ACTIVITY_MAPPING : {
         'manager' : 'senz.activity.manager.ActivityManager',
-        'args' : ['gps', 'user_id'],
+        'method' : 'activity_mapping',
         'store' : [],
         'type' : 'task'
     },
@@ -114,5 +114,11 @@ controllers = {
             'place_recognition' : [PLACE_RECOGNITION,],
             'internal_place_recognition' : [INTERNAL_PLACE_RECOGNITION,],
         }
-    }
+    },
+    'ActivityController' : {
+        #'class' : PoiController,
+        'jobs' : {
+            'activity_mapping' : [ACTIVITY_MAPPING,],
+        }
+    },
 }

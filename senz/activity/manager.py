@@ -8,8 +8,8 @@ class ActivityManager(ManagerBase):
     def __init__(self):
         super(ActivityManager, self).__init__()
 
-    def _update_gps(self, mapping_timestamp, gps):
-        for g in gps:
+    def _update_gps(self, mapping_timestamp, user_trace):
+        for g in user_trace:
             timestamp_ = g['timestamp']
             if timestamp_ in mapping_timestamp.keys():
                 g.setdefault("act_type",mapping_timestamp[str(timestamp_)]["category"])
@@ -19,9 +19,9 @@ class ActivityManager(ManagerBase):
                 g.setdefault("act_startTime",mapping_timestamp[str(timestamp_)]["start_time"])
                 g.setdefault("act_endTime",mapping_timestamp[str(timestamp_)]["end_time"])
 
-    def activity_mapping(self, context, gps, user_id):
+    def activity_mapping(self, context, user_trace, user_id):
         handler = UserActivityMapping()
-        mapping_timestamp = handler.mapActivityByUser(user_id, gps)
+        mapping_timestamp = handler.mapActivityByUser(user_id, user_trace)
 
-        self._update_gps(mapping_timestamp, gps)
+        self._update_gps(mapping_timestamp, user_trace)
         return mapping_timestamp
