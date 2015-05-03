@@ -61,3 +61,4 @@
 [28/Apr/2015 22:37:21] ERROR [senz.views.base:48] None
 [28/Apr/2015 22:50:51] ERROR [senz.poi.manager:52] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.9874398746627, u'__type': u'GeoPoint', u'longitude': 116.43832351121905}} , sys info:("<type 'exceptions.UnboundLocalError'> || local variable 'p_type' referenced before assignment", <traceback object at 0x0320F350>)
 [28/Apr/2015 22:58:39] ERROR [senz.poi.manager:58] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.9874398746627, u'__type': u'GeoPoint', u'longitude': 116.43832351121905}} , sys info:("<type 'exceptions.IndexError'> || list index out of range", <traceback object at 0x036A7288>)
+[03/May/2015 22:55:30] ERROR [senz.views.base:48] None

@@ -7,11 +7,15 @@ class TestActivity(TestBase):
         super(TestActivity, self).__init__()
         self.headers = {"Content-type":"application/json"}
 
-    def test_activity_mapping(self, user_id, last_days):
+    def get_data(self, user_id):
+        gpsList = self.avos_manager.getAllData('UserLocation', where='{"userId":"%s"}' % user_id)
+        return gpsList
+
+    def test_activity_mapping(self, user_trace, last_days):
         url = '/senz/activities/mapping/'
         method = 'POST'
         params = {
-            'user_id' : user_id,
+            'user_trace' : user_trace,
             'last_days' : last_days,
         }
         return self.testBase(params, method, url, self.headers)
@@ -27,6 +31,8 @@ if __name__ == '__main__':
               #'meowoodie' : '54f190fde4b077bf8375ac60',
     }
     testor = TestActivity()
-    for user in users:
-        print testor.test_activity_mapping(users[user], 3)
+
+    for u in users:
+        user_trace = testor.get_data(users[u])
+        print testor.test_activity_mapping(user_trace, 3)
     #testor.testAddNearTag()

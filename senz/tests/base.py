@@ -5,6 +5,8 @@ import json
 import httplib
 import logging
 
+from senz.db.avos import avos_manager
+
 sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
 FILE = os.getcwd()
 logging.basicConfig(filename=os.path.join(FILE,'log.txt'),level=logging.INFO)
@@ -19,7 +21,7 @@ HOST_144 = '192.168.248.144:8099'
 
 class TestBase(object):
     def __init__(self):
-        pass
+        self.avos_manager = avos_manager.AvosManager()
 
     def testBase(self, params, method, url, headers):
         self.conn = httplib.HTTPConnection(LOCAL_HOST)

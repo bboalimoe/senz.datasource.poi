@@ -2,13 +2,11 @@ __author__ = 'wzf'
 
 from base import TestBase
 
-from senz.db.avos import avos_manager
 
 
 class TestPoi(TestBase):
     def __init__(self):
         super(TestBase, self).__init__()
-        self.avos_manager = avos_manager.AvosManager()
         self.headers = {"Content-type":"application/json"}
         self.dest_user_id = "2b4e710aab89f6c5"
 

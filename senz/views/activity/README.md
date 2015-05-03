@@ -2,6 +2,7 @@ POST  /senz/activities/    根据用户行迹推测是否参加了activity
 
 Request parameters(in json):
 user_trace : (list) user的gps点集
+last_days : (int) 表示需要推测的从现在开始的时间窗口
 
 Response(Json form):
 {"results":

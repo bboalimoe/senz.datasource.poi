@@ -42,8 +42,12 @@ class UserActivityMapping(object):
             activeLocationRecords = []
             for oneTime in user:
 
-                    uLon=oneTime['longitude']
-                    uLat=oneTime['latitude']
+                    if 'location' in oneTime:
+                        loc = oneTime['location']
+                    else:
+                        loc = oneTime
+                    uLon=loc['longitude']
+                    uLat=loc['latitude']
                     if(geoutils.distance(aLon, aLat, uLon, uLat)<100):
                             activeTimes.append(oneTime['timestamp'])
                             activeLocationRecords.append(oneTime)
@@ -130,8 +134,10 @@ class UserActivityMapping(object):
 
             if trace_list and len(trace_list) > 100:
                 self.locations = trace_list
-            else:
+            elif user_id:
                 self.locations = self.user_trace.get_user_recent_trace(user_id, last_days)
+            else:
+                self.locations = []
 
             #todo get the user's last place
             res = []

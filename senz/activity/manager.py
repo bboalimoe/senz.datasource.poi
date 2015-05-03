@@ -5,8 +5,8 @@ from senz.common.manager import ManagerBase
 from senz.activity.UserActivityMapping import UserActivityMapping
 
 class ActivityManager(ManagerBase):
-    def __init__(self):
-        super(ActivityManager, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(ActivityManager, self).__init__(*args, **kwargs)
 
     def _update_gps(self, mapping_timestamp, user_trace):
         for g in user_trace:
@@ -19,9 +19,9 @@ class ActivityManager(ManagerBase):
                 g.setdefault("act_startTime",mapping_timestamp[str(timestamp_)]["start_time"])
                 g.setdefault("act_endTime",mapping_timestamp[str(timestamp_)]["end_time"])
 
-    def activity_mapping(self, context, user_trace, user_id):
+    def activity_mapping(self, context, user_trace, user_id=None, last_days=3):
         handler = UserActivityMapping()
-        mapping_timestamp = handler.mapActivityByUser(user_id, user_trace)
+        mapping_timestamp = handler.map_user_activity(user_id, user_trace, last_days)
 
         self._update_gps(mapping_timestamp, user_trace)
         return mapping_timestamp
