@@ -56,4 +56,6 @@ class MultiThreadManager(ManagerBase):
     def wait(self):
         if self.thread_pool:
             self.thread_pool.wait()
+        if self._thread_type =='threading':
+            self.thread_pool.dismissWorkers(len(self.thread_pool.workers))
 

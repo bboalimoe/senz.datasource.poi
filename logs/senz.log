@@ -62,3 +62,72 @@
 [28/Apr/2015 22:50:51] ERROR [senz.poi.manager:52] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.9874398746627, u'__type': u'GeoPoint', u'longitude': 116.43832351121905}} , sys info:("<type 'exceptions.UnboundLocalError'> || local variable 'p_type' referenced before assignment", <traceback object at 0x0320F350>)
 [28/Apr/2015 22:58:39] ERROR [senz.poi.manager:58] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.9874398746627, u'__type': u'GeoPoint', u'longitude': 116.43832351121905}} , sys info:("<type 'exceptions.IndexError'> || list index out of range", <traceback object at 0x036A7288>)
 [03/May/2015 22:55:30] ERROR [senz.views.base:48] None
+[14/May/2015 00:24:13] ERROR [senz.views.base:48] None
+[14/May/2015 00:25:57] ERROR [senz.views.base:48] None
+[14/May/2015 00:27:15] ERROR [senz.views.base:48] None
+[21/May/2015 14:17:47] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 14:17:47] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 14:17:50] INFO [senz.place.LocationRecognition:71] start place cluster.
+[21/May/2015 14:35:51] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 14:35:51] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 14:35:51] INFO [senz.place.LocationRecognition:71] start place cluster.
+[21/May/2015 15:03:09] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 15:03:09] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 15:03:09] INFO [senz.place.LocationRecognition:71] start place cluster.
+[21/May/2015 15:15:01] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 15:15:01] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 15:15:02] INFO [senz.place.LocationRecognition:71] start place cluster.
+[21/May/2015 15:20:02] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 15:20:02] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 15:20:02] INFO [senz.place.LocationRecognition:71] start place cluster.
+[21/May/2015 16:15:10] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 16:15:10] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 16:15:10] INFO [senz.place.LocationRecognition:71] start place cluster.
+[21/May/2015 16:20:05] ERROR [senz.views.base:48] None
+[21/May/2015 16:44:09] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 16:44:09] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 16:44:09] INFO [senz.place.LocationRecognition:71] start place cluster.
+[21/May/2015 16:48:10] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 16:48:10] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 16:50:02] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 16:50:02] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 16:52:20] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 16:52:20] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 16:57:16] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 16:57:16] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 16:58:59] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 16:58:59] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 17:00:18] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 17:00:18] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 17:02:26] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 17:02:26] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 17:06:24] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 17:06:24] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 17:20:42] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 17:20:42] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 17:21:18] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 17:21:18] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 17:22:03] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 17:22:03] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 17:29:35] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 17:29:35] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 18:08:39] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 18:08:39] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 18:44:06] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 18:44:06] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 18:53:21] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 18:53:21] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 18:58:54] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 18:58:54] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 19:30:59] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 19:30:59] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 19:38:51] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 19:38:51] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 19:44:46] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 19:44:46] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 19:47:09] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 19:47:09] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 19:47:21] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 19:47:21] INFO [senz.db.avos.avos:119] send patched request
+[21/May/2015 19:56:13] INFO [senz.db.avos.avos:33] patch request
+[21/May/2015 19:56:13] INFO [senz.db.avos.avos:119] send patched request

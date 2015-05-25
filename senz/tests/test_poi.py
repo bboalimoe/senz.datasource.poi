@@ -1,7 +1,7 @@
 __author__ = 'wzf'
 
 from base import TestBase
-
+import json
 
 
 class TestPoi(TestBase):
@@ -16,10 +16,13 @@ class TestPoi(TestBase):
 
     def testPoiGet(self):
         params = {
-            'poi_type' : 'estate',
-            'locations' : [{'timestamp': 1427642632501L, 'location': {'latitude': 39.9874398746627, '__type': u'GeoPoint', 'longitude': 116.438323511219053}}]
+            #'poi_type' : 'estate',
+            'locations' : [{'timestamp': 1427642632501L, 'location': {'latitude': 39.96957, '__type': u'GeoPoint', 'longitude': 116.391648}}]
             }
-        print self.testBase(params, 'POST', '/senz/pois/', self.headers)
+        res = self.testBase(params, 'POST', '/senz/pois/', self.headers)
+        dic = json.loads(res)
+        print json.dumps(dic, encoding='UTF-8', ensure_ascii=False)
+        #print res.encode('utf-8')
 
 if __name__ == '__main__':
     test = TestPoi()

@@ -37,7 +37,7 @@ groups = {
         'avos_app_id' : '0lffhnvekj0ndyd8f1cgwabd71yi8vs2yjt1izp1xh7xu2jw',
         'avos_app_key': 'fescseluzujxchkh6gu7huzyato9f6be1fb73pysusbpnvv1',
         'avos_app_master_key' : 'sebp2ynjliwrglb9uel1m7kggdx2jhe2f08m8wdusqsqucn5',
-        'avos_app_classes_list' : ['user_trace', 'place', 'users']
+        'avos_app_classes_list' : ['user_trace', 'place', 'users', 'poi_types']
     },
 }
 

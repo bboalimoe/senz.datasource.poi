@@ -9,9 +9,9 @@ from senz.common.utils.geo_coding import GeoCoder
 from senz.common.utils.translate import Trans
 
 class PoiGet(object):
-    def __init__(self):
+    def __init__(self, poi_service='baidu'):
         self.avos = AvosManager()
-        self.geo_coder = GeoCoder()
+        self.geo_coder = GeoCoder(poi_service)
 
     def get_poi(self, lat, lng):
         return self.geo_coder.get_poi(lat, lng)

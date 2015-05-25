@@ -28,7 +28,7 @@ class StoreBackend(object):
 class PoiManager(MultiThreadManager):
     def __init__(self, *args, **kwargs):
         super(PoiManager, self).__init__(*args, **kwargs)
-        self.poi_getor = geo_coding.GeoCoder()
+        self.poi_getor = geo_coding.GeoCoder(poi_service='tencent')
         self.store_backend = StoreBackend()
 
     def add_poi_to_gps(self, gps, poi_type=None):
@@ -41,9 +41,8 @@ class PoiManager(MultiThreadManager):
             if poi_type:
                  for i in range(len(pois)-1, -1, -1):
                     #todo: poi type auto increase will be a problem!!
-                    p_type = translate.Trans.poitype_trans(pois[i]['poiType'])
-
-                    if p_type != poi_type:
+                    #p_type = translate.Trans.poitype_trans(pois[i]['poiType'])
+                    if pois[i]['type']['mapping_type'] != poi_type:
                         del pois[i]
 
             gps['pois'] = pois
@@ -53,9 +52,13 @@ class PoiManager(MultiThreadManager):
 
     def parse_poi(self, context, locations, poi_type=None, user_id=None):
 
+        print 'pre parse poi in manager'
+
         for g in locations:
             self.add_thread(self.add_poi_to_gps, gps=g, poi_type=poi_type)
         self.wait()
+        
+        print 'poi return locations : %s' % locations
 
         return locations
 
@@ -91,5 +94,6 @@ class PoiManager(MultiThreadManager):
 
 class PoiGroupManager(ManagerBase):
     pass
+
 
 

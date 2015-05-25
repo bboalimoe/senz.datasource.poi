@@ -11,7 +11,7 @@ class ActivityManager(ManagerBase):
     def _update_gps(self, mapping_timestamp, user_trace):
         for g in user_trace:
             timestamp_ = g['timestamp']
-            if timestamp_ in mapping_timestamp.keys():
+            if mapping_timestamp and timestamp_ in mapping_timestamp.keys():
                 g.setdefault("act_type",mapping_timestamp[str(timestamp_)]["category"])
                 g.setdefault("act_name",mapping_timestamp[str(timestamp_)]["name"])
 
