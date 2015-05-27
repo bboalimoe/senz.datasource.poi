@@ -11,6 +11,17 @@ LOG = logging.getLogger(__name__)
 
 ACTIVITY_CLASS = "activities"
 
+DEFAULT_ACTIVITY_LAST_TIME = {"公益" : 3600 * 5,
+                              "讲座" : 3600 * 3,
+                              "旅行" : 3600 * 6,
+                              "其他" : 3600 * 6,
+                              "聚会" : 3600 * 3,
+                              "运动" : 3600 * 2,
+                              "音乐" : 3600 * 3,
+                              "电影" : 3600 * 2,
+                              "戏剧" : 3600 * 2.5,
+                              "展览" : 3600 * 4}
+
 class UserActivityMapping(object):
 
         #todo  1.update the db mapping results periodically
@@ -40,15 +51,30 @@ class UserActivityMapping(object):
             aLat=activity['location']['latitude']
             activeTimes = []
             activeLocationRecords = []
-            for oneTime in user:
+            allActivityTimeTrace = []
 
+            startTime = timeutils.iso2timestamp(activity['start_time']['iso'])
+            #endTime = timeutils.iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
+            if 'end_time' in activity:
+                endTime = timeutils.iso2timestamp(activity['end_time']['iso'])
+            elif activity['category'] in DEFAULT_ACTIVITY_LAST_TIME:
+                endTime = startTime + DEFAULT_ACTIVITY_LAST_TIME[activity['category']]
+            else:
+                endTime = startTime + (3600 * 6)
+
+            #endTime = timeutils.iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else startTime + (3600 * 6)
+
+            for oneTime in user:
                     if 'location' in oneTime:
                         loc = oneTime['location']
                     else:
                         loc = oneTime
                     uLon=loc['longitude']
                     uLat=loc['latitude']
-                    if(geoutils.distance(aLon, aLat, uLon, uLat)<100):
+                    timestamp = oneTime['timestamp'] / 1000
+                    if startTime < timestamp < endTime:
+                        allActivityTimeTrace.append(oneTime)
+                        if(geoutils.distance(aLon, aLat, uLon, uLat)<100):
                             activeTimes.append(oneTime['timestamp'])
                             activeLocationRecords.append(oneTime)
 
@@ -57,12 +83,10 @@ class UserActivityMapping(object):
             if len(activeTimes) == 0:
                     return 0
             #print "start time", activity['start_time']
-            startTime = timeutils.iso2timestamp(activity['start_time']['iso'])
-            endTime = timeutils.iso2timestamp(activity['end_time']['iso']) if 'end_time' in activity else long(sys.maxint)*1000
 
-            actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
-            if actives >= len(activeTimes)*0.35:
-                print "activeLocationRecords",activeLocationRecords
+            #actives = len([timestamp for timestamp in activeTimes if timestamp>=startTime and timestamp<=endTime])
+            if len(activeTimes) >= len(allActivityTimeTrace) * 0.35:
+                #print "activeLocationRecords",activeLocationRecords
                 activeLocationRecords.sort(key=lambda x:x["timestamp"])
                 flaggedLocation = activeLocationRecords[-1]
                 self.timestampedMappedActivity.setdefault(str(flaggedLocation["timestamp"]),activity)
@@ -71,7 +95,7 @@ class UserActivityMapping(object):
             else:
                 return None
 
-        def _getLastPossibleActivities(self, last_days=3): #first return the last 3 days(3*24*60*60 sec)'s activities before the timeNow
+        def _getLastPossibleActivities(self, last_days=7): #first return the last 3 days(3*24*60*60 sec)'s activities before the timeNow
 
                 print 'Getting activities ...'
                 L = 100

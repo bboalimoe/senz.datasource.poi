@@ -20,7 +20,12 @@ class TestActivity(TestBase):
         }
         return self.testBase(params, method, url, self.headers)
 
+    def get_all_activities(self):
+        return self.avos_manager.getAllData('activities')
+
 if __name__ == '__main__':
+    testor = TestActivity()
+    '''
     users = { #'zhushixiang' : '550e7481e4b01608684b3f8e',
               #'zhanghengyang' : '54f6df98e4b0c976f0300c00',
               'hihell' : '54f189d3e4b077bf8375477d',
@@ -30,9 +35,21 @@ if __name__ == '__main__':
               #'bboalimoe' : '54f935fde4b06c41dfde8ae8',
               #'meowoodie' : '54f190fde4b077bf8375ac60',
     }
-    testor = TestActivity()
 
     for u in users:
         user_trace = testor.get_data(users[u])
         print testor.test_activity_mapping(user_trace, 3)
     #testor.testAddNearTag()
+        '''
+    activities = testor.get_all_activities()
+    types = []
+    for a in activities:
+        if a['category'] not in types:
+            types.append(a['category'])
+
+    print types
+
+    f = open('all_activities.txt', 'r+')
+    f.write(str(types).encode(encoding='utf-8'))
+    f.close()
+

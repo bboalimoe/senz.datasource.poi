@@ -131,3 +131,10 @@
 [21/May/2015 19:47:21] INFO [senz.db.avos.avos:119] send patched request
 [21/May/2015 19:56:13] INFO [senz.db.avos.avos:33] patch request
 [21/May/2015 19:56:13] INFO [senz.db.avos.avos:119] send patched request
+[26/May/2015 15:11:56] ERROR [senz.views.base:48] None
+[26/May/2015 15:18:35] ERROR [senz.views.base:48] None
+[26/May/2015 15:28:16] ERROR [senz.views.base:48] None
+[26/May/2015 15:29:32] ERROR [senz.views.base:48] None
+[26/May/2015 16:43:54] ERROR [senz.views.base:48] None
+[26/May/2015 16:58:43] INFO [senz.db.avos.avos:33] patch request
+[26/May/2015 16:58:43] INFO [senz.db.avos.avos:119] send patched request
