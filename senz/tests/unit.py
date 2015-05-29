@@ -37,41 +37,49 @@ class TestPoiManager(TestPoi):
 class TestActivityManager(object):
     def test_activity_mapping(self):
         activity = {
-              "category": "戏剧",
-              "foot_print": "bff4679acb3fe7ea5dccdff4fe26ab7f",
-              "name": "安徒生经典音乐童话剧《卖火柴的小女孩》\r\n\t    送花0人气+1",
-              "source": "DamaiSpider",
-              "region": "​小伙伴剧场 - 上海市",
-              "ticket": "60",
+              "category": "音乐",
+              "foot_print": "8a12b9396649d8b66c920cd18ee8421d",
+              "name": "BIGBANG—2015 WORLD TOUR [MADE] IN GUANGZHOU",
+              "source": "DoubanSpider",
+              "region": "广州 萝岗区 广州国际体育演艺中心",
+              "ticket": "费用：\n580元 / 880元 / 1280元 / 1480元 / 1680元",
               "date": {
                 "__type": "Date",
-                "iso": "2015-06-13T00:00:00.000Z"
+                "iso": "2015-05-30T00:00:00.000Z"
+              },
+              "ACL": {
+                "*": {
+                  "write": True,
+                  "read": True
+                }
               },
               "start_time": {
                 "__type": "Date",
-                "iso": "2015-06-13T13:30:00.000Z"
+                "iso": "2015-05-30T19:30:00.000Z"
               },
               "end_time": {
                 "__type": "Date",
-                "iso": "2015-06-13T13:30:00.000Z"
+                "iso": "2015-05-31T21:30:00.000Z"
               },
               "location": {
                 "__type": "GeoPoint",
-                "latitude": 31.2279506,
-                "longitude": 121.4502026
+                "latitude": 23.175709,
+                "longitude": 113.482376
               },
-              "objectId": "55079d0ce4b05a2197d295b2",
-              "createdAt": "2015-03-17T11:18:36.552Z",
-              "updatedAt": "2015-04-15T21:57:11.760Z"
+              "objectId": "556054afe4b00c57d9a52620",
+              "createdAt": "2015-05-23T18:21:35.095Z",
+              "updatedAt": "2015-05-23T18:21:35.095Z"
             }
-
-        user_traces = [{"latitude": 31.2279506,"longitude": 121.4502026, 'timestamp': 1434173400},
-                        {"latitude": 31.2279506,"longitude": 121.4502026, 'timestamp': 1434173400},
-                        {"latitude": 31.2279506,"longitude": 121.4502026, 'timestamp': 1434173400},
-                        {"latitude": 31.2279506,"longitude": 121.4502026, 'timestamp': 1434173400},
-                        {"latitude": 31.2279506,"longitude": 121.4502026, 'timestamp': 1434173410},
-                        {"latitude": 31.2279506,"longitude": 121.4502026, 'timestamp': 1434173410},
-                        {"latitude": 31.2279506,"longitude": 121.4502026, 'timestamp': 1434173410},]
+        user_traces = [{"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985400000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985410000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985420000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985430000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985440000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985450000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985460000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985470000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985480000},
+                       {"latitude": 23.175709,"longitude": 113.482376, 'timestamp': 1432985490000},]
 
         tool = UserActivityMapping()
         print tool._isInActivity(user_traces, activity)
@@ -102,9 +110,9 @@ class TestPlaceManager(object):
 if __name__ == '__main__':
     #test_manager = TestPoiManager()
     #test_manager.test_parse_poi()
-    #test = TestActivityManager()
-    #test.test_activity_mapping()
+    test = TestActivityManager()
+    test.test_activity_mapping()
 
-    manager = TestPlaceManager()
-    manager.test_place_recognition()
+    #manager = TestPlaceManager()
+    #manager.test_place_recognition()
 

@@ -12,13 +12,46 @@ sources = {
             'get_poi' : "http://api.map.baidu.com/geocoder/v2/?coordtype=bd09ll&location=%s,%s&output=json&ak=fPnXQ2dVgLevy7GwIomnhEMg&pois=1",
         },
         'poi_type_name' : 'poiType',
+        'location_name_info' : {
+            'name' : 'point',
+            'latitude' : 'y',
+            'longitude' : 'x'
+        }
     },
     'tencent' : {
         'urls' : {
             'get_poi' : "http://apis.map.qq.com/ws/geocoder/v1/?location=%s,%s&key=PIZBZ-GUQWJ-FQ4FT-K72GW-LPCAZ-HEB24&get_poi=1",
         },
         'poi_type_name' : 'category',
+        'location_name_info' : {
+            'name' : 'location',
+            'latitude' : 'lat',
+            'longitude' : 'lng'
+        }
     }
+}
+
+DEFAULT_BAIDU_POI_MAPPING = {
+u"休闲娱乐":"entertainment",
+u"地产小区":"estate",
+u"政府机构":"infrastructure",
+u"餐饮":"dining",
+u"教育":"education",
+u"交通设施":"infrastructure",
+u"金融":"finance",
+u"行政地标":"scenic_spot",
+u"旅游景点":"scenic_spot",
+u"其他":"unknown",
+u"房地产":"estate",
+u"other":"unknown",
+u"美食":"dining",
+u"生活服务":"life_service",
+u"公司企业":"estate",
+u"购物":"shopping",
+u"教育培训":"education",
+u"汽车服务":"auto_related",
+u"医疗":"healthcare",
+u"酒店":"hotel"
 }
 
 
@@ -31,7 +64,7 @@ class GeoCoder(object):
 
         self.coord_type = coord_type
         self.avos_manager = AvosManager()
-        self.poi_types = self.avos_manager.getAllData('poi_types')
+        self.tecent_poi_types = self.avos_manager.getAllData('poi_types')
 
     def geoCoding(self,region):
         url = "http://api.map.baidu.com/geocoder/v2/?address=%s&output=json&ak=fPnXQ2dVgLevy7GwIomnhEMg&callback=showLocation" % region
@@ -94,18 +127,40 @@ class GeoCoder(object):
 
 
         def mapping_poi_type(type):
-            print "poi types len %d" % len(self.poi_types)
+            #print "poi types len %d" % len(self.poi_types)
+            if self.poi_service == 'tencent':
+                poi_types = self.tecent_poi_types
+            else:
+                poi_types = DEFAULT_BAIDU_POI_MAPPING
 
-            for t in self.poi_types:
-                if t['origin_type'].find(type) >= 0:
+            for t in poi_types:
+                if self.poi_service == 'tencent' and t['origin_type'].find(type) >= 0:
                     return t
+                elif t == type:
+                    return dict(mapping_type=t, type=type, source=self.poi_service)
 
             return dict(mapping_type='unkown', type=type, source=self.poi_service)
 
+        def transfer_location_name(poi):
+            location_name_info = self.source['location_name_info']
+            latitude = poi[location_name_info['name']][location_name_info['latitude']]
+            longitude = poi[location_name_info['name']][location_name_info['longitude']]
+
+            del poi[location_name_info['name']]
+
+            poi['location'] = {'latitude' : latitude, 'longitude' : longitude}
+
+
+
         for p in pois:
+
             senz_poi_type = mapping_poi_type(p[self.source['poi_type_name']])
             del p[self.source['poi_type_name']]
             p['type'] = senz_poi_type
+
+            print p
+
+            transfer_location_name(p)
 
         return pois
 

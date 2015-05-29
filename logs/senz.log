@@ -138,3 +138,6 @@
 [26/May/2015 16:43:54] ERROR [senz.views.base:48] None
 [26/May/2015 16:58:43] INFO [senz.db.avos.avos:33] patch request
 [26/May/2015 16:58:43] INFO [senz.db.avos.avos:119] send patched request
+[29/May/2015 11:09:26] ERROR [senz.poi.manager:74] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.96957, u'__type': u'GeoPoint', u'longitude': 116.391648}} , sys info:("<type 'exceptions.AttributeError'> || 'GeoCoder' object has no attribute 'poi_types'", <traceback object at 0x03D37120>)
+[29/May/2015 11:14:05] ERROR [senz.poi.manager:73] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.96957, u'__type': u'GeoPoint', u'longitude': 116.391648}} , sys info:("<type 'exceptions.AttributeError'> || 'GeoCoder' object has no attribute 'poi_types'", <traceback object at 0x042BA620>)
+[29/May/2015 11:21:36] ERROR [senz.poi.manager:73] Error in parse gps point:{u'timestamp': 1427642632501L, u'location': {u'latitude': 39.96957, u'__type': u'GeoPoint', u'longitude': 116.391648}} , sys info:("<type 'exceptions.KeyError'> || 'latitude'", <traceback object at 0x03CD43C8>)
