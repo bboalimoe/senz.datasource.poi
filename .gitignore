@@ -1,2 +1,4 @@
 *.pyc
 *.sh
+.avoscloud/
+.avoscloud/
