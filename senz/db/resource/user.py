@@ -105,8 +105,8 @@ class UserTrace(object):
         avosClass = 'UserLocationTrace'
         jsonArray = self.avos_manager.getAllData(avosClass, where='{"userId":"%s"}'% userId)
 
-        print jsonArray
-        print "get %d date" % len(jsonArray)
+        #print jsonArray
+        #print "get %d date" % len(jsonArray)
         print 'Done'
 
         return jsonArray

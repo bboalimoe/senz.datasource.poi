@@ -167,7 +167,7 @@ class GeoCoder(object):
     def getPOIByName(self,name):
         url = "http://api.map.baidu.com/geocoder/v2/?address=%s&output=json&ak=fPnXQ2dVgLevy7GwIomnhEMg&pois=1" % name
         result_info = get_source(url)
-        print(json.loads(result_info)['result'])
+        #print(json.loads(result_info)['result'])
 
 
 
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     lng = 116.43832351121905
     lat = 39.9874398746627
     res = geo.get_poi(lat, lng)
-    print str(res)
+    #print str(res)
     print res['direction']
     print res['poiType']
     print res['addr']

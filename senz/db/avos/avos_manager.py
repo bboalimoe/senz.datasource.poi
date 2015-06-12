@@ -351,8 +351,8 @@ if __name__ == "__main__":
         results = avosManager.getData("poiClass",order="longitude", where='{"type":"休闲娱乐"}',limit=10)
         results = json.loads(results)['results']
         results = results[0:3]
-        for r in results:
-            print r
+        #for r in results:
+        #    print r
         #print avosManager.getIdByCondition(className,name='《文成公主》大型实景剧')
         '''
         self._avosConnector.app_settings = [settings.avos_app_id, settings.avos_app_key]

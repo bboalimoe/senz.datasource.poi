@@ -7,7 +7,9 @@
 #                     python-pandas python-sympy python-nose
 #scipy==0.15.1
 
-numpy==1.9.2
+scipy
+leancloud-sdk
+numpy==1.6.2
 
 pytz==2014.10
 
