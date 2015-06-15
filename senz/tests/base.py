@@ -29,8 +29,8 @@ class TestBase(object):
                           json.JSONEncoder().encode(params),
                           headers)
 
-        print "json.JSONEncoder().encode(params)   ", \
-                              json.JSONEncoder().encode(params)
+        #print "json.JSONEncoder().encode(params)   ", \
+        #                      json.JSONEncoder().encode(params)
 
 
         respon = self.conn.getresponse()

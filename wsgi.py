@@ -19,6 +19,7 @@ MASTER_KEY = 'fescseluzujxchkh6gu7huzyato9f6be1fb73pysusbpnvv1'
 PORT = 3000
 
 
+
 leancloud.init(APP_ID, master_key=MASTER_KEY)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SenzWeb.settings")

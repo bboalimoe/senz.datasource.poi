@@ -23,10 +23,13 @@ def django_view(http_method):
             :return: view result
             '''
             try:
+
                 if request.method != http_method:
                     raise BadRequest(msg='unsupported http method ')
 
-                LOG.debug('Got request to %s.' % func.func_name)
+                LOG.info('Got request to %s. Request Id <%s>' %
+                             (func.func_name, request.META.get('HTTP_X_REQUEST_ID', None)))
+
                 results = func(request, **kwargs)
 
                 if not isinstance(results, (dict, str)):

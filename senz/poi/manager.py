@@ -81,7 +81,7 @@ class PoiManager(MultiThreadManager):
             self.add_thread(self.add_poi_to_gps, gps=g, poi_type=poi_type)
         self.wait()
         
-        print 'poi return locations : %s' % locations
+        #print 'poi return locations : %s' % locations
 
         return locations
 

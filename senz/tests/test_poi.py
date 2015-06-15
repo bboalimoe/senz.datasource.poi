@@ -7,7 +7,8 @@ import json
 class TestPoi(TestBase):
     def __init__(self):
         super(TestBase, self).__init__()
-        self.headers = {"Content-type":"application/json"}
+        self.headers = {"Content-type":"application/json",
+                        "X-REQUEST-ID" : "12345asd12345"}
         self.dest_user_id = "2b4e710aab89f6c5"
 
     def get_data(self):
@@ -21,7 +22,7 @@ class TestPoi(TestBase):
             }
         res = self.testBase(params, 'POST', '/senz/pois/', self.headers)
         dic = json.loads(res)
-        print json.dumps(dic, encoding='UTF-8', ensure_ascii=False)
+        #print json.dumps(dic, encoding='UTF-8', ensure_ascii=False)
         #print res.encode('utf-8')
 
 if __name__ == '__main__':

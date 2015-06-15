@@ -25,6 +25,8 @@ def parse_poi(request):
     :return: poi info and user activity mapping results if necessary
     '''
 
+    LOG.debug('*****************  test log entries ********************')
+
     print "pre poi parse"
 
     body_context = json.loads(request.body)

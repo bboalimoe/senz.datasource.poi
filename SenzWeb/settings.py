@@ -91,6 +91,7 @@ LOG_FOLDER = os.getcwd() + os.path.sep + 'logs'
 if not os.path.exists(LOG_FOLDER):
     os.mkdir(LOG_FOLDER)
 
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -132,10 +133,17 @@ LOGGING = {
             'maxBytes': '16777216', # 16megabytes(16M)
             'formatter': 'verbose'
         },
+        'logentries' : {
+            'level' : 'DEBUG',
+            'class' : 'logentries.LogentriesHandler',
+            'token' : 'e56aab54-c5da-4621-a31b-090b9ac8a38d',
+            'formatter' : 'verbose',
+        }
     },
     'loggers': {
         'senz':{
-            'handlers': ['console', 'file'],
+            #'handlers': ['console', 'file'],
+            'handlers': ['logentries'],
             'level': 'DEBUG',
             'propagate': False
         },
