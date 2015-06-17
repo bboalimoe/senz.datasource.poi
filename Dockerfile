@@ -22,15 +22,14 @@ WORKDIR /app
 RUN mkdir /app/run
 RUN mkdir /app/djangoapp
 #add the project to the /app/
-ADD djangoapp/ /app/djangoapp
+ADD SenzPoi/ /app/djangoapp
 WORKDIR /app/djangoapp
 
 
 
 #dependency install
 
-#RUN pip install -r requirements.txt
-
+RUN pip install -r requirements.txt
 
 
 
