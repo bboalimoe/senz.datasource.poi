@@ -1,6 +1,8 @@
 FROM texastribune/supervisor
 MAINTAINER tech@texastribune.org
 
+RUN apt-get update
+
 RUN apt-get -yq install nginx
 # There's a known harmless warning generated here:
 # See https://github.com/benoitc/gunicorn/issues/788
