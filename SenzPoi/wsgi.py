@@ -14,10 +14,11 @@ from django.core.wsgi import get_wsgi_application
 #MASTER_KEY = os.environ['LC_APP_MASTER_KEY']
 #PORT = int(os.environ['LC_APP_PORT'])
 
+#test
+
 APP_ID = '0lffhnvekj0ndyd8f1cgwabd71yi8vs2yjt1izp1xh7xu2jw'
 MASTER_KEY = 'fescseluzujxchkh6gu7huzyato9f6be1fb73pysusbpnvv1'
 PORT = 3000
-
 
 
 leancloud.init(APP_ID, master_key=MASTER_KEY)
