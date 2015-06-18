@@ -3,7 +3,7 @@ __author__ = 'wuzhifan'
 
 from abc import *
 
-from SenzPoi.senz.exceptions import *
+from senz.exceptions import *
 
 
 class FilterBase(object):

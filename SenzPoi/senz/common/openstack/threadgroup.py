@@ -17,7 +17,7 @@ import logging
 import eventlet
 from eventlet import greenpool
 from eventlet import greenthread
-from SenzPoi.senz.common.openstack import loopingcall
+from senz.common.openstack import loopingcall
 
 
 LOG = logging.getLogger(__name__)

@@ -2,7 +2,7 @@ __author__ = 'wzf'
 
 import sys
 
-from SenzPoi.senz.common.openstack.exceptions import NeutronException
+from senz.common.openstack.exceptions import NeutronException
 
 def error_info():
 

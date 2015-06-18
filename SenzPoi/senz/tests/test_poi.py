@@ -2,7 +2,7 @@ __author__ = 'wzf'
 
 import json
 
-from SenzPoi.senz.tests.base import TestBase
+from senz.tests.base import TestBase
 
 
 class TestPoi(TestBase):

@@ -7,7 +7,7 @@ from senz.views.base import django_view
 
 #from mixpanel import Mixpanel
 
-from SenzPoi.senz.activity.controller import ActivityController
+from senz.activity.controller import ActivityController
 
 LOG = logging.getLogger(__name__)
 

@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from SenzPoi.senz.db.avos.avos_manager import *
-from SenzPoi.senz.common.utils import timeutils
-from SenzPoi.senz.common.utils import geoutils
+from senz.db.avos.avos_manager import *
+from senz.common.utils import timeutils
+from senz.common.utils import geoutils
 
-from SenzPoi.senz.db.resource.user import UserTrace
+from senz.db.resource.user import UserTrace
 
 LOG = logging.getLogger(__name__)
 

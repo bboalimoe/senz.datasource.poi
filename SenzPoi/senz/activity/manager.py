@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 __author__ = 'wuzhifan'
 
-from SenzPoi.senz.common.manager import ManagerBase
-from SenzPoi.senz.activity import UserActivityMapping
+from senz.common.manager import ManagerBase
+from senz.activity import UserActivityMapping
 
 
 class ActivityManager(ManagerBase):

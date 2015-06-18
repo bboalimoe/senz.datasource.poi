@@ -6,12 +6,12 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
 
-from SenzPoi.senz.tests.test_poi import TestPoi
-from SenzPoi.senz.poi.manager import PoiManager
-from SenzPoi.senz.activity import UserActivityMapping
+from senz.tests.test_poi import TestPoi
+from senz.poi.manager import PoiManager
+from senz.activity import UserActivityMapping
 
-from SenzPoi.senz.db.avos.avos_manager import AvosManager
-from SenzPoi.senz.place import LocationRecognition
+from senz.db.avos.avos_manager import AvosManager
+from senz.place import LocationRecognition
 
 
 class TestPoiManager(TestPoi):

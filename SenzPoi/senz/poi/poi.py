@@ -3,10 +3,10 @@
 
 #sys.path.append('../utils')
 
-from SenzPoi.senz.db.avos.avos_manager import *
-from SenzPoi.senz.common.utils.util_opt import *
-from SenzPoi.senz.common.utils.geo_coding import GeoCoder
-from SenzPoi.senz.common.utils.translate import Trans
+from senz.db.avos.avos_manager import *
+from senz.common.utils.util_opt import *
+from senz.common.utils.geo_coding import GeoCoder
+from senz.common.utils.translate import Trans
 
 class PoiGet(object):
     def __init__(self, poi_service='baidu'):

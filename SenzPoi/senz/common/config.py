@@ -1,6 +1,6 @@
 __author__ = 'wzf'
 
-from SenzPoi.senz.common import settings
+from senz.common import settings
 
 
 def findGroup(avosClassName):

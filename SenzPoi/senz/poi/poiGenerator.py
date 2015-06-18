@@ -3,8 +3,8 @@
 
 #sys.path.append('..')
 
-from SenzPoi.senz.db.avos.avos_manager import *
-from SenzPoi.senz.common.utils.util_opt import *
+from senz.db.avos.avos_manager import *
+from senz.common.utils.util_opt import *
 
 
 class PoiGenerator(object):

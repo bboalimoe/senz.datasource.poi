@@ -2,7 +2,7 @@ __author__ = 'wuzhifan'
 
 import json
 
-from SenzPoi.senz.tests.django_test import base
+from senz.tests.django_test import base
 
 
 class TestPoi(base.SenzTestBase):

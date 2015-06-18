@@ -6,8 +6,8 @@ import logging
 
 
 sys.path.append(os.path.dirname(os.getcwd()))
-from SenzPoi.monitor.monitors import BaseMonitor
-from SenzPoi.monitor import settings
+from monitor.monitors import BaseMonitor
+from monitor import settings
 
 def config():
     FILE = os.getcwd()

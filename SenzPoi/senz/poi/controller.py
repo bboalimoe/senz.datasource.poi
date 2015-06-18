@@ -3,7 +3,7 @@ __author__ = 'wzf'
 
 import logging
 
-from SenzPoi.senz.common.controller import ControllerBase, task
+from senz.common.controller import ControllerBase, task
 
 LOG = logging.getLogger(__name__)
 

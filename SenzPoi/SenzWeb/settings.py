@@ -136,7 +136,7 @@ LOGGING = {
         'logentries' : {
             'level' : 'DEBUG',
             'class' : 'logentries.LogentriesHandler',
-            'token' : 'e56aab54-c5da-4621-a31b-090b9ac8a38d',
+            'token' : '871368b8-4c36-4da8-8f81-96caf3654c53',
             'formatter' : 'verbose',
         }
     },

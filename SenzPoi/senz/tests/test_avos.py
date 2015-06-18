@@ -1,11 +1,11 @@
-from SenzPoi.senz.common.utils import timeutils
+from senz.common.utils import timeutils
 
 __author__ = 'wzf'
 
 import time
 import json
 
-from SenzPoi.senz.db.avos.avos_manager import AvosManager
+from senz.db.avos.avos_manager import AvosManager
 from senz.common.openstack import timeutils as op_timeutils
 from senz.common.utils import timeutils
 

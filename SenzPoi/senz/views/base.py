@@ -5,7 +5,7 @@ import logging
 import traceback
 
 from django.http.response import HttpResponse, JsonResponse
-from SenzPoi.senz.exceptions import *
+from senz.exceptions import *
 
 
 LOG = logging.getLogger(__name__)

@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 #from mixpanel import Mixpanel
 
-from SenzPoi.senz.poi.controller import PoiController
-from SenzPoi.senz.views.base import django_view
+from senz.poi.controller import PoiController
+from senz.views.base import django_view
 
 LOG = logging.getLogger(__name__)
 

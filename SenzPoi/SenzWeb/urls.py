@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-from SenzPoi.senz.urls import urlpatterns as senz_url
+from senz.urls import urlpatterns as senz_url
 
 urlpatterns = patterns('',
     # Examples:

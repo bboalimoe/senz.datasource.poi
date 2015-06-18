@@ -17,7 +17,7 @@
 Neutron base exception handling.
 """
 
-from SenzPoi.senz.common.openstack import excutils
+from senz.common.openstack import excutils
 
 
 class NeutronException(Exception):

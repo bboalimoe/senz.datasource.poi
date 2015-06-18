@@ -8,7 +8,7 @@ import json
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from SenzPoi.senz.poi.poiGenerator import PoiGenerator
+from senz.poi.poiGenerator import PoiGenerator
 from django.http import JsonResponse
 #from mixpanel import Mixpanel
 import time

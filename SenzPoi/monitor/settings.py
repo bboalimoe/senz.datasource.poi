@@ -1,6 +1,6 @@
 __author__ = 'wuzhifan'
 
-from SenzPoi.monitor.common.handlers import *
+from monitor.common.handlers import *
 
 
 #Configures of created monitors

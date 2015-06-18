@@ -12,7 +12,7 @@ FILE = os.getcwd()
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(FILE))))
 logging.basicConfig(filename=os.path.join(FILE,'log.txt'),level=logging.INFO)
 
-from SenzPoi.senz.db.avos import avos_manager
+from senz.db.avos import avos_manager
 
 ''' run test in command line. eg:
 

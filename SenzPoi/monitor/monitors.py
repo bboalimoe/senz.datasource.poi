@@ -6,8 +6,8 @@ import subprocess
 import socket
 import logging
 
-from SenzPoi.monitor.common.openstack.threadgroup import ThreadGroup
-from SenzPoi.monitor.common.openstack import  timeutils
+from monitor.common.openstack.threadgroup import ThreadGroup
+from monitor.common.openstack import  timeutils
 
 
 LOG = logging.getLogger(__name__)

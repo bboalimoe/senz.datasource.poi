@@ -20,7 +20,7 @@ import  logging
 
 from eventlet import event
 from eventlet import greenthread
-from SenzPoi.senz.common.openstack import timeutils
+from senz.common.openstack import timeutils
 
 
 LOG = logging.getLogger(__name__)

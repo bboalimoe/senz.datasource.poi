@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 __author__ = 'wuzhifan'
 
-from SenzPoi.senz.common.openstack.threadgroup import ThreadGroup
-from SenzPoi.senz.exceptions import *
+from senz.common.openstack.threadgroup import ThreadGroup
+from senz.exceptions import *
 
 '''threading pool methods.
 

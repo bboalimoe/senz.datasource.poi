@@ -2,13 +2,13 @@
 
 import scipy.cluster.hierarchy as sch
 
-from SenzPoi.senz.common.utils import timeutils
+from senz.common.utils import timeutils
 
-from SenzPoi.senz.db.avos.avos_manager import *
+from senz.db.avos.avos_manager import *
 from senz.common.utils.geoutils import LocationAndTime, coordArrayCompress, distance
 from senz.common.utils import timeutils
 from senz.exceptions import *
-from SenzPoi.senz.db.resource.user import UserTrace
+from senz.db.resource.user import UserTrace
 
 
 

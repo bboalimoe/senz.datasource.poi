@@ -1,7 +1,7 @@
 __author__ = 'wzf'
-from SenzPoi.senz.tests.base import TestBase
+from senz.tests.base import TestBase
 
-from SenzPoi.senz.db.avos.avos_manager import AvosManager
+from senz.db.avos.avos_manager import AvosManager
 
 class TestPlaceApi(TestBase):
     def __init__(self):

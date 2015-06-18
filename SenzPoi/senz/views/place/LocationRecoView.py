@@ -5,8 +5,8 @@ __author__ = 'wuzhifan'
 import json
 import logging
 
-from SenzPoi.senz.place.controller import PlaceController
-from SenzPoi.senz.views.base import django_view
+from senz.place.controller import PlaceController
+from senz.views.base import django_view
 from django.views.decorators.csrf import csrf_exempt
 
 #from mixpanel import Mixpanel

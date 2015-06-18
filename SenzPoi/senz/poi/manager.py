@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from SenzPoi.senz.common.utils import geo_coding, geoutils
+from senz.common.utils import geo_coding, geoutils
 
 __author__ = 'wuzhifan'
 
@@ -8,7 +8,7 @@ import logging
 from senz.poi.beacon import Beacon
 from senz.common.manager import ManagerBase, MultiThreadManager
 from senz.common.utils import geo_coding, geoutils
-from SenzPoi.senz.db.avos.avos_manager import AvosManager
+from senz.db.avos.avos_manager import AvosManager
 
 LOG = logging.getLogger(__name__)
 

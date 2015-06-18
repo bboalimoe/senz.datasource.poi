@@ -1,5 +1,5 @@
 #-*- coding:utf-8 -*-
-from SenzPoi.senz.common import config, settings
+from senz.common import config, settings
 
 __author__ = 'wuzhifan'
 
@@ -7,7 +7,7 @@ import inspect
 import logging
 
 from senz.common import config, settings
-from SenzPoi.senz.common.openstack import importutils
+from senz.common.openstack import importutils
 from senz.exceptions import *
 
 

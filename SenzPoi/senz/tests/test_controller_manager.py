@@ -1,6 +1,6 @@
 __author__ = 'wuzhifan'
 
-from SenzPoi.senz.tests.base import TestBase
+from senz.tests.base import TestBase
 
 
 class TestControllerManager(TestBase):

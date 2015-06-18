@@ -6,10 +6,10 @@ import json
 import httplib
 import logging
 
-from SenzPoi.senz.db.avos import avos_manager
+from senz.db.avos import avos_manager
 
 
-sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
+sys.path.append(os.path.dirname(os.getcwd()))
 FILE = os.getcwd()
 logging.basicConfig(filename=os.path.join(FILE,'log.txt'),level=logging.INFO)
 
@@ -20,6 +20,8 @@ TEST_HOST = "120.27.30.239:9222"
 HOST_250 = '192.168.60.250:8088'
 
 HOST_144 = '192.168.248.144:8099'
+
+DAO_HOST = 'senz-senz-datasource-poi.daoapp.io'
 
 class TestBase(object):
     def __init__(self):

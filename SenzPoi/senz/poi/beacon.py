@@ -36,7 +36,7 @@ class Beacon(object):
     def __init__(self):
 
         self.beaconRtList = []
-        from SenzPoi.senz.db.avos.avos_manager import AvosManager
+        from senz.db.avos.avos_manager import AvosManager
         self.avosManager = AvosManager()
 
     def dump2db(self,beaconlist,userId):

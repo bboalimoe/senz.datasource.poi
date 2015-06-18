@@ -1,4 +1,4 @@
-from SenzPoi.senz.common.utils import geoutils
+from senz.common.utils import geoutils
 
 __author__ = 'wzf'
 
@@ -9,8 +9,8 @@ from senz.common.manager import ManagerBase
 from senz.exceptions import *
 from senz.common.utils import geoutils
 from senz.place.LocationRecognition import LocationRecognition
-from SenzPoi.senz.db.avos.avos_manager import AvosManager
-from SenzPoi.senz.db.resource import user
+from senz.db.avos.avos_manager import AvosManager
+from senz.db.resource import user
 
 
 LOG = logging.getLogger(__name__)

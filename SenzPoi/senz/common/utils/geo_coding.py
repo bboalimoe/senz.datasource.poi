@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from SenzPoi.senz.db.avos.avos_manager import *
+from senz.db.avos.avos_manager import *
 
 sources = {
     #todo: make poi services metadate !!!!!!

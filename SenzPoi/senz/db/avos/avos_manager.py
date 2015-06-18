@@ -6,9 +6,9 @@ import logging
 
 import requests
 
-from SenzPoi.senz.common.openstack import importutils
+from senz.common.openstack import importutils
 
-from SenzPoi.senz.db.avos.avos import AVObject
+from senz.db.avos.avos import AVObject
 from senz.common.utils.util_opt import *
 from senz.common.openstack import importutils
 from senz.exceptions import *
