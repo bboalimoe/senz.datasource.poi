@@ -57,10 +57,10 @@ class PoiManager(MultiThreadManager):
         else:
             g = gps
         tecent_pois = self.tecent_poi_getor.get_poi(g["latitude"], g["longitude"])
-        baidu_pois = self.baidu_poi_getor.get_poi(g["latitude"], g["longitude"])
+        #baidu_pois = self.baidu_poi_getor.get_poi(g["latitude"], g["longitude"])
 
-        pois = self._mix_pois(tecent_pois, baidu_pois)
-
+        #pois = self._mix_pois(tecent_pois, baidu_pois)
+        pois = tecent_pois
         if poi_type:
              for i in range(len(pois)-1, -1, -1):
                 #todo: poi type auto increase will be a problem!!

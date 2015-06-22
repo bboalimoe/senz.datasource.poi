@@ -8,7 +8,7 @@
 #avos_app_key = 'dxbawm2hh0338hb37wap59gticgr92dpajd80tzekrgv1ptw'
 #avos_app_master_key = 'u0nu3suqria905en9gbq7isetlf5exoqmndv4fxcfck26kdr'
 
-groups = {
+dev_groups = {
     'base' : {
         'avos_app_id' : 'vigxpgtjk8w6ruxcfaw4kju3ssyttgcqz38y6y6uablqivjd',
         'avos_app_key': 'dxbawm2hh0338hb37wap59gticgr92dpajd80tzekrgv1ptw',
@@ -40,6 +40,34 @@ groups = {
         'avos_app_classes_list' : ['user_trace', 'place', 'users', 'poi_types']
     },
 }
+
+test_groups = {
+    'base' : {
+        'avos_app_id' : 'vigxpgtjk8w6ruxcfaw4kju3ssyttgcqz38y6y6uablqivjd',
+        'avos_app_key': 'dxbawm2hh0338hb37wap59gticgr92dpajd80tzekrgv1ptw',
+        'avos_app_master_key' : 'u0nu3suqria905en9gbq7isetlf5exoqmndv4fxcfck26kdr',
+        'avos_app_classes_list' : []
+    },
+    'life_logger' : {
+        'avos_app_id' : 'gaqzfcjhsbtoug7a2pnc21r3q7noots1u1we4002pyohbctv',
+        'avos_app_key': 'df2et5hn1wervr4j2ajas0bvgvwk90zezlsl1oq0zzmckbsy',
+        'avos_app_master_key' : 'bz4xik4o8xo8s60zl0uxhyf8nhx976ddmkjdcv6xtz2lms3l',
+        'avos_app_classes_list' : ['UserLocation',]
+    },
+    'api_poi' : {
+        'avos_app_id' : '8g81v4elyzz6bt91r23bcfdtdmqr5rltaf93xuiie9qmm34y',
+        'avos_app_key': 'rdlkp2xy6rhor08b8wslpp559h29sdb2fefxy8evufmz2s6v',
+        'avos_app_master_key' : 'ckhsx39cnhfbtn40uhf03soa3pd1d5ly44u6piio959ujljd',
+        'avos_app_classes_list' : ['user_trace', 'place', 'users', 'poi_types']
+    },
+}
+
+import os
+
+app_env = os.environ.get('APP_ENV', 'local')
+
+groups = test_groups if app_env == 'local' or app_env == 'test' else dev_groups
+
 
 #function names
 PARSE_POI = 'parse_poi'

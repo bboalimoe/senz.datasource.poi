@@ -91,6 +91,13 @@ LOG_FOLDER = os.getcwd() + os.path.sep + 'logs'
 if not os.path.exists(LOG_FOLDER):
     os.mkdir(LOG_FOLDER)
 
+app_env = os.environ.get('APP_ENV', 'local')
+
+test_log_token = '304449f2-f5d7-4ee4-bf3a-ff103461f1e0'
+
+prod_log_token = '871368b8-4c36-4da8-8f81-96caf3654c53'
+
+log_token = test_log_token if app_env == 'local' or app_env == 'test' else prod_log_token
 
 LOGGING = {
     'version': 1,
@@ -136,7 +143,7 @@ LOGGING = {
         'logentries' : {
             'level' : 'DEBUG',
             'class' : 'logentries.LogentriesHandler',
-            'token' : '871368b8-4c36-4da8-8f81-96caf3654c53',
+            'token' : log_token,
             'formatter' : 'verbose',
         }
     },
