@@ -13,6 +13,9 @@ import os, sys
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(BASE_DIR+'/senz/')
 
+app_env = os.environ.get('APP_ENV', 'local')
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -39,7 +42,7 @@ INSTALLED_APPS = (
     'senz'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,7 +50,21 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
+
+#bugsnag config
+MIDDLEWARE_CLASSES.append("bugsnag.django.middleware.BugsnagMiddleware")
+
+test_api_key = '52936de41dfc0111c65284fdadda5bb0'
+
+prob_api_key = 'ef167a8acd52430b091fbd275661b822'
+
+api_key = test_api_key if app_env == 'local' or app_env == 'test' else prob_api_key
+
+BUGSNAG = {
+  "api_key": api_key,
+  "project_root": BASE_DIR,
+}
 
 ROOT_URLCONF = 'SenzWeb.urls'
 
@@ -90,8 +107,6 @@ SYSLOG_UDP_PORT = 514
 LOG_FOLDER = os.getcwd() + os.path.sep + 'logs'
 if not os.path.exists(LOG_FOLDER):
     os.mkdir(LOG_FOLDER)
-
-app_env = os.environ.get('APP_ENV', 'local')
 
 test_log_token = '304449f2-f5d7-4ee4-bf3a-ff103461f1e0'
 

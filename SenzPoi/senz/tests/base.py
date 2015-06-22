@@ -28,7 +28,7 @@ class TestBase(object):
         self.avos_manager = avos_manager.AvosManager()
 
     def testBase(self, params, method, url, headers):
-        self.conn = httplib.HTTPConnection(DAO_HOST)
+        self.conn = httplib.HTTPConnection(LOCAL_HOST)
         self.conn.request(method, url,
                           json.JSONEncoder().encode(params),
                           headers)

@@ -33,7 +33,8 @@ WORKDIR /app/djangoapp
 
 RUN pip install -r requirements.txt
 
-
+RUN pip install numpy
+RUN apt-get install -y python-scipy
 
 ADD gunicorn_conf.py /app/
 ADD gunicorn.supervisor.conf /etc/supervisor/conf.d/

@@ -9,6 +9,8 @@
 
 #scipy
 
+bugsnag
+
 logentries
 
 #numpy==1.6.2

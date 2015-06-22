@@ -23,7 +23,7 @@ class TestPoi(TestBase):
             }
         res = self.testBase(params, 'POST', '/senz/pois/', self.headers)
         dic = json.loads(res)
-        print json.dumps(dic, encoding='UTF-8', ensure_ascii=False)
+        #print json.dumps(dic, encoding='UTF-8', ensure_ascii=False)
         #print res.encode('utf-8')
 
 if __name__ == '__main__':
