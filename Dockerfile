@@ -31,6 +31,32 @@ WORKDIR /app/djangoapp
 
 #dependency install
 
+
+RUN pip install bugsnag
+
+RUN pip install logentries
+
+#numpy==1.6.2
+
+RUN pip install pytz==2014.10
+
+RUN pip install requests==2.5.3
+
+
+RUN pip install Babel==1.3
+
+RUN pip install eventlet==0.17.1
+
+#greenlet==0.4.5
+
+RUN pip install iso8601==0.1.10
+
+RUN pip install leancloud-sdk==1.1.0
+
+RUN pip install six==1.9.0
+
+RUN pip install threadpool==1.2.7
+
 RUN pip install -r requirements.txt
 
 RUN pip install numpy
