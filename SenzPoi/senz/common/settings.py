@@ -8,7 +8,7 @@
 #avos_app_key = 'dxbawm2hh0338hb37wap59gticgr92dpajd80tzekrgv1ptw'
 #avos_app_master_key = 'u0nu3suqria905en9gbq7isetlf5exoqmndv4fxcfck26kdr'
 
-dev_groups = {
+prod_groups = {
     'base' : {
         'avos_app_id' : 'vigxpgtjk8w6ruxcfaw4kju3ssyttgcqz38y6y6uablqivjd',
         'avos_app_key': 'dxbawm2hh0338hb37wap59gticgr92dpajd80tzekrgv1ptw',
@@ -37,7 +37,7 @@ dev_groups = {
         'avos_app_id' : '0lffhnvekj0ndyd8f1cgwabd71yi8vs2yjt1izp1xh7xu2jw',
         'avos_app_key': 'fescseluzujxchkh6gu7huzyato9f6be1fb73pysusbpnvv1',
         'avos_app_master_key' : 'sebp2ynjliwrglb9uel1m7kggdx2jhe2f08m8wdusqsqucn5',
-        'avos_app_classes_list' : ['user_trace', 'place', 'users', 'poi_types']
+        'avos_app_classes_list' : ['user_trace', 'place', 'users', 'poi_types', '_User']
     },
 }
 
@@ -58,7 +58,7 @@ test_groups = {
         'avos_app_id' : '8g81v4elyzz6bt91r23bcfdtdmqr5rltaf93xuiie9qmm34y',
         'avos_app_key': 'rdlkp2xy6rhor08b8wslpp559h29sdb2fefxy8evufmz2s6v',
         'avos_app_master_key' : 'ckhsx39cnhfbtn40uhf03soa3pd1d5ly44u6piio959ujljd',
-        'avos_app_classes_list' : ['user_trace', 'place', 'users', 'poi_types']
+        'avos_app_classes_list' : ['user_trace', 'place', 'users', 'poi_types', '_User']
     },
 }
 
@@ -66,7 +66,7 @@ import os
 
 app_env = os.environ.get('APP_ENV', 'local')
 
-groups = test_groups if app_env == 'local' or app_env == 'test' else dev_groups
+groups = test_groups if app_env == 'local' or app_env == 'test' else prod_groups
 
 
 #function names

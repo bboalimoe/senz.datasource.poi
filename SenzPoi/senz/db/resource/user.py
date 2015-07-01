@@ -85,7 +85,7 @@ class UserTrace(object):
                                                                   timeutils.nowAvosDate(),
                                                                   where='{"user": %s }'% json.dumps(user_pointer),
                                                                   limit=L,
-                                                                  skip=start))['results']
+                                                         skip=start))['results']
             res_len = len(res)
 
             print "get %d user trace" % res_len

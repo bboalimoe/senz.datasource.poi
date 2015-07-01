@@ -271,11 +271,12 @@ class LocationRecognition(object):
         transformed_res = []
         for result in results:
             for tag in result.tags:
+                user_pointer = {"__type": "Pointer", "className": "_User","objectId": userId}
                 place_tag = {"location": {"latitude": result.latitude,
                                           "longitude": result.longitude,
                                           "__type": "GeoPoint"},
                              "tag": tag.tag, "ratio": tag.ratio,
-                             "estimateTime": result.estimateTime, "userId": userId,
+                             "estimateTime": result.estimateTime, "user": user_pointer,
                              "timeStart": result.timeStart,
                              "timeEnd": result.timeEnd
                              }
