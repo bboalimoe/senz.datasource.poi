@@ -50,10 +50,12 @@ def filterClustersBySize(cluster, dataArray, size):
 class LocationWithTags:
     """Location from cluster result and tags by analysing timestamps"""
 
-    def __init__(self, _latitude, _longitude, _tags):
+    def __init__(self, _latitude, _longitude, _tags, _timeStart, _timeEnd):
         self.latitude = _latitude
         self.longitude = _longitude
         self.tags = _tags
+        self.timeStart = _timeStart
+        self.timeEnd = _timeEnd
         self.estimateTime = 0
 
 class TagInfo:

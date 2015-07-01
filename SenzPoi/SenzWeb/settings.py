@@ -14,6 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(BASE_DIR+'/senz/')
 
 app_env = os.environ.get('APP_ENV', 'local')
+print 'SenzWeb/settings app_env:', app_env
 
 
 # Quick-start development settings - unsuitable for production
