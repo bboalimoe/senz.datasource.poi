@@ -22,6 +22,7 @@ class StoreBackend(object):
 
 EXTERNAL_USER_CLASS = '_User'
 EXTERNAL_USER_TRACE_CLASS = 'user_trace'
+USER_PLACE_CLASS = 'place'
 
 
 class PlaceManager(ManagerBase):
@@ -96,7 +97,7 @@ class PlaceManager(ManagerBase):
 
         raw = self.avos_manager.getData(EXTERNAL_USER_CLASS, where={"objectId": userId})
         user = json.loads(raw)['results']
-        user_pointer = {"__type": "Pointer", "className": "_User", "objectId": userId}
+        user_pointer = {"__type": "Pointer", "className": EXTERNAL_USER_CLASS, "objectId": userId}
 
         if user:
             old_trace = self.avos_manager.getAllData(EXTERNAL_USER_TRACE_CLASS,
@@ -113,6 +114,19 @@ class PlaceManager(ManagerBase):
 
         return self.handler.startCluster(user_id)
 
+
+    def get_user_places(self, context, userId):
+
+        print 'place/manager, get_user_places, userId:', userId
+
+        user_pointer = {"__type": "Pointer", "className": EXTERNAL_USER_CLASS, "objectId": userId}
+        raw = self.avos_manager.getAllData(USER_PLACE_CLASS,
+                                                     where='{"user":%s}' % json.dumps(user_pointer))
+
+        if raw:
+            return raw
+        else:
+            raise Exception('no user place found under userId:', userId)
 
 # userId = u"5593ef24e4b0001a928fa39a"
 # avm = AvosManager()

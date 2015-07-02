@@ -75,6 +75,7 @@ ACTIVITY_MAPPING = 'activity_mapping'
 BEACON = 'beacon'
 PLACE_RECOGNITION = 'place_recognition'
 INTERNAL_PLACE_RECOGNITION = 'internal_place_recognition'
+GET_USER_PLACES = 'get_user_places'
 GEO_FENCE = 'geo_fence'
 POI_GROUP = 'poi_group'
 
@@ -120,6 +121,14 @@ tasks = {
         'type' : 'task'
     },
 
+    GET_USER_PLACES: {
+        'manager': 'senz.place.manager.PlaceManager',
+        'method': 'get_user_places',
+        'store': [],
+        'type':'task'
+    },
+
+
     BEACON : {
         'type' : None
     },
@@ -141,6 +150,7 @@ controllers = {
         'jobs' : {
             'place_recognition' : [PLACE_RECOGNITION,],
             'internal_place_recognition' : [INTERNAL_PLACE_RECOGNITION,],
+            'get_user_places': [GET_USER_PLACES, ]
         }
     },
     'ActivityController' : {

@@ -6,6 +6,7 @@ import json
 import logging
 
 from senz.place.controller import PlaceController
+from senz.place.manager import PlaceManager
 from senz.views.base import django_view
 from django.views.decorators.csrf import csrf_exempt
 
@@ -26,6 +27,22 @@ def get_user_places(request):
 
     controller = PlaceController()
     results = controller.place_recognition(body_context)
+
+    return results
+
+@csrf_exempt
+@django_view('POST')
+def get_user_places_by_id(request):
+    """
+    description:             places recognition of user identified by 'user_id'
+    """
+    body_context = json.loads(request.body)
+
+    print 'LocationRecoView get_user_places_by_id called'
+    print 'request:', request
+
+    controller = PlaceController()
+    results = controller.get_user_places(body_context)
 
     return results
 
