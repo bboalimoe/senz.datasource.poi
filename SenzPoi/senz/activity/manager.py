@@ -2,7 +2,7 @@
 __author__ = 'wuzhifan'
 
 from senz.common.manager import ManagerBase
-from senz.activity import UserActivityMapping
+from senz.activity.UserActivityMapping import UserActivityMapping
 
 
 class ActivityManager(ManagerBase):
