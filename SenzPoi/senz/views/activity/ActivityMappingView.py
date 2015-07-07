@@ -27,3 +27,13 @@ def activity_mapping(request):
 
     return res
 
+
+@csrf_exempt
+@django_view('POST')
+def home_office_status(request):
+    body_context = json.loads(request.body)
+
+    controller = ActivityController()
+    res = controller.home_office_status(body_context)
+
+    return res

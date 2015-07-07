@@ -78,6 +78,7 @@ INTERNAL_PLACE_RECOGNITION = 'internal_place_recognition'
 GET_USER_PLACES = 'get_user_places'
 GEO_FENCE = 'geo_fence'
 POI_GROUP = 'poi_group'
+HOME_OFFICE_STATUS = 'home_office_status'
 
 
 #store types
@@ -108,6 +109,15 @@ tasks = {
         'store' : [],
         'type' : 'task'
     },
+
+
+    HOME_OFFICE_STATUS: {
+        'manager': 'senz.activity.manager.ActivityManager',
+        'method': 'home_office_status',
+        'store': [],
+        'type': 'task'
+    },
+
     PLACE_RECOGNITION : {
         'manager' : 'senz.place.manager.PlaceManager',
         'method' : 'place_recognition',
@@ -129,6 +139,7 @@ tasks = {
     },
 
 
+
     BEACON : {
         'type' : None
     },
@@ -146,7 +157,6 @@ controllers = {
         }
     },
     'PlaceController' : {
-        #'class' : PoiController,
         'jobs' : {
             'place_recognition' : [PLACE_RECOGNITION,],
             'internal_place_recognition' : [INTERNAL_PLACE_RECOGNITION,],
@@ -154,9 +164,9 @@ controllers = {
         }
     },
     'ActivityController' : {
-        #'class' : PoiController,
         'jobs' : {
             'activity_mapping' : [ACTIVITY_MAPPING,],
+            'home_office_status': [HOME_OFFICE_STATUS,]
         }
     },
 }

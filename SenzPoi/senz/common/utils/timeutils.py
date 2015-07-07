@@ -84,3 +84,11 @@ def secFromBeginningOfDay(timestamp):
 def timestamp2local(timestamp):
     utc_st = datetime.datetime.utcfromtimestamp(timestamp)
     return utc2local(utc_st)
+
+def is_weekday(timestamp):
+    # 0 monday, ..., 5 saturday 6 sunday
+    dt = timestamp2local(timestamp)
+    if dt.weekday() in range(0, 5):
+        return True
+    else:
+        return False

@@ -22,6 +22,9 @@ DEFAULT_ACTIVITY_LAST_TIME = {"公益": 3600 * 5,
                               "戏剧": 3600 * 2.5,
                               "展览": 3600 * 4}
 
+DEFAULT_NEAR_HOME_OFFICE_DISTANCE_THRESHOLD = 0.1 #km
+DEFAULT_NEAR_HOME_OFFICE_TIME_THRESHOLD = 15 * 60 #sec
+
 
 class UserActivityMapping(object):
     # todo  1.update the db mapping results periodically
@@ -246,8 +249,64 @@ class UserActivityMapping(object):
             LOG.info('Save number %d to %d datas in gps list to db' % (i, j))
             avosManager.saveData(avosClassName, locationtList)
 
-        # todo change the server's version which is typo timpstamp
+        # todo change the server's version which is typo timestamp
         print "GPS write"
+
+
+    def home_office_status(self, place_home, place_office, geo_point, timestamp):
+
+        near_place = None
+        for place in [place_home, place_office]:
+            if geoutils.near_place(place['location'], geo_point, DEFAULT_NEAR_HOME_OFFICE_DISTANCE_THRESHOLD):
+                near_place = place
+                break
+
+        status = {'at_place': near_place}
+
+        if not near_place:
+            # status['is_going_to'] = self.__is_going_to(place_home, place_work, geo_point, timestamp)
+
+            status['is_going_home'] = self.__is_going_home_time(place_home['timeStart'],
+                                                                place_office['timeEnd'],
+                                                                DEFAULT_NEAR_HOME_OFFICE_TIME_THRESHOLD,
+                                                                timestamp)
+            if not status['is_going_home']:
+                status['is_going_office'] = self.__is_going_office_time(place_home['timeEnd'],
+                                                                        place_office['timeStart'],
+                                                                        DEFAULT_NEAR_HOME_OFFICE_TIME_THRESHOLD,
+                                                                        timestamp)
+
+        return status
+
+
+    def __is_going_home_time(self, home_start, office_end, time_thres, timestamp):
+        time_offset = timeutils.secFromBeginningOfDay(timestamp)
+
+        if time_offset > (office_end - time_thres) and time_offset < (home_start + time_thres):
+            return True
+
+        return False
+
+
+    def __is_going_office_time(self, home_end, office_start, time_thres, timestamp):
+        time_offset = timeutils.secFromBeginningOfDay(timestamp)
+
+        if time_offset > (home_end - time_thres) and time_offset < (office_start + time_thres):
+            return True
+
+        return False
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":

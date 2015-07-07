@@ -1,6 +1,7 @@
 __author__ = 'lsg'
 
 from math import *
+from geopy.distance import vincenty
 
 class LocationAndTime(object):
     """Data including place and record time"""
@@ -65,3 +66,18 @@ def is_same_location(new_lng, new_lat, old_lng, old_lat):
         return True
     else:
         return False
+
+
+def near_place(place, geo_point, near_thres):
+
+    p1 = (place['latitude'], place['longitude'])
+    p2 = (geo_point['latitude'], geo_point['longitude'])
+
+    d = vincenty(p1, p2).kilometers
+
+    if(d > near_thres):
+        return False
+    else:
+        return True
+
+

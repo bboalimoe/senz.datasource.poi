@@ -95,6 +95,8 @@ class Pipeline(object):
             if len(kwargs) != len(arg_names):
                 LOG.info('Not enough args for task %s in pipeline of %s for %s job, workflow will'
                              'skip it.' % (task, self.controller.__class__.__name__, self.job))
+                print 'Not enough args for task %s in pipeline of %s for %s job, workflow will skip it'
+
                 continue
 
             #LOG.debug("Get args %s in %s task." % (kwargs, task))

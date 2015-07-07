@@ -15,4 +15,7 @@ class ActivityController(ControllerBase):
         print "in controller activity mapping"
         return context['results']
 
-
+    @task
+    def home_office_status(self, context):
+        print "in controller home office status"
+        return context['results']
