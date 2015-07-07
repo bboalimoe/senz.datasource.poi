@@ -4,11 +4,14 @@ from senz.common.utils import geo_coding, geoutils
 __author__ = 'wuzhifan'
 
 import logging
+import json
 
 from senz.poi.beacon import Beacon
 from senz.common.manager import ManagerBase, MultiThreadManager
 from senz.common.utils import geo_coding, geoutils
 from senz.db.avos.avos_manager import AvosManager
+
+from geopy.distance import vincenty
 
 LOG = logging.getLogger(__name__)
 
@@ -29,6 +32,7 @@ class PoiManager(MultiThreadManager):
         self.tecent_poi_getor = geo_coding.GeoCoder(poi_service='tencent')
         self.baidu_poi_getor = geo_coding.GeoCoder(poi_service='baidu')
         self.store_backend = StoreBackend()
+        self.avos_manager = AvosManager()
 
     def _mix_pois(self, t1, t2):
         res_pois = []
@@ -50,7 +54,7 @@ class PoiManager(MultiThreadManager):
         return res_pois
 
 
-    def add_poi_to_gps(self, gps, poi_type=None):
+    def add_poi_to_gps(self, gps, userId, poi_type=None):
 
         if 'location' in gps:
             g = gps['location']
@@ -68,15 +72,37 @@ class PoiManager(MultiThreadManager):
                 if pois[i]['type']['mapping_type'] != poi_type:
                     del pois[i]
 
+        homeoffice = self.get_home_office(gps, userId)
+
         gps['pois'] = pois
+        gps['user_place'] = homeoffice
 
 
-    def parse_poi(self, context, locations, poi_type=None, user_id=None):
+    def get_home_office(self, gps, userId):
+        homeoffice = []
+        user_pointer = {"__type": "Pointer", "className": '_User', "objectId": userId}
+        userPlaces = self.avos_manager.getAllData('place', where='{"user":%s}' % json.dumps(user_pointer))
+
+        closeToHome = 0.15 #kilometers
+        gpsLoc = gps['location']
+        gpsGeo = (gpsLoc['latitude'], gpsLoc['longitude'])
+        for place in userPlaces:
+            avLoc = place['location']
+            placeGeo = (avLoc['latitude'], avLoc['longitude'])
+            distance = vincenty(placeGeo, gpsGeo).kilometers
+
+            if distance < closeToHome:
+                homeoffice.append(place)
+
+        return homeoffice
+
+
+    def parse_poi(self, context, locations, userId, poi_type=None):
 
         print 'pre parse poi in manager'
 
         for g in locations:
-            self.add_thread(self.add_poi_to_gps, gps=g, poi_type=poi_type)
+            self.add_thread(self.add_poi_to_gps, gps=g, userId=userId, poi_type=poi_type)
         self.wait()
         
         #print 'poi return locations : %s' % locations

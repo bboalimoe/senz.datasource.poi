@@ -71,4 +71,16 @@ def local2utc(local_st):
     utc_st = datetime.datetime.utcfromtimestamp(time_struct)
     return utc_st
 
+def secFromBeginningOfDay(timestamp):
+    # NOTE timestamp is not local time
+    # the Beginning of your day is local day
 
+    local_st = timestamp2local(timestamp)
+
+    hour = local_st.hour
+    minute = local_st.minute
+    return hour * 60 * 60 + minute * 60
+
+def timestamp2local(timestamp):
+    utc_st = datetime.datetime.utcfromtimestamp(timestamp)
+    return utc2local(utc_st)

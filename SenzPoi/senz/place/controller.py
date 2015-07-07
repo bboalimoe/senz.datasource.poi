@@ -19,3 +19,8 @@ class PlaceController(ControllerBase):
     def internal_place_recognition(self, context):
         print "in controller internal place recognition"
         return context['results']
+
+    @task
+    def get_user_places(self, context):
+        print "in controller get user places"
+        return context['results']

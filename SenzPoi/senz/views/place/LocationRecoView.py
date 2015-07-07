@@ -1,4 +1,4 @@
-#-*- encoding=utf-8 -*-
+# -*- encoding=utf-8 -*-
 
 __author__ = 'wuzhifan'
 
@@ -6,12 +6,14 @@ import json
 import logging
 
 from senz.place.controller import PlaceController
+from senz.place.manager import PlaceManager
 from senz.views.base import django_view
 from django.views.decorators.csrf import csrf_exempt
 
-#from mixpanel import Mixpanel
+# from mixpanel import Mixpanel
 
 LOG = logging.getLogger(__name__)
+
 
 @csrf_exempt
 @django_view('POST')
@@ -26,6 +28,21 @@ def get_user_places(request):
     controller = PlaceController()
     results = controller.place_recognition(body_context)
 
+    return results
+
+@csrf_exempt
+@django_view('POST')
+def get_user_places_by_id(request):
+    """
+    description:             places recognition of user identified by 'user_id'
+    """
+    body_context = json.loads(request.body)
+
+    print 'LocationRecoView get_user_places_by_id called'
+    print 'request:', request
+
+    controller = PlaceController()
+    results = controller.get_user_places(body_context)
 
     return results
 
@@ -44,10 +61,6 @@ def internal_get_user_places(request):
     results = controller.internal_place_recognition(body_context)
 
 
-    #manager = LocationRecognition()
-    #results = manager.startCluster(body_context.get('uer_id'), body_context.get('user_trace'))
+    # manager = LocationRecognition()
+    # results = manager.startCluster(body_context.get('uer_id'), body_context.get('user_trace'))
     return results
-
-
-
-
