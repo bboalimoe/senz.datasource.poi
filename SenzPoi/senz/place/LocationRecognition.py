@@ -237,6 +237,7 @@ class LocationRecognition(object):
                 createDate = datetime.datetime.strptime(oldLocRecgData[0]['createdAt'],
                                                         timeutils.ISO_TIME_FORMAT)
 
+
                 nowDate = datetime.datetime.now()
 
                 if (nowDate - createDate).days < 7:
@@ -318,7 +319,11 @@ class LocationRecognition(object):
 
     def getAvgHomeTimeRange(self, cluster):
         # NOTE! time in cluster is timestamp not localtime
+        # NOTE! ONLY ACCEPT WEEKDAY DATA
         # ALL logic is related to local time, convert then compare
+
+        cluster = [ele for ele in cluster if timeutils.is_weekday(ele.time)]
+
         morning = []
         afternoon = []
 
@@ -335,6 +340,7 @@ class LocationRecognition(object):
         return avgStart, avgEnd
 
     def getAvgOfficeTimeRange(self, cluster):
+        cluster = [ele for ele in cluster if timeutils.is_weekday(ele.time)]
         return self.getAvgStartEndOfCluster(cluster)
 
     def timeOffsetToHM(self, offset):
