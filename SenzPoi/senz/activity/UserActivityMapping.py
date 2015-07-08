@@ -5,6 +5,7 @@ from senz.db.avos.avos_manager import *
 from senz.common.utils import timeutils
 from senz.common.utils import geoutils
 
+
 from senz.db.resource.user import UserTrace
 
 LOG = logging.getLogger(__name__)
@@ -24,7 +25,7 @@ DEFAULT_ACTIVITY_LAST_TIME = {"公益": 3600 * 5,
 
 DEFAULT_NEAR_HOME_OFFICE_DISTANCE_THRESHOLD = 0.1 #km
 DEFAULT_NEAR_HOME_OFFICE_TIME_THRESHOLD = 15 * 60 #sec
-
+DEFAULT_NEAR_POI_DISTANCE_THRESHOLD = 0.1 #km
 
 class UserActivityMapping(object):
     # todo  1.update the db mapping results periodically
@@ -77,7 +78,8 @@ class UserActivityMapping(object):
             timestamp = oneTime['timestamp'] / 1000
             if startTime < timestamp < endTime:
                 allActivityTimeTrace.append(oneTime)
-                if (geoutils.distance(aLon, aLat, uLon, uLat) < 100):
+                if (geoutils.distance(aLon, aLat, uLon, uLat) < DEFAULT_NEAR_POI_DISTANCE_THRESHOLD):
+
                     activeTimes.append(oneTime['timestamp'])
                     activeLocationRecords.append(oneTime)
 

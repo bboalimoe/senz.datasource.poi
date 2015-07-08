@@ -14,6 +14,7 @@ from senz.db.avos.avos_manager import AvosManager
 from geopy.distance import vincenty
 
 LOG = logging.getLogger(__name__)
+DEFAULT_SAME_LOCATION_THRESHOLD = 0.03 #km
 
 class StoreBackend(object):
     '''Simple store backend use leancloud
@@ -43,7 +44,8 @@ class PoiManager(MultiThreadManager):
 
 
 
-                if dist < 30 and p1['type']['mapping_type'] == p2['type']['mapping_type']:
+                if dist < DEFAULT_SAME_LOCATION_THRESHOLD \
+                        and p1['type']['mapping_type'] == p2['type']['mapping_type']:
                     # assume these are same poi
                     res_pois.append(p1)
                 else:

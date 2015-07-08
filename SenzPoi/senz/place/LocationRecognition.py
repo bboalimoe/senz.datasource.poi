@@ -224,9 +224,10 @@ class LocationRecognition(object):
         try:
             # return old place recognition data if it generated in 7 days
 
+            user_pointer = {"__type": "Pointer", "className": "_User", "objectId": userId}
             oldLocRecgData = json.loads(self.avosManager.getData(
                 locRecgClass,
-                where='{"userId":"%s"}' % userId))['results']
+                where='{"user": %s }' % json.dumps(user_pointer)))['results']
         except AvosCRUDError, e:
             LOG.warning("Get data of LocationRecognition failed.")
             oldLocRecgData = []
@@ -255,6 +256,7 @@ class LocationRecognition(object):
             results = self.cluster(data)
 
             if len(results) > 0:
+                # save cluster result
                 transformed_res = self.saveResults(results, userId, store_class)
                 return transformed_res
             else:
@@ -294,7 +296,7 @@ class LocationRecognition(object):
         '''
         traceClass = 'UserLocationTrace'
         locRecgClass = 'LocationRecognition'
-        nearDistance = 200
+        nearDistance = 0.2 #km
 
         traceData = self.avosManager.getAllData(traceClass, where='{"userId":"%s"}' % userId)
 
