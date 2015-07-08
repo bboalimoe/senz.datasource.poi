@@ -333,9 +333,14 @@ class LocationRecognition(object):
                 morning.append(ele)
             else:
                 afternoon.append(ele)
-
-        drop, avgEnd = self.getAvgStartEndOfCluster(morning)
-        avgStart, drop = self.getAvgStartEndOfCluster(afternoon)
+        try:
+            drop, avgEnd = self.getAvgStartEndOfCluster(morning)
+            avgStart, drop = self.getAvgStartEndOfCluster(afternoon)
+        except Exception as e:
+            LOG.error(e.message)
+            print e.message
+            avgStart = -1
+            avgEnd = -1
 
         return avgStart, avgEnd
 
@@ -367,6 +372,10 @@ class LocationRecognition(object):
         avgEnd = 0
 
         binNumber = len(groupedByDate.keys())
+
+        if binNumber == 0:
+            raise Exception('not enought data for home office time analysis')
+
         for localDate in groupedByDate.keys():
             bin = groupedByDate[localDate]
             bin.sort(key=LocationAndTime.time)
